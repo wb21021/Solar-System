@@ -5,33 +5,39 @@ using UnityEngine;
 public class CelestialBody : MonoBehaviour
 {
     // Properties of the celestial body
+    public int id;                 // ID of the celestial body
     public string bodyName;        // Name of the celestial body
-    public string mass;             // Mass of the celestial body in kg
-    public string massEarth;        // Mass of the celestial body in Earth masses
-    public string radius;           // Mean radius of the celestial body in km
-    public string radiusEarth;      // Mean radius of the celestial body in Earth radii
-    public string apoapsis;         // Apoapsis of the celestial body's orbit in AU
-    public string periapsis;        // Periapsis of the celestial body's orbit in AU
-    public string argOfPeriapsis;   // Argument of periapsis in degrees
-    public string semiMajorAxis;    // Semi-major axis of the celestial body's orbit in AU
-    public string inclination;      // Inclination of the celestial body's orbit in degrees
-    public string orbitalPeriod;    // Sidereal orbital period in days
-    public string rotationalPeriod; // Sidereal rotational period in days
-    public string axialTilt;        // Axial tilt of the celestial body in degrees
-    public string absoluteMagnitude; // Absolute magnitude
-    public string averageDensity;   // Average density of the celestial body in g/cm^3
-    public string surfaceTemp;      // Surface temperature of the celestial body in K
-    public string surfaceGravity;   // Surface gravity of the celestial body in g
-    public string hasMoons;          // Does the celestial body have moons?
+    public float mass;             // Mass of the celestial body in kg
+    public float massEarth;        // Mass of the celestial body in Earth masses
+    public float radius;           // Mean radius of the celestial body in km
+    public float radiusEarth;      // Mean radius of the celestial body in Earth radii
+    public float apoapsis;         // Apoapsis of the celestial body's orbit in AU
+    public float periapsis;        // Periapsis of the celestial body's orbit in AU
+    public float argOfPeriapsis;   // Argument of periapsis in degrees
+    public float semiMajorAxis;    // Semi-major axis of the celestial body's orbit in AU
+    public float inclination;      // Inclination of the celestial body's orbit in degrees
+    public float orbitalPeriod;    // Sidereal orbital period in days
+    public float rotationalPeriod; // Sidereal rotational period in days
+    public float axialTilt;        // Axial tilt of the celestial body in degrees
+    public float absoluteMagnitude;// Absolute magnitude
+    public float averageDensity;   // Average density of the celestial body in g/cm^3
+    public float surfaceTemp;      // Surface temperature of the celestial body in K
+    public float surfaceGravity;   // Surface gravity of the celestial body in g
+    public int hasMoons;           // Number of moons
+    public Vector3 pos;            // Position vector
+    public Vector3 vel;            // Velocity vector
+    public Vector3 acc;            // Acceleration vector
 
     // Set properties based on data from the CSV file
-    public void SetPropertiesFromData(string mass, string massEarth, string radius, string radiusEarth,
-                                      string apoapsis, string periapsis, string argOfPeriapsis,
-                                      string semiMajorAxis, string inclination, string orbitalPeriod,
-                                      string rotationalPeriod, string axialTilt, string absoluteMagnitude,
-                                      string averageDensity, string surfaceTemp, string surfaceGravity,
-                                      string hasMoons)
+    public void SetPropertiesFromData(int id, 
+                                      float mass, float massEarth, float radius, float radiusEarth,
+                                      float apoapsis, float periapsis, float argOfPeriapsis,
+                                      float semiMajorAxis, float inclination, float orbitalPeriod,
+                                      float rotationalPeriod, float axialTilt, float absoluteMagnitude,
+                                      float averageDensity, float surfaceTemp, float surfaceGravity,
+                                      int hasMoons)
     {
+        this.id = id;
         this.mass = mass;
         this.massEarth = massEarth;
         this.radius = radius;
@@ -51,6 +57,9 @@ public class CelestialBody : MonoBehaviour
         this.hasMoons = hasMoons;
     }
 
-    // Add methods here to simulate the physics
-    
+    public void calculate_initial_position_velocity()
+    {
+        // This website goes the other way, but it might work to reverse the process
+        // https://phys.libretexts.org/Bookshelves/Astronomy__Cosmology/Celestial_Mechanics_(Tatum)/09%3A_The_Two_Body_Problem_in_Two_Dimensions/9.08%3A_Orbital_Elements_and_Velocity_Vector
+    }
 }
