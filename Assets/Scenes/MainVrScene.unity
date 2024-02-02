@@ -4522,6 +4522,59 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1567574269
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1567574271}
+  - component: {fileID: 1567574270}
+  m_Layer: 0
+  m_Name: UpdateToolBarValues
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1567574270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567574269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f74facbf67b545f4a8a0ccff00088e2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speedValue: {fileID: 1893428818}
+  universeTimeValue: {fileID: 497605803}
+  playerTimeValue: {fileID: 642761928}
+  pauseButton: {fileID: 989046993}
+  pauseButtonPressed: 0
+  stdButton: {fileID: 1195139249}
+  stdButtonPressed: 0
+  speedSlider: {fileID: 1166366624}
+  speedSliderValue: 0
+--- !u!4 &1567574271
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1567574269}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.17132163, y: 2.3049908, z: 0.87994194}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1975121377}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1571497185
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4985,6 +5038,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1673220845}
+  - {fileID: 1567574271}
   m_Father: {fileID: 1229581982}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1975121378
