@@ -86,6 +86,11 @@ public class SolarSystemManager : MonoBehaviour
                 CelestialBody celestialBodyScript = celestialBodyInit.GetComponent<CelestialBody>();
             }
         }
+        // For when the data gets added to the csv file
+        // foreach (CelestialBody celestialBody in celestialBodiesList)
+        // {
+        //     celestialBody.calculateInitialPositionVelocity();
+        // }
     }
 
     private void PopulatePrefabPathsDictionary()
@@ -106,7 +111,7 @@ public class SolarSystemManager : MonoBehaviour
     {
         foreach (CelestialBody celestialBody in celestialBodiesList)
         {
-            celestialBody.calculate_initial_position_velocity();
+            celestialBody.calculateInitialPositionVelocity();
         }
     }
 

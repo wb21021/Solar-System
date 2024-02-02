@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CelestialBody : MonoBehaviour
@@ -14,8 +16,13 @@ public class CelestialBody : MonoBehaviour
     public float apoapsis;         // Apoapsis of the celestial body's orbit in AU
     public float periapsis;        // Periapsis of the celestial body's orbit in AU
     public float argOfPeriapsis;   // Argument of periapsis in degrees
-    public float semiMajorAxis;    // Semi-major axis of the celestial body's orbit in AU
-    public float inclination;      // Inclination of the celestial body's orbit in degrees
+    public float semiMajorAxis;    // # Semi-major axis of the celestial body's orbit in AU #
+    public float inclination;      // # Inclination of the celestial body's orbit in degrees #
+    public float eccentricity;     // # Eccentricity of the celestial body's orbit #
+    public float longditudeOfAscendingNode; // # Longitude of the ascending node in degrees #
+    public float argOfPerihelion;  // # Argument of periapsis in degrees #
+    public float trueAnomaly;      // # Mean anomaly in degrees #
+    public float gravParameter;      // # Mean anomaly in degrees #
     public float orbitalPeriod;    // Sidereal orbital period in days
     public float rotationalPeriod; // Sidereal rotational period in days
     public float axialTilt;        // Axial tilt of the celestial body in degrees
@@ -57,9 +64,32 @@ public class CelestialBody : MonoBehaviour
         this.hasMoons = hasMoons;
     }
 
-    public void calculate_initial_position_velocity()
+    public void calculateInitialPositionVelocity()
     {
         // This website goes the other way, but it might work to reverse the process
         // https://phys.libretexts.org/Bookshelves/Astronomy__Cosmology/Celestial_Mechanics_(Tatum)/09%3A_The_Two_Body_Problem_in_Two_Dimensions/9.08%3A_Orbital_Elements_and_Velocity_Vector
+        // a later chapter gives the formulas for the position and velocity vectors in cartesian coordinates
+
+        // Convert all the angles to radians
+        float a = semiMajorAxis;
+        float e = eccentricity;
+        float i = Mathf.Deg2Rad * inclination;
+        float Omega = Mathf.Deg2Rad * longditudeOfAscendingNode;
+        float w = Mathf.Deg2Rad * argOfPerihelion;
+        float nu = Mathf.Deg2Rad * trueAnomaly;
+        float mu = gravParameter;
+
+        float distance = a * (1 - e * e) / (1 + e * Mathf.Cos(nu));
+        float speed = Mathf.Sqrt(mu * a * (1 - e * e)) / distance;
+        
+        // position vector in cartesian coordinates
+        pos.x = distance * ( Mathf.Cos(Omega) * Mathf.Cos(w + nu) - Mathf.Sin(Omega) * Mathf.Sin(w + nu) * Mathf.Cos(i) );
+        pos.y = distance * ( Mathf.Sin(Omega) * Mathf.Cos(w + nu) + Mathf.Cos(Omega) * Mathf.Sin(w + nu) * Mathf.Cos(i) );
+        pos.z = distance * ( Mathf.Sin(i) * Mathf.Sin(w + nu) );
+
+        // velocity vector in cartesian coordinates
+        vel.x = speed * (       Mathf.Cos(Omega)*Mathf.Sin(w+nu)      +       Mathf.Sin(Omega)*Mathf.Cos(w+nu)*Mathf.Cos(i)     );
+        vel.y = speed * (       Mathf.Sin(Omega)*Mathf.Sin(w+nu)      -       Mathf.Cos(Omega)*Mathf.Cos(w+nu)*Mathf.Cos(i)     );
+        vel.z = speed * (       Mathf.Cos(w+nu)*Mathf.Sin(i)           );
     }
 }
