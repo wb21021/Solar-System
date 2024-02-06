@@ -31,6 +31,9 @@ public class CelestialBody : MonoBehaviour
     public float surfaceTemp;      // Surface temperature of the celestial body in K
     public float surfaceGravity;   // Surface gravity of the celestial body in g
     public int hasMoons;           // Number of moons
+    public float ringRadius;       // Ring radius
+    public float ringDepth;        // Ring depth
+    public float massOfCentralBody; // Mass of the central body
     public Vector3 pos;            // Position vector
     public Vector3 vel;            // Velocity vector
     public Vector3 acc;            // Acceleration vector
@@ -42,7 +45,9 @@ public class CelestialBody : MonoBehaviour
                                       float semiMajorAxis, float inclination, float orbitalPeriod,
                                       float rotationalPeriod, float axialTilt, float absoluteMagnitude,
                                       float averageDensity, float surfaceTemp, float surfaceGravity,
-                                      int hasMoons)
+                                      int hasMoons, float ringRadius, float ringDepth,
+                                      float eccentricity, float longditudeOfAscendingNode, 
+                                      float argOfPerihelion, float trueAnomaly, float massOfCentralBody)
     {
         this.id = id;
         this.mass = mass;
@@ -62,22 +67,33 @@ public class CelestialBody : MonoBehaviour
         this.surfaceTemp = surfaceTemp;
         this.surfaceGravity = surfaceGravity;
         this.hasMoons = hasMoons;
+        this.ringRadius = ringRadius;
+        this.ringDepth = ringDepth;
+        this.eccentricity = eccentricity;
+        this.longditudeOfAscendingNode = longditudeOfAscendingNode;
+        this.argOfPerihelion = argOfPerihelion;
+        this.trueAnomaly = trueAnomaly;
+        this.massOfCentralBody = massOfCentralBody;
+        gravParameter = 6.67430e-11f * (mass + massOfCentralBody);
     }
 
-    public void calculateInitialPositionVelocity()
+    public void CalculateInitialPositionVelocity()
     {
+        float G = 6.67430e-11f; // Gravitational constant
+
         // This website goes the other way, but it might work to reverse the process
         // https://phys.libretexts.org/Bookshelves/Astronomy__Cosmology/Celestial_Mechanics_(Tatum)/09%3A_The_Two_Body_Problem_in_Two_Dimensions/9.08%3A_Orbital_Elements_and_Velocity_Vector
         // a later chapter gives the formulas for the position and velocity vectors in cartesian coordinates
 
-        // Convert all the angles to radians
-        float a = semiMajorAxis;
+        // convert to meters
+        float a = semiMajorAxis * 1.496e11f; // times by 1.496e11 to convert from AU to meters
         float e = eccentricity;
+        // Convert all the angles to radians
         float i = Mathf.Deg2Rad * inclination;
         float Omega = Mathf.Deg2Rad * longditudeOfAscendingNode;
         float w = Mathf.Deg2Rad * argOfPerihelion;
         float nu = Mathf.Deg2Rad * trueAnomaly;
-        float mu = gravParameter;
+        float mu = G * (mass + massOfCentralBody); // Gravitational parameter
 
         float distance = a * (1 - e * e) / (1 + e * Mathf.Cos(nu));
         float speed = Mathf.Sqrt(mu * a * (1 - e * e)) / distance;
@@ -88,8 +104,8 @@ public class CelestialBody : MonoBehaviour
         pos.z = distance * ( Mathf.Sin(i) * Mathf.Sin(w + nu) );
 
         // velocity vector in cartesian coordinates
-        vel.x = speed * (       Mathf.Cos(Omega)*Mathf.Sin(w+nu)      +       Mathf.Sin(Omega)*Mathf.Cos(w+nu)*Mathf.Cos(i)     );
-        vel.y = speed * (       Mathf.Sin(Omega)*Mathf.Sin(w+nu)      -       Mathf.Cos(Omega)*Mathf.Cos(w+nu)*Mathf.Cos(i)     );
-        vel.z = speed * (       Mathf.Cos(w+nu)*Mathf.Sin(i)           );
+        vel.x = speed * ( Mathf.Cos(Omega) * Mathf.Sin(w+nu) + Mathf.Sin(Omega) * Mathf.Cos(w+nu) * Mathf.Cos(i) );
+        vel.y = speed * ( Mathf.Sin(Omega) * Mathf.Sin(w+nu) - Mathf.Cos(Omega) * Mathf.Cos(w+nu) * Mathf.Cos(i) );
+        vel.z = speed * ( Mathf.Cos(w+nu) * Mathf.Sin(i) );
     }
 }

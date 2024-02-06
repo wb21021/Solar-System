@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class SolarSystemManager : MonoBehaviour
@@ -17,6 +20,7 @@ public class SolarSystemManager : MonoBehaviour
 
     // colection of all the celestial bodies
     public List<CelestialBody> celestialBodiesList = new List<CelestialBody>();
+
 
     void Start()
     {
@@ -71,7 +75,14 @@ public class SolarSystemManager : MonoBehaviour
                     float.Parse(values[15]), // Average density of the celestial body in g/cm^3
                     float.Parse(values[16]), // Surface temperature of the celestial body in K
                     float.Parse(values[17]), // Surface gravity of the celestial body in g
-                    int.Parse(values[18])    // Moons (number of moons)
+                    int.Parse(values[18]),   // Moons (number of moons)
+                    float.Parse(values[19]), // Ring radius
+                    float.Parse(values[20]), // Ring depth
+                    float.Parse(values[21]), // Eccentricity of the celestial body's orbit
+                    float.Parse(values[22]), // Longitude of the ascending node in degrees
+                    float.Parse(values[23]), // Argument of Perihelion in degrees
+                    float.Parse(values[24]),  // True Anomaly in degrees
+                    float.Parse(values[25])  // Mass of the central body
                 );
 
                 celestialBodyScript.bodyName = celestialBodyName;
@@ -86,10 +97,14 @@ public class SolarSystemManager : MonoBehaviour
                 CelestialBody celestialBodyScript = celestialBodyInit.GetComponent<CelestialBody>();
             }
         }
-        // For when the data gets added to the csv file
+        // Set the initial positions and velocities of the celestial bodies
+        InitialiseCelestialBodies();
+
+        // Use the position components to position the assests and scale the in the scene
         // foreach (CelestialBody celestialBody in celestialBodiesList)
         // {
-        //     celestialBody.calculateInitialPositionVelocity();
+        //     celestialBody.transform.position = celestialBody.pos;
+        //     celestialBody.transform.localScale = new Vector3(celestialBody.radius, celestialBody.radius, celestialBody.radius);
         // }
     }
 
@@ -111,45 +126,49 @@ public class SolarSystemManager : MonoBehaviour
     {
         foreach (CelestialBody celestialBody in celestialBodiesList)
         {
-            celestialBody.calculateInitialPositionVelocity();
+            celestialBody.CalculateInitialPositionVelocity();
         }
     }
 
     private void UpdateGravitationalAcceleration(CelestialBody celestialBody)
-    {   
+    {
         celestialBody.acc = Vector3.zero;
+        Vector3 tempAcc = Vector3.zero;
 
         foreach (CelestialBody otherCelestialBody in celestialBodiesList)
         {
             if (celestialBody != otherCelestialBody)
             {
+                // Displacment vector from the current celestial body to the other celestial body
                 Vector3 r = otherCelestialBody.pos - celestialBody.pos;
-                float distance = r.magnitude;
 
-                float force = (6.67430f * Mathf.Pow(10, -11) * otherCelestialBody.mass) / Mathf.Pow(distance, 2);
-                Vector3 accFromOther = r.normalized * force;
-                celestialBody.acc += accFromOther;
+                // Gravitational force between the two celestial bodies (factored out G and mass of body to save calculations)
+                tempAcc +=  r.normalized * otherCelestialBody.mass / Mathf.Pow(r.magnitude, 2);
             }
         }
+        // Multiply by G to get the acceleration
+        celestialBody.acc = 6.67430e-11f * tempAcc;
     }
 
-    public void VerletUpdateCelestialBodies()
+    private void VerletUpdateCelestialBodies()
     {
+        float dt = Time.fixedDeltaTime;
+
         foreach (CelestialBody celestialBody in celestialBodiesList)
         {
-            // verlet integration
+            // Verlet Integration
 
             // half step velocity
-            celestialBody.vel = celestialBody.vel + ( 0.5f * celestialBody.acc * Time.fixedDeltaTime );
+            celestialBody.vel += 0.5f * dt * celestialBody.acc;
 
             // full step position (using half step velocity)
-            celestialBody.pos = celestialBody.pos + ( celestialBody.vel * Time.fixedDeltaTime );
+            celestialBody.pos += celestialBody.vel * dt;
 
             // update acceleration (using new position)
             UpdateGravitationalAcceleration(celestialBody);
 
             // half step velocity (using updated acceleration)
-            celestialBody.vel = celestialBody.vel + ( 0.5f * celestialBody.acc * Time.fixedDeltaTime );
+            celestialBody.vel += 0.5f * dt * celestialBody.acc;
         }
     }
 }
