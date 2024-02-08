@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 
 public class SolarSystemManager : MonoBehaviour
@@ -15,6 +18,7 @@ public class SolarSystemManager : MonoBehaviour
     [SerializeField]
     public string prefabsFolder;
 
+    public TMP_Text PlanetNameText;
     void Start()
     {
         // Populate the dictionary with celestial body names and prefab paths
@@ -49,6 +53,9 @@ public class SolarSystemManager : MonoBehaviour
                 celestialBodyInit.SetActive(true);
                 CelestialBody celestialBodyScript = celestialBodyInit.GetComponent<CelestialBody>();
 
+                
+
+
                 // Set properties based on CSV data
                 celestialBodyScript.SetPropertiesFromData(
                     values[2], // Mass of the celestial body in kg
@@ -71,6 +78,16 @@ public class SolarSystemManager : MonoBehaviour
                 );
 
                 celestialBodyScript.bodyName = celestialBodyName;
+
+                //Added by Iris
+                //Create text box over planet
+                GameObject hoverUIPrefab = Resources.Load<GameObject>($"UIElements/hoverUIpanel");
+                GameObject hoveringUIbox = Instantiate(hoverUIPrefab);
+                hoveringUIbox.transform.SetParent(celestialBodyInit.transform);
+                hoveringUIbox.transform.localPosition = new Vector3(0, 2, 0);
+                hoveringUIbox.GetComponentInChildren<TMP_Text>().text = celestialBodyName;
+                hoveringUIbox.SetActive(true);
+
             }
             else
             {
