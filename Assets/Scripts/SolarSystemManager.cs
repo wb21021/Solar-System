@@ -10,17 +10,15 @@ public class SolarSystemManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject defaultCelestialBodyPrefab;  // Default prefab to use if no match is found
-    [SerializeField]
     private Dictionary<string, string> celestialBodyPrefabPaths = new Dictionary<string, string>();
-
-    [SerializeField]
     public string dataFilePath;
-    [SerializeField]
     public string prefabsFolder;
 
     // colection of all the celestial bodies
     public List<CelestialBody> celestialBodiesList = new List<CelestialBody>();
 
+    public float scaleDist;
+    public float scaleSize;
 
     void Start()
     {
@@ -57,6 +55,10 @@ public class SolarSystemManager : MonoBehaviour
                 CelestialBody celestialBodyScript = celestialBodyInit.GetComponent<CelestialBody>();
                 
                 // Set properties based on CSV data
+                float centralBodyMass;
+                if (!float.TryParse(values[24], out centralBodyMass)){
+                    centralBodyMass = 0;
+                }
                 celestialBodyScript.SetPropertiesFromData(
                     i, // ID of the celestial body
                     float.Parse(values[2]), // Mass of the celestial body in kg
@@ -80,9 +82,8 @@ public class SolarSystemManager : MonoBehaviour
                     float.Parse(values[20]), // Ring depth
                     float.Parse(values[21]), // Eccentricity of the celestial body's orbit
                     float.Parse(values[22]), // Longitude of the ascending node in degrees
-                    float.Parse(values[23]), // Argument of Perihelion in degrees
-                    float.Parse(values[24]),  // True Anomaly in degrees
-                    float.Parse(values[25])  // Mass of the central body
+                    float.Parse(values[23]),  // True Anomaly in degrees
+                    centralBodyMass  // Mass of the central body
                 );
 
                 celestialBodyScript.bodyName = celestialBodyName;

@@ -38,6 +38,14 @@ public class CelestialBody : MonoBehaviour
     public Vector3 vel;            // Velocity vector
     public Vector3 acc;            // Acceleration vector
 
+
+    private Transform transform; // for position
+    private GameObject solarSystemManager;
+    private SolarSystemManager solarScript;
+    private float scaleDist;
+    private float scaleSize;
+    //private Rigidbody rigidbody; // for velocity
+
     // Set properties based on data from the CSV file
     public void SetPropertiesFromData(int id, 
                                       float mass, float massEarth, float radius, float radiusEarth,
@@ -47,7 +55,7 @@ public class CelestialBody : MonoBehaviour
                                       float averageDensity, float surfaceTemp, float surfaceGravity,
                                       int hasMoons, float ringRadius, float ringDepth,
                                       float eccentricity, float longditudeOfAscendingNode, 
-                                      float argOfPerihelion, float trueAnomaly, float massOfCentralBody)
+                                      float trueAnomaly, float massOfCentralBody)
     {
         this.id = id;
         this.mass = mass;
@@ -71,7 +79,6 @@ public class CelestialBody : MonoBehaviour
         this.ringDepth = ringDepth;
         this.eccentricity = eccentricity;
         this.longditudeOfAscendingNode = longditudeOfAscendingNode;
-        this.argOfPerihelion = argOfPerihelion;
         this.trueAnomaly = trueAnomaly;
         this.massOfCentralBody = massOfCentralBody;
         gravParameter = 6.67430e-11f * (mass + massOfCentralBody);
@@ -107,5 +114,23 @@ public class CelestialBody : MonoBehaviour
         vel.x = speed * ( Mathf.Cos(Omega) * Mathf.Sin(w+nu) + Mathf.Sin(Omega) * Mathf.Cos(w+nu) * Mathf.Cos(i) );
         vel.y = speed * ( Mathf.Sin(Omega) * Mathf.Sin(w+nu) - Mathf.Cos(Omega) * Mathf.Cos(w+nu) * Mathf.Cos(i) );
         vel.z = speed * ( Mathf.Cos(w+nu) * Mathf.Sin(i) );
+    }
+
+    void Start()
+    {
+        solarSystemManager = GameObject.Find("Solar System Manager");
+        solarScript = solarSystemManager.GetComponent<SolarSystemManager>();
+        scaleDist = solarScript.scaleDist > 0 ? solarScript.scaleDist : 1;
+        scaleSize = solarScript.scaleSize > 0 ? solarScript.scaleSize : 1;
+
+        transform = GetComponent<Transform>();
+        transform.localScale = new Vector3(radius/scaleSize, radius/scaleSize, radius/scaleSize);
+    }
+
+    void FixedUpdate()
+    {
+        scaleDist = solarScript.scaleDist > 0 ? solarScript.scaleDist : 1;
+        scaleSize = solarScript.scaleSize > 0 ? solarScript.scaleSize : 1;
+        transform.position = pos/scaleDist;
     }
 }
