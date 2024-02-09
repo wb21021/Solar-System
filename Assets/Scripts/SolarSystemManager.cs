@@ -79,7 +79,21 @@ public class SolarSystemManager : MonoBehaviour
 
                 celestialBodyScript.bodyName = celestialBodyName;
 
-                //Added by Iris
+                //Added by Iris ---------------------------------------------------
+
+                //Set tag so that object can be highlighted
+                celestialBodyInit.tag = "interactable";
+
+
+                //Create small sphere within the celestial body, so that if the body shrinks down too small,
+                //this sphere will always be visible.
+                GameObject MinimumSizeBodyPrefab = Resources.Load<GameObject>($"UIElements/MinimumSizeBody");
+                GameObject MinimumSizeBody = Instantiate(MinimumSizeBodyPrefab);
+                MinimumSizeBody.tag = "interactable";
+                MinimumSizeBody.transform.SetParent(celestialBodyInit.transform);
+                MinimumSizeBody.transform.localPosition = new Vector3(0, 0, 0);
+
+
                 //Create text box over planet
                 GameObject hoverUIPrefab = Resources.Load<GameObject>($"UIElements/hoverUIpanel");
                 GameObject hoveringUIbox = Instantiate(hoverUIPrefab);
@@ -88,6 +102,7 @@ public class SolarSystemManager : MonoBehaviour
                 hoveringUIbox.GetComponentInChildren<TMP_Text>().text = celestialBodyName;
                 hoveringUIbox.SetActive(true);
 
+                //------------------------------------------------------------------
             }
             else
             {
