@@ -2,7 +2,7 @@ using UnityEngine;
 
 
 //defines the class that can be attacjed to GameObjects in the Unity Scene
-public class CelestialBody : MonoBehaviour
+public class Doppler : MonoBehaviour
 {
     public Vector3 velocity;
     public GameObject observer;
