@@ -23,12 +23,6 @@ public class SolarSystemManager : MonoBehaviour
     public float scaleDist;
     public float scaleSize;
 
-    // colection of all the celestial bodies
-    public List<CelestialBody> celestialBodiesList = new List<CelestialBody>();
-
-    public float scaleDist;
-    public float scaleSize;
-
     public TMP_Text PlanetNameText;
 
     void Start()
