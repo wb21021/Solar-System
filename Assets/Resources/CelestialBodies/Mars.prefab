@@ -4934,9 +4934,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1288793558353234}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a51aba93079a9e43940cfd904455462, type: 3}
+  m_Script: {fileID: 11500000, guid: 3bbf24cc1128845edabee2d67eac5510, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   bodyName: 
   mass: 0
   massEarth: 0
@@ -4947,6 +4948,11 @@ MonoBehaviour:
   argOfPeriapsis: 0
   semiMajorAxis: 0
   inclination: 0
+  eccentricity: 0
+  longditudeOfAscendingNode: 0
+  argOfPerihelion: 0
+  trueAnomaly: 0
+  gravParameter: 0
   orbitalPeriod: 0
   rotationalPeriod: 0
   axialTilt: 0
@@ -4955,6 +4961,12 @@ MonoBehaviour:
   surfaceTemp: 0
   surfaceGravity: 0
   hasMoons: 0
+  ringRadius: 0
+  ringDepth: 0
+  massOfCentralBody: 0
+  pos: {x: 0, y: 0, z: 0}
+  vel: {x: 0, y: 0, z: 0}
+  acc: {x: 0, y: 0, z: 0}
 --- !u!1 &1299526964348990
 GameObject:
   m_ObjectHideFlags: 0

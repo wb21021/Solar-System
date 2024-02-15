@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 33217572684835212}
   - component: {fileID: 135055755564151750}
   - component: {fileID: 23276179730521966}
-  - component: {fileID: 7768866620430042470}
+  - component: {fileID: 1278414868053861311}
   m_Layer: 0
   m_Name: Sun Sphere
   m_TagString: Untagged
@@ -108,7 +108,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7768866620430042470
+--- !u!114 &1278414868053861311
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -117,9 +117,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1066320961419670}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a51aba93079a9e43940cfd904455462, type: 3}
+  m_Script: {fileID: 11500000, guid: 3bbf24cc1128845edabee2d67eac5510, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: 0
   bodyName: 
   mass: 0
   massEarth: 0
@@ -130,6 +131,11 @@ MonoBehaviour:
   argOfPeriapsis: 0
   semiMajorAxis: 0
   inclination: 0
+  eccentricity: 0
+  longditudeOfAscendingNode: 0
+  argOfPerihelion: 0
+  trueAnomaly: 0
+  gravParameter: 0
   orbitalPeriod: 0
   rotationalPeriod: 0
   axialTilt: 0
@@ -138,6 +144,12 @@ MonoBehaviour:
   surfaceTemp: 0
   surfaceGravity: 0
   hasMoons: 0
+  ringRadius: 0
+  ringDepth: 0
+  massOfCentralBody: 0
+  pos: {x: 0, y: 0, z: 0}
+  vel: {x: 0, y: 0, z: 0}
+  acc: {x: 0, y: 0, z: 0}
 --- !u!1 &1708399313684614
 GameObject:
   m_ObjectHideFlags: 0
