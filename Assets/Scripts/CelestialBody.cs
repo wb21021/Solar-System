@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -40,7 +41,10 @@ public class CelestialBody : MonoBehaviour
 
 
     private Transform transform; // for position
+
     private GameObject solarSystemManager;
+    private GameObject InfoBar;
+
     private SolarSystemManager solarScript;
     private float scaleDist;
     private float scaleSize;
@@ -119,6 +123,9 @@ public class CelestialBody : MonoBehaviour
     void Start()
     {
         solarSystemManager = GameObject.Find("Solar System Manager");
+
+        InfoBar = GameObject.Find("InfoMenu");
+
         solarScript = solarSystemManager.GetComponent<SolarSystemManager>();
         scaleDist = solarScript.scaleDist > 0 ? solarScript.scaleDist : 1;
         scaleSize = solarScript.scaleSize > 0 ? solarScript.scaleSize : 1;
@@ -132,5 +139,16 @@ public class CelestialBody : MonoBehaviour
         scaleDist = solarScript.scaleDist > 0 ? solarScript.scaleDist : 1;
         scaleSize = solarScript.scaleSize > 0 ? solarScript.scaleSize : 1;
         transform.position = pos/scaleDist;
+    }
+
+    public void ShowInfoBox()
+    {
+        Debug.Log("RUNNIGN");
+
+        
+        InfoBar.SetActive(true);
+
+        string total_string = "Name: " + bodyName + "\nMass: " + mass + "kg";
+        InfoBar.GetComponentInChildren<TMP_Text>().text = total_string;
     }
 }
