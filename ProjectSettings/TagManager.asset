@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - interactable
+  - Right Hand
+  - Left Hand
+  - TrackingObject
+  - Actors
   layers:
   - Default
   - TransparentFX

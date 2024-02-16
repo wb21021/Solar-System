@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEditor.Rendering;
 using UnityEngine;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class SolarSystemManager : MonoBehaviour
 {
@@ -101,6 +102,7 @@ public class SolarSystemManager : MonoBehaviour
                 celestialBodyInit.tag = "interactable";
 
 
+             
                 //Create small sphere within the celestial body, so that if the body shrinks down too small,
                 //this sphere will always be visible.
                 GameObject MinimumSizeBodyPrefab = Resources.Load<GameObject>($"UIElements/MinimumSizeBody");
@@ -117,6 +119,8 @@ public class SolarSystemManager : MonoBehaviour
                 hoveringUIbox.transform.localPosition = new Vector3(0, 2, 0);
                 hoveringUIbox.GetComponentInChildren<TMP_Text>().text = celestialBodyName;
                 hoveringUIbox.SetActive(true);
+
+                
 
                 //------------------------------------------------------------------
             }
