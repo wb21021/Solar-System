@@ -1,6 +1,22 @@
 using UnityEngine;
 
 
+// class which assigns the observer variable to the main camera 
+public class AssignObserverToMainCamera : MonoBehaviour
+{
+    public Doppler dopplerScript;
+
+    void Start()
+    {
+        // Find the main camera in the scene
+        GameObject mainCamera = Camera.main.gameObject;
+
+        // Assign the main camera as the observer in the Doppler script
+        dopplerScript.observer = mainCamera;
+    }
+}
+
+
 //defines the class that can be attacjed to GameObjects in the Unity Scene
 public class Doppler : MonoBehaviour
 {
