@@ -9,7 +9,7 @@ using System;
 //defines the class that can be attacjed to GameObjects in the Unity Scene
 public class Doppler : MonoBehaviour
 {
-    private GameObject player;
+   
     public GameObject body;
 
     private Color baseColor;
@@ -24,7 +24,7 @@ public class Doppler : MonoBehaviour
     void Start()
     {
 
-        player = GameObject.Find("Main Camera");
+        
         
         bodyLight = body.GetComponent<Light>();
         bodyLight.color = baseColor;
@@ -38,21 +38,18 @@ public class Doppler : MonoBehaviour
 
         //Find positions and velocities of both the player and the body
 
-        Vector3 playerPos = player.transform.position;
-        Vector3 playerVel = (playerPos - lastplayerPos) / Time.deltaTime;
+        Vector3 playerPos = playerPos;
+        Vector3 playerVel = playerVel;
 
-        lastplayerPos = playerPos;
-        
-        Vector3 bodyPos = body.transform.position;
-        Vector3 bodyVel = (bodyPos - lastbodyPos) / Time.deltaTime;
+        Vector3 bodyPos = bodyPos;
+        Vector3 bodyVel = bodyVel;
 
-        lastbodyPos = bodyPos;
 
         //--------------------------------------------------------
 
-        Vector3 observerDir = player.transform.position - body.transform.position;
+        Vector3 observerDir = playerPos - bodyPos;
 
-        Vector3 velocity = new Vector3(10,10,10); //TEMPORARY, PLEASE REMOVE
+        Vector3 velocity = playerVel;
 
         float relativeVelocity = Vector3.Dot(velocity, observerDir.normalized);
 
