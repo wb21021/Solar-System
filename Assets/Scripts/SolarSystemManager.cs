@@ -21,6 +21,9 @@ public class SolarSystemManager : MonoBehaviour
     // colection of all the celestial bodies
     public List<CelestialBody> celestialBodiesList = new List<CelestialBody>();
 
+    // Using the plane size as the maximum size possible for the solar system
+    public GameObject plane;
+
     public float scaleDist;
     public float scaleSize;
 
@@ -141,6 +144,8 @@ public class SolarSystemManager : MonoBehaviour
         //     celestialBody.transform.position = celestialBody.pos;
         //     celestialBody.transform.localScale = new Vector3(celestialBody.radius, celestialBody.radius, celestialBody.radius);
         // }
+
+
     }
 
     private void PopulatePrefabPathsDictionary()
@@ -159,10 +164,30 @@ public class SolarSystemManager : MonoBehaviour
 
     public void InitialiseCelestialBodies()
     {
+        float distFromSun = 0;
+        float newDistFromSun = 0;
+        float largestScale = 0;
+        float newLargestScale = 0;
+        Vector3 planeScale2D = plane.transform.localScale;
+        Vector3 planeScale = new Vector3(planeScale2D.x, planeScale2D.x,planeScale2D.z);
+        
         foreach (CelestialBody celestialBody in celestialBodiesList)
         {
             celestialBody.CalculateInitialPositionVelocity();
+            newDistFromSun = celestialBody.DistanceFromSun();
+            if (newDistFromSun > distFromSun)
+            {
+                distFromSun = newDistFromSun;
+            }
+            newLargestScale = new Vector3(celestialBody.radius, celestialBody.radius, celestialBody.radius).magnitude;
+            if (newLargestScale > largestScale)
+            {
+                largestScale = newLargestScale;
+            }
         }
+        scaleDist = planeScale.magnitude/distFromSun;
+        Debug.Log(largestScale);
+        scaleSize = (planeScale.magnitude*0.01f)/largestScale;
     }
 
     private void UpdateGravitationalAcceleration(CelestialBody celestialBody)

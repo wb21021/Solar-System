@@ -88,6 +88,11 @@ public class CelestialBody : MonoBehaviour
         gravParameter = 6.67430e-11f * (mass + massOfCentralBody);
     }
 
+    public float DistanceFromSun()
+    {
+        return Mathf.Sqrt(pos.x*pos.x + pos.y*pos.y + pos.z*pos.z);
+    }
+
     public void CalculateInitialPositionVelocity()
     {
         float G = 6.67430e-11f; // Gravitational constant
@@ -131,14 +136,14 @@ public class CelestialBody : MonoBehaviour
         scaleSize = solarScript.scaleSize > 0 ? solarScript.scaleSize : 1;
 
         transform = GetComponent<Transform>();
-        transform.localScale = new Vector3(radius/scaleSize, radius/scaleSize, radius/scaleSize);
+        transform.localScale = new Vector3(radius*scaleSize, radius*scaleSize, radius*scaleSize);
     }
 
     void FixedUpdate()
     {
         scaleDist = solarScript.scaleDist > 0 ? solarScript.scaleDist : 1;
         scaleSize = solarScript.scaleSize > 0 ? solarScript.scaleSize : 1;
-        transform.position = pos/scaleDist;
+        transform.position = pos*scaleDist;
     }
 
     public void ShowInfoBox()
