@@ -35,6 +35,7 @@ public class CelestialBody : MonoBehaviour
     public float ringRadius;       // Ring radius
     public float ringDepth;        // Ring depth
     public float massOfCentralBody; // Mass of the central body
+    public int isMoon;            // if not a moon = 0, if a moon = index of the planet it orbits
     public Vector3 pos;            // Position vector
     public Vector3 vel;            // Velocity vector
     public Vector3 acc;            // Acceleration vector
@@ -86,6 +87,7 @@ public class CelestialBody : MonoBehaviour
         this.trueAnomaly = trueAnomaly;
         this.massOfCentralBody = massOfCentralBody;
         gravParameter = 6.67430e-11f * (mass + massOfCentralBody);
+        isMoon = 0;  // default to not a moon
     }
 
     public float DistanceFromSun()

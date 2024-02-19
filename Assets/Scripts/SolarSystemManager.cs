@@ -9,6 +9,9 @@ using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.Rendering;
+using System.Linq.Expressions;
+using UnityEditor.MemoryProfiler;
 
 public class SolarSystemManager : MonoBehaviour
 {
@@ -185,6 +188,10 @@ public class SolarSystemManager : MonoBehaviour
                 largestScale = newLargestScale;
             }
         }
+        
+        // Offset the moons
+        offsetMoons();
+
         scaleDist = planeScale.magnitude/distFromSun;
         Debug.Log(largestScale);
         scaleSize = (planeScale.magnitude*0.01f)/largestScale;
@@ -230,6 +237,40 @@ public class SolarSystemManager : MonoBehaviour
             // half step velocity (using updated acceleration)
             celestialBody.vel += 0.5f * dt * celestialBody.acc;
         }
+    }
+
+    private void offsetMoons()
+    {
+        // Mass of the sun
+        float massOfSun = 1.99e30f; // placeholder with the mass of our sun 1.99E+30
+
+        // Updates the mass of the sun to the actual mass of the sun if it differs
+        foreach (CelestialBody celestialBody in celestialBodiesList)
+        {
+            if (celestialBody.bodyName == "Sun")
+            {
+                massOfSun = celestialBody.mass;
+            }
+        }
+
+        // Find the central body of each celestial body if it is not the sun
+        foreach (CelestialBody celestialBody in celestialBodiesList)
+        {
+            if (celestialBody.massOfCentralBody != massOfSun)
+            {
+                foreach (CelestialBody otherCelestialBody in celestialBodiesList)
+                {
+                    if (celestialBody.massOfCentralBody == otherCelestialBody.mass)
+                    {
+                        // Set the central body of the celestial body as the other celestial body
+                        celestialBody.isMoon = otherCelestialBody.id;
+                        // offset the body.
+                        celestialBody.pos = otherCelestialBody.pos;  // + new Vector3(celestialBody.semiMajorAxis, 0, 0); ???
+                    }
+                }
+            }
+        }
+
     }
 }
 
