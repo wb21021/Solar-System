@@ -132,6 +132,11 @@ namespace doubleVector3namespace
         {
             return "(" + x + ", " + y + ", " + z + ")";
         }
+        // To Vector3 (unity)
+        public UnityEngine.Vector3 ToVector3()
+        {
+            return new UnityEngine.Vector3((float)x, (float)y, (float)z);
+        }
 
 
         // add to vectors
