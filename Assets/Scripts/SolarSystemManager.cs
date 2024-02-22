@@ -12,6 +12,10 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.Rendering;
 using System.Linq.Expressions;
 using UnityEditor.MemoryProfiler;
+using UnityEngine.InputSystem.Utilities;
+using doubleVector3namespace;
+using System.Data.Common;
+
 
 public class SolarSystemManager : MonoBehaviour
 {
@@ -204,13 +208,16 @@ public class SolarSystemManager : MonoBehaviour
 
         foreach (CelestialBody otherCelestialBody in celestialBodiesList)
         {
-            if (celestialBody != otherCelestialBody)
+            if (celestialBody.id != otherCelestialBody.id)
             {
                 // Displacment vector from the current celestial body to the other celestial body
                 Vector3 r = otherCelestialBody.pos - celestialBody.pos;
 
-                // Gravitational force between the two celestial bodies (factored out G and mass of body to save calculations)
-                tempAcc +=  r.normalized * otherCelestialBody.mass / Mathf.Pow(r.magnitude, 2);
+                if (r.magnitude != 0.0f)
+                {
+                    // Gravitational force between the two celestial bodies (factored out G and mass of body to save calculations)
+                    tempAcc +=  r.normalized * otherCelestialBody.mass / Mathf.Pow(r.magnitude, 2);
+                }
             }
         }
         // Multiply by G to get the acceleration

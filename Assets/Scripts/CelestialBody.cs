@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using doubleVector3namespace;
 
 public class CelestialBody : MonoBehaviour
 {
@@ -37,8 +38,11 @@ public class CelestialBody : MonoBehaviour
     public float massOfCentralBody; // Mass of the central body
     public int isMoon;            // if not a moon = 0, if a moon = index of the planet it orbits
     public Vector3 pos;            // Position vector
+    public doubleVector3 posDouble; // Position vector (using double precision)
     public Vector3 vel;            // Velocity vector
+    public Vector3 velDouble;      // Velocity vector (using double precision)
     public Vector3 acc;            // Acceleration vector
+    public Vector3 accDouble;      // Acceleration vector (using double precision)
 
 
     private Transform transform; // for position
