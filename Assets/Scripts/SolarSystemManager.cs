@@ -123,7 +123,7 @@ public class SolarSystemManager : MonoBehaviour
 
 
                 //Create text box over planet
-                GameObject hoverUIPrefab = Resources.Load<GameObject>($"UIElements/hoverUIpanel");
+                GameObject hoverUIPrefab = Resources.Load<GameObject>($"UIElements/CanvasCelestialBodyInfo");
                 GameObject hoveringUIbox = Instantiate(hoverUIPrefab);
                 hoveringUIbox.transform.SetParent(celestialBodyInit.transform);
                 hoveringUIbox.transform.localPosition = new Vector3(0, 2, 0);

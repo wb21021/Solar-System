@@ -159,7 +159,7 @@ public class CelestialBody : MonoBehaviour
         
         InfoBar.SetActive(true);
 
-        string total_string = "Name: " + bodyName + "\nMass: " + mass + "kg";
+        string total_string = "Name: " + bodyName + "\nMass: " + mass + "kg\nRadius: " + radius + "km\nPeriod: " + rotationalPeriod + " days\n" ;
         InfoBar.GetComponentInChildren<TMP_Text>().text = total_string;
     }
 }
