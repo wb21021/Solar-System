@@ -5,6 +5,10 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using doubleVector3namespace;
+using Microsoft.Unity.VisualStudio.Editor;
+using UnityEngine.UI;
+using static System.Net.Mime.MediaTypeNames;
+using UnityEngine.UIElements;
 
 public class CelestialBody : MonoBehaviour
 {
@@ -37,6 +41,8 @@ public class CelestialBody : MonoBehaviour
     public float ringDepth;        // Ring depth
     public float massOfCentralBody; // Mass of the central body
     public int isMoon;            // if not a moon = 0, if a moon = index of the planet it orbits
+    public string notes;
+    public Color descColor = Color.white;
     public Vector3 pos;            // Position vector
     public doubleVector3 posDouble; // Position vector (using double precision)
     public Vector3 vel;            // Velocity vector
@@ -64,7 +70,7 @@ public class CelestialBody : MonoBehaviour
                                       float averageDensity, float surfaceTemp, float surfaceGravity,
                                       int hasMoons, float ringRadius, float ringDepth,
                                       float eccentricity, float longditudeOfAscendingNode, 
-                                      float trueAnomaly, float massOfCentralBody)
+                                      float trueAnomaly, float massOfCentralBody, string notes, string descColor)
     {
         this.id = id;
         this.mass = mass;
@@ -90,8 +96,13 @@ public class CelestialBody : MonoBehaviour
         this.longditudeOfAscendingNode = longditudeOfAscendingNode;
         this.trueAnomaly = trueAnomaly;
         this.massOfCentralBody = massOfCentralBody;
+
+        
         gravParameter = 6.67430e-11f * (mass + massOfCentralBody);
         isMoon = 0;  // default to not a moon
+
+        this.notes = notes;
+        UnityEngine.ColorUtility.TryParseHtmlString(descColor, out this.descColor);
     }
 
     public float DistanceFromSun()
@@ -154,12 +165,26 @@ public class CelestialBody : MonoBehaviour
 
     public void ShowInfoBox()
     {
-        Debug.Log("RUNNIGN");
 
         
         InfoBar.SetActive(true);
 
-        string total_string = "Name: " + bodyName + "\nMass: " + mass + "kg\nRadius: " + radius + "km\nPeriod: " + rotationalPeriod + " days\n" ;
-        InfoBar.GetComponentInChildren<TMP_Text>().text = total_string;
+
+        InfoBar.transform.Find("NameIn").GetComponent<TMP_Text>().text = bodyName;
+
+        string total_info_string = "Mass: " + mass + "kg / " + massEarth + " Earths\n" +
+            "Radius: " + radius + "km / " + radiusEarth + " Earths\n" +
+            "Period: " + orbitalPeriod + " days\n" +
+            "Surface Temperature: " + surfaceTemp + " K";
+
+        InfoBar.transform.Find("ValueIn").GetComponent<TMP_Text>().text = total_info_string;
+
+        InfoBar.transform.Find("Scroll View/Viewport/DescriptionIn").GetComponent<TMP_Text>().text = notes;
+
+        InfoBar.transform.Find("OuterPanel").GetComponent<UnityEngine.UI.Image>().color = descColor;
+
+        InfoBar.transform.Find("DescriptionPanel").GetComponent<UnityEngine.UI.Image>().color = descColor;
+
+
     }
 }

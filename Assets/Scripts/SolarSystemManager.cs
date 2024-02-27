@@ -99,9 +99,13 @@ public class SolarSystemManager : MonoBehaviour
                     float.Parse(values[21]), // Eccentricity of the celestial body's orbit
                     float.Parse(values[22]), // Longitude of the ascending node in degrees
                     float.Parse(values[23]),  // True Anomaly in degrees
-                    centralBodyMass  // Mass of the central body
-                );
 
+                    centralBodyMass,  // Mass of the central body
+                    values[26].Replace(";",","), // Notes
+                    values[27] // Color
+
+                );
+                Debug.Log(values[26].Replace(";", ","));
                 celestialBodyScript.bodyName = celestialBodyName;
 
                 celestialBodiesList.Add(celestialBodyScript);

@@ -72,7 +72,7 @@ public class Doppler : MonoBehaviour
             shiftedColor.b -= shiftAmount;
         }
 
-        Debug.Log("SHIFTED COLOUR: " + shiftedColor.ToString());
+        //Debug.Log("SHIFTED COLOUR: " + shiftedColor.ToString());
         bodyLight.color = shiftedColor;
     }
 }
