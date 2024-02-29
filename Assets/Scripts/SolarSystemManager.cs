@@ -53,29 +53,29 @@ public class SolarSystemManager : MonoBehaviour
 
             // Determine the prefab path to use based on the name
             string prefabPath;
+            GameObject celestialBodyPrefab;
             if (celestialBodyPrefabPaths.TryGetValue(celestialBodyName, out prefabPath))
             {
                 // Load the prefab dynamically
-                GameObject celestialBodyPrefab = Resources.Load<GameObject>(prefabPath);
-
-                // If no matching prefab is found, use the default prefab
-                if (celestialBodyPrefab == null)
-                {
-                    celestialBodyPrefab = defaultCelestialBodyPrefab;
-                }
-
-                // Instantiate celestial body prefab
-                GameObject celestialBodyInit = Instantiate(celestialBodyPrefab);
-                //Debug.Log("instantiated");
-                celestialBodyInit.SetActive(true);
-                CelestialBody celestialBodyScript = celestialBodyInit.GetComponent<CelestialBody>();
+                celestialBodyPrefab = Resources.Load<GameObject>(prefabPath);
+            }
+            else
+            {
+                Debug.LogWarning($"No prefab path found for celestial body: {celestialBodyName}");
+                celestialBodyPrefab = defaultCelestialBodyPrefab;
+            }
+            // Instantiate celestial body prefab
+            GameObject celestialBodyInit = Instantiate(celestialBodyPrefab);
+            //Debug.Log("instantiated");
+            celestialBodyInit.SetActive(true);
+            CelestialBody celestialBodyScript = celestialBodyInit.GetComponent<CelestialBody>();
                 
-                // Set properties based on CSV data
-                float centralBodyMass;
-                if (!float.TryParse(values[24], out centralBodyMass)){
-                    centralBodyMass = 0;
-                }
-                celestialBodyScript.SetPropertiesFromData(
+            // Set properties based on CSV data
+            float centralBodyMass;
+            if (!float.TryParse(values[24], out centralBodyMass)){
+                centralBodyMass = 0;
+            }
+            celestialBodyScript.SetPropertiesFromData(
                     i, // ID of the celestial body
                     float.Parse(values[2]), // Mass of the celestial body in kg
                     float.Parse(values[3]), // Mass of the celestial body in Earth masses
@@ -105,46 +105,38 @@ public class SolarSystemManager : MonoBehaviour
                     values[27] // Color
 
                 );
-                //Debug.Log(values[26].Replace(";", ","));
-                celestialBodyScript.bodyName = celestialBodyName;
+            //Debug.Log(values[26].Replace(";", ","));
+            celestialBodyScript.bodyName = celestialBodyName;
 
-                celestialBodiesList.Add(celestialBodyScript);
+            celestialBodiesList.Add(celestialBodyScript);
 
-                //Added by Iris ---------------------------------------------------
+            //Added by Iris ---------------------------------------------------
 
-                //Set tag so that object can be highlighted
-                celestialBodyInit.tag = "interactable";
+            //Set tag so that object can be highlighted
+            celestialBodyInit.tag = "interactable";
 
 
              
-                //Create small sphere within the celestial body, so that if the body shrinks down too small,
-                //this sphere will always be visible.
-                GameObject MinimumSizeBodyPrefab = Resources.Load<GameObject>($"UIElements/MinimumSizeBody");
-                GameObject MinimumSizeBody = Instantiate(MinimumSizeBodyPrefab);
-                MinimumSizeBody.tag = "interactable";
-                MinimumSizeBody.transform.SetParent(celestialBodyInit.transform);
-                MinimumSizeBody.transform.localPosition = new Vector3(0, 0, 0);
+            //Create small sphere within the celestial body, so that if the body shrinks down too small,
+            //this sphere will always be visible.
+            GameObject MinimumSizeBodyPrefab = Resources.Load<GameObject>($"UIElements/MinimumSizeBody");
+            GameObject MinimumSizeBody = Instantiate(MinimumSizeBodyPrefab);
+            MinimumSizeBody.tag = "interactable";
+            MinimumSizeBody.transform.SetParent(celestialBodyInit.transform);
+            MinimumSizeBody.transform.localPosition = new Vector3(0, 0, 0);
 
 
-                //Create text box over planet
-                GameObject hoverUIPrefab = Resources.Load<GameObject>($"UIElements/CanvasCelestialBodyInfo");
-                GameObject hoveringUIbox = Instantiate(hoverUIPrefab);
-                hoveringUIbox.transform.SetParent(celestialBodyInit.transform);
-                hoveringUIbox.transform.localPosition = new Vector3(0, 2, 0);
-                hoveringUIbox.GetComponentInChildren<TMP_Text>().text = celestialBodyName;
-                hoveringUIbox.SetActive(true);
+            //Create text box over planet
+            GameObject hoverUIPrefab = Resources.Load<GameObject>($"UIElements/CanvasCelestialBodyInfo");
+            GameObject hoveringUIbox = Instantiate(hoverUIPrefab);
+            hoveringUIbox.transform.SetParent(celestialBodyInit.transform);
+            hoveringUIbox.transform.localPosition = new Vector3(0, 2, 0);
+            hoveringUIbox.GetComponentInChildren<TMP_Text>().text = celestialBodyName;
+            hoveringUIbox.SetActive(true);
 
                 
 
                 //------------------------------------------------------------------
-            }
-            else
-            {
-                Debug.LogWarning($"No prefab path found for celestial body: {celestialBodyName}");
-                GameObject celestialBodyPrefab = defaultCelestialBodyPrefab;
-                GameObject celestialBodyInit = Instantiate(celestialBodyPrefab);
-                CelestialBody celestialBodyScript = celestialBodyInit.GetComponent<CelestialBody>();
-            }
         }
         // Set the initial positions and velocities of the celestial bodies
         InitialiseCelestialBodies();
@@ -292,7 +284,7 @@ public class SolarSystemManager : MonoBehaviour
             // half step velocity (using updated acceleration)
             celestialBody.vel += 0.5f * dt * celestialBody.acc;
         }
-
+        offsetMoons();
         
     }
 }
