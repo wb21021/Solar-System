@@ -194,7 +194,7 @@ public class SolarSystemManager : MonoBehaviour
 
         scaleDist = planeScale.magnitude/distFromSun;
         //Debug.Log(largestScale);
-        scaleSize = (planeScale.magnitude*0.01f)/largestScale;
+        scaleSize = (planeScale.magnitude*0.005f)/largestScale;
     }
 
     private void UpdateGravitationalAcceleration(CelestialBody celestialBody)
