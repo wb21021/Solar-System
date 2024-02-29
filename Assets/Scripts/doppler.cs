@@ -3,8 +3,7 @@ using UnityEngine.XR;
 using System.Collections;
 using System.Collections.Generic;
 using System;
-
-
+using doubleVector3namespace;
 
 //defines the class that can be attacjed to GameObjects in the Unity Scene
 public class Doppler : MonoBehaviour
@@ -17,8 +16,24 @@ public class Doppler : MonoBehaviour
 
     private Light bodyLight;
 
-    private Vector3 lastplayerPos;
-    private Vector3 lastbodyPos;
+    private doubleVector3 lastplayerPos;
+    private doubleVector3 lastbodyPos;
+
+    public static double Clamp01(double value)
+    {
+        if (value < 0.0)
+        {
+            return 0.0;
+        }
+        else if (value > 1.0)
+        {
+            return 1.0;
+        }
+        else
+        {
+            return value;
+        }
+    }
 
     // inititialzes the bodyLight variable with the light component attached to the GameObject and sets the colour to baseColor
     void Start()
@@ -29,7 +44,7 @@ public class Doppler : MonoBehaviour
         bodyLight = body.GetComponent<Light>();
         bodyLight.color = baseColor;
 
-        Debug.Log("COLOR: " + baseColor.ToString());
+        //("COLOR: " + baseColor.ToString());
     }
 
     // called once per frame - calculates the colour shift based on the relative velocity of the body and user
@@ -38,38 +53,38 @@ public class Doppler : MonoBehaviour
 
         //Find positions and velocities of both the player and the body
 
-        Vector3 playerPos = player.transform.position;
-        Vector3 playerVel = (playerPos - lastplayerPos) / Time.deltaTime;
+        doubleVector3 playerPos = player.transform.position;
+        doubleVector3 playerVel = (playerPos - lastplayerPos) / Time.deltaTime;
 
         lastplayerPos = playerPos;
         
-        Vector3 bodyPos = body.transform.position;
-        Vector3 bodyVel = (bodyPos - lastbodyPos) / Time.deltaTime;
+        doubleVector3 bodyPos = body.transform.position;
+        doubleVector3 bodyVel = (bodyPos - lastbodyPos) / Time.deltaTime;
 
         lastbodyPos = bodyPos;
 
         //--------------------------------------------------------
 
-        Vector3 observerDir = player.transform.position - body.transform.position;
+        doubleVector3 observerDir = player.transform.position - body.transform.position;
 
-        Vector3 velocity = new Vector3(10,10,10); //TEMPORARY, PLEASE REMOVE
+        doubleVector3 velocity = new doubleVector3(10,10,10); //TEMPORARY, PLEASE REMOVE
 
-        float relativeVelocity = Vector3.Dot(velocity, observerDir.normalized);
+        double relativeVelocity = doubleVector3.Dot(velocity, observerDir.normalized);
 
         // Calculate color shift
         // clamped between 0 and 1 to ensure it doesn't exceed max shift 
-        float shiftAmount = Mathf.Clamp01(relativeVelocity / maxShift); 
+        double shiftAmount = Clamp01(relativeVelocity / maxShift); 
         Color shiftedColor = baseColor;
 
         if (relativeVelocity > 0)
         {
-            shiftedColor.r -= shiftAmount;
-            shiftedColor.b += shiftAmount;
+            shiftedColor.r -= (float)shiftAmount;
+            shiftedColor.b += (float)shiftAmount;
         }
         else
         {
-            shiftedColor.r += shiftAmount;
-            shiftedColor.b -= shiftAmount;
+            shiftedColor.r += (float)shiftAmount;
+            shiftedColor.b -= (float)shiftAmount;
         }
 
         //Debug.Log("SHIFTED COLOUR: " + shiftedColor.ToString());

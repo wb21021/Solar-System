@@ -43,12 +43,12 @@ public class CelestialBody : MonoBehaviour
     public int isMoon;            // if not a moon = 0, if a moon = index of the planet it orbits
     public string notes;
     public Color descColor = Color.white;
-    public Vector3 pos;            // Position vector
+    public doubleVector3 pos;            // Position vector
     public doubleVector3 posDouble; // Position vector (using double precision)
-    public Vector3 vel;            // Velocity vector
-    public Vector3 velDouble;      // Velocity vector (using double precision)
-    public Vector3 acc;            // Acceleration vector
-    public Vector3 accDouble;      // Acceleration vector (using double precision)
+    public doubleVector3 vel;            // Velocity vector
+    public doubleVector3 velDouble;      // Velocity vector (using double precision)
+    public doubleVector3 acc;            // Acceleration vector
+    public doubleVector3 accDouble;      // Acceleration vector (using double precision)
 
 
     private Transform transform; // for position
@@ -57,8 +57,8 @@ public class CelestialBody : MonoBehaviour
     private GameObject InfoBar;
 
     private SolarSystemManager solarScript;
-    private float scaleDist;
-    private float scaleSize;
+    private double scaleDist;
+    private double scaleSize;
     //private Rigidbody rigidbody; // for velocity
 
     // Set properties based on data from the CSV file
@@ -105,9 +105,9 @@ public class CelestialBody : MonoBehaviour
         UnityEngine.ColorUtility.TryParseHtmlString(descColor, out this.descColor);
     }
 
-    public float DistanceFromSun()
+    public double DistanceFromSun()
     {
-        return Mathf.Sqrt(pos.x*pos.x + pos.y*pos.y + pos.z*pos.z);
+        return Math.Sqrt(pos.x*pos.x + pos.y*pos.y + pos.z*pos.z);
     }
 
     public void CalculateInitialPositionVelocity()
@@ -135,6 +135,7 @@ public class CelestialBody : MonoBehaviour
         pos.x = distance * ( Mathf.Cos(Omega) * Mathf.Cos(w + nu) - Mathf.Sin(Omega) * Mathf.Sin(w + nu) * Mathf.Cos(i) );
         pos.y = distance * ( Mathf.Sin(Omega) * Mathf.Cos(w + nu) + Mathf.Cos(Omega) * Mathf.Sin(w + nu) * Mathf.Cos(i) );
         pos.z = distance * ( Mathf.Sin(i) * Mathf.Sin(w + nu) );
+        //Debug.Log(pos + "THIS IS INITIALPOS");
 
         // velocity vector in cartesian coordinates
         vel.x = speed * ( Mathf.Cos(Omega) * Mathf.Sin(w+nu) + Mathf.Sin(Omega) * Mathf.Cos(w+nu) * Mathf.Cos(i) );
@@ -153,15 +154,9 @@ public class CelestialBody : MonoBehaviour
         scaleSize = solarScript.scaleSize > 0 ? solarScript.scaleSize : 1;
 
         transform = GetComponent<Transform>();
-        transform.localScale = new Vector3(radius*scaleSize, radius*scaleSize, radius*scaleSize);
+        transform.localScale = new Vector3(radius*(float)scaleSize, radius*(float)scaleSize, radius*(float)scaleSize);
     }
 
-    void FixedUpdate()
-    {
-        scaleDist = solarScript.scaleDist > 0 ? solarScript.scaleDist : 1;
-        scaleSize = solarScript.scaleSize > 0 ? solarScript.scaleSize : 1;
-        transform.position = pos*scaleDist;
-    }
 
     public void ShowInfoBox()
     {

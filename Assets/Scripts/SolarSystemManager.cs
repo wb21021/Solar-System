@@ -31,8 +31,8 @@ public class SolarSystemManager : MonoBehaviour
     // Using the plane size as the maximum size possible for the solar system
     public GameObject plane;
 
-    public float scaleDist;
-    public float scaleSize;
+    public double scaleDist;
+    public double scaleSize;
 
     public TMP_Text PlanetNameText;
 
@@ -66,7 +66,7 @@ public class SolarSystemManager : MonoBehaviour
 
                 // Instantiate celestial body prefab
                 GameObject celestialBodyInit = Instantiate(celestialBodyPrefab);
-                Debug.Log("instantiated");
+                //Debug.Log("instantiated");
                 celestialBodyInit.SetActive(true);
                 CelestialBody celestialBodyScript = celestialBodyInit.GetComponent<CelestialBody>();
                 
@@ -105,7 +105,7 @@ public class SolarSystemManager : MonoBehaviour
                     values[27] // Color
 
                 );
-                Debug.Log(values[26].Replace(";", ","));
+                //Debug.Log(values[26].Replace(";", ","));
                 celestialBodyScript.bodyName = celestialBodyName;
 
                 celestialBodiesList.Add(celestialBodyScript);
@@ -153,7 +153,7 @@ public class SolarSystemManager : MonoBehaviour
         // foreach (CelestialBody celestialBody in celestialBodiesList)
         // {
         //     celestialBody.transform.position = celestialBody.pos;
-        //     celestialBody.transform.localScale = new Vector3(celestialBody.radius, celestialBody.radius, celestialBody.radius);
+        //     celestialBody.transform.localScale = new doubleVector3(celestialBody.radius, celestialBody.radius, celestialBody.radius);
         // }
 
 
@@ -175,12 +175,12 @@ public class SolarSystemManager : MonoBehaviour
 
     public void InitialiseCelestialBodies()
     {
-        float distFromSun = 0;
-        float newDistFromSun = 0;
-        float largestScale = 0;
-        float newLargestScale = 0;
-        Vector3 planeScale2D = plane.transform.localScale;
-        Vector3 planeScale = new Vector3(planeScale2D.x, planeScale2D.x,planeScale2D.z);
+        double distFromSun = 0;
+        double newDistFromSun = 0;
+        double largestScale = 0;
+        double newLargestScale = 0;
+        doubleVector3 planeScale2D = plane.transform.localScale;
+        doubleVector3 planeScale = new doubleVector3(planeScale2D.x, planeScale2D.x,planeScale2D.z);
         
         foreach (CelestialBody celestialBody in celestialBodiesList)
         {
@@ -190,7 +190,7 @@ public class SolarSystemManager : MonoBehaviour
             {
                 distFromSun = newDistFromSun;
             }
-            newLargestScale = new Vector3(celestialBody.radius, celestialBody.radius, celestialBody.radius).magnitude;
+            newLargestScale = new doubleVector3(celestialBody.radius, celestialBody.radius, celestialBody.radius).magnitude;
             if (newLargestScale > largestScale)
             {
                 largestScale = newLargestScale;
@@ -201,26 +201,28 @@ public class SolarSystemManager : MonoBehaviour
         offsetMoons();
 
         scaleDist = planeScale.magnitude/distFromSun;
-        Debug.Log(largestScale);
+        //Debug.Log(largestScale);
         scaleSize = (planeScale.magnitude*0.01f)/largestScale;
     }
 
     private void UpdateGravitationalAcceleration(CelestialBody celestialBody)
     {
-        celestialBody.acc = Vector3.zero;
-        Vector3 tempAcc = Vector3.zero;
+        celestialBody.acc = doubleVector3.zero;
+        doubleVector3 tempAcc = doubleVector3.zero;
 
         foreach (CelestialBody otherCelestialBody in celestialBodiesList)
         {
             if (celestialBody.id != otherCelestialBody.id)
             {
                 // Displacment vector from the current celestial body to the other celestial body
-                Vector3 r = otherCelestialBody.pos - celestialBody.pos;
+                doubleVector3 r = otherCelestialBody.pos - celestialBody.pos;
+                //Debug.Log(otherCelestialBody.pos + " " + celestialBody.pos + " THIS IS THE DISTANCE");
 
                 if (r.magnitude != 0.0f)
                 {
                     // Gravitational force between the two celestial bodies (factored out G and mass of body to save calculations)
-                    tempAcc +=  r.normalized * otherCelestialBody.mass / Mathf.Pow(r.magnitude, 2);
+                    //Debug.Log(r.magnitude + " THIS IS THE MAGNITEUED");
+                    tempAcc +=  r.normalized * otherCelestialBody.mass / Math.Pow(r.magnitude, 2);
                 }
             }
         }
@@ -228,27 +230,6 @@ public class SolarSystemManager : MonoBehaviour
         celestialBody.acc = 6.67430e-11f * tempAcc;
     }
 
-    private void VerletUpdateCelestialBodies()
-    {
-        float dt = Time.fixedDeltaTime;
-
-        foreach (CelestialBody celestialBody in celestialBodiesList)
-        {
-            // Verlet Integration
-
-            // half step velocity
-            celestialBody.vel += 0.5f * dt * celestialBody.acc;
-
-            // full step position (using half step velocity)
-            celestialBody.pos += celestialBody.vel * dt;
-
-            // update acceleration (using new position)
-            UpdateGravitationalAcceleration(celestialBody);
-
-            // half step velocity (using updated acceleration)
-            celestialBody.vel += 0.5f * dt * celestialBody.acc;
-        }
-    }
 
     private void offsetMoons()
     {
@@ -276,12 +257,43 @@ public class SolarSystemManager : MonoBehaviour
                         // Set the central body of the celestial body as the other celestial body
                         celestialBody.isMoon = otherCelestialBody.id;
                         // offset the body.
-                        celestialBody.pos = otherCelestialBody.pos;  // + new Vector3(celestialBody.semiMajorAxis, 0, 0); ???
+                        celestialBody.pos = otherCelestialBody.pos;  // + new doubleVector3(celestialBody.semiMajorAxis, 0, 0); ???
                     }
                 }
             }
         }
 
+    }
+
+    void FixedUpdate()
+    {
+        float customTimeScale = 400000.0f;
+        float dt = Time.fixedDeltaTime * customTimeScale;
+        Debug.Log(dt*Time.timeScale + "TJIOS IS THE DT");
+
+        foreach (CelestialBody celestialBody in celestialBodiesList)
+        {
+            // Verlet Integration
+
+            // half step velocity
+            celestialBody.vel += 0.5f * dt * celestialBody.acc;
+            celestialBody.vel = new doubleVector3(double.IsNaN(celestialBody.vel.x) ? 0 : celestialBody.vel.x, double.IsNaN(celestialBody.vel.y) ? 0 : celestialBody.vel.y, double.IsNaN(celestialBody.vel.z) ? 0 : celestialBody.vel.z);
+
+            Debug.Log(celestialBody.vel + "VEL");
+
+            // full step position (using half step velocity)
+            celestialBody.pos += celestialBody.vel * dt;
+            Vector3 newPos = celestialBody.pos.ToVector3();
+            celestialBody.transform.position = newPos*(float)scaleDist;
+
+            // update acceleration (using new position)
+            UpdateGravitationalAcceleration(celestialBody);
+
+            // half step velocity (using updated acceleration)
+            celestialBody.vel += 0.5f * dt * celestialBody.acc;
+        }
+
+        
     }
 }
 

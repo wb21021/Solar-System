@@ -2603,7 +2603,7 @@ GameObject:
   - component: {fileID: 837642298}
   - component: {fileID: 837642297}
   m_Layer: 0
-  m_Name: SolarSystemManager
+  m_Name: Solar System Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2626,7 +2626,7 @@ MonoBehaviour:
   dataFilePath: Assets/SolarData.csv
   prefabsFolder: CelestialBodies
   celestialBodiesList: []
-  plane: {fileID: 0}
+  plane: {fileID: 331698138}
   scaleDist: 0
   scaleSize: 0
   PlanetNameText: {fileID: 0}

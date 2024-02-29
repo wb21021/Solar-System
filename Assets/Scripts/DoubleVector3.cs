@@ -259,5 +259,10 @@ namespace doubleVector3namespace
                                         a.y / b_double, 
                                         a.z / b_double);
         }
+        // Conversion operator from Vector3 to DoubleVector3
+        public static implicit operator doubleVector3(UnityEngine.Vector3 v)
+        {
+            return new doubleVector3(v.x, v.y, v.z);
+        }
     }
 }
