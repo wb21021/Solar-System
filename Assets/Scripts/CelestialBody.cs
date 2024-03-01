@@ -9,6 +9,7 @@ using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine.UI;
 using static System.Net.Mime.MediaTypeNames;
 using UnityEngine.UIElements;
+using Unity.XR.CoreUtils;
 
 public class CelestialBody : MonoBehaviour
 {
@@ -41,8 +42,15 @@ public class CelestialBody : MonoBehaviour
     public float ringDepth;        // Ring depth
     public float massOfCentralBody; // Mass of the central body
     public int isMoon;            // if not a moon = 0, if a moon = index of the planet it orbits
+    
     public string notes;
     public Color descColor = Color.white;
+    private GameObject InfoBar;
+    private GameObject UXPanel;
+    public GameObject VisualBodyPrefab;
+    private GameObject VisualBody;
+    private GameObject HoverTextBox;
+
     public doubleVector3 pos;            // Position vector
     public doubleVector3 posDouble; // Position vector (using double precision)
     public doubleVector3 vel;            // Velocity vector
@@ -54,7 +62,9 @@ public class CelestialBody : MonoBehaviour
     private Transform transform; // for position
 
     private GameObject solarSystemManager;
-    private GameObject InfoBar;
+    
+    
+    
 
     private SolarSystemManager solarScript;
     private double scaleDist;
@@ -148,22 +158,56 @@ public class CelestialBody : MonoBehaviour
         solarSystemManager = GameObject.Find("Solar System Manager");
 
         InfoBar = GameObject.Find("InfoMenu");
+        UXPanel = GameObject.Find("UXPanel");
+
 
         solarScript = solarSystemManager.GetComponent<SolarSystemManager>();
         scaleDist = solarScript.scaleDist > 0 ? solarScript.scaleDist : 1;
         scaleSize = solarScript.scaleSize > 0 ? solarScript.scaleSize : 1;
 
-        transform = GetComponent<Transform>();
-        transform.localScale = new Vector3(radius*(float)scaleSize, radius*(float)scaleSize, radius*(float)scaleSize);
-    }
-
-
-    public void ShowInfoBox()
-    {
 
         
-        InfoBar.SetActive(true);
 
+        transform = GetComponent<Transform>();
+        transform.localScale = new Vector3(radius*(float)scaleSize, radius*(float)scaleSize, radius*(float)scaleSize);
+
+        Debug.Log("SCALE: " + bodyName + " " + transform.Find("CanvasCelestialBodyInfo(Clone)").transform.localScale);
+        float TextUnscaled = (float)scaleSize * 5E12f / radius;
+        transform.Find("CanvasCelestialBodyInfo(Clone)").transform.localScale = new Vector3(TextUnscaled, TextUnscaled, TextUnscaled);
+        float TextTransformed = (float)scaleSize * 2.5E12f / radius;
+        transform.Find("CanvasCelestialBodyInfo(Clone)").transform.localPosition = new Vector3(0, TextTransformed,0);
+        Debug.Log("TRANS: " + bodyName + " " + TextTransformed);
+        Debug.Log("SCALE: " + bodyName + " " + transform.Find("CanvasCelestialBodyInfo(Clone)").transform.localScale);
+
+
+    }
+
+    private void FixedUpdate()
+    {
+
+        if (VisualBody  != null)
+        {
+            VisualBody.transform.Rotate(0, orbitalPeriod/24, 0);
+
+            float planetUnscaled = 0.000000005f / (float)scaleSize;
+
+            Debug.Log("SCALE: " + planetUnscaled);
+            VisualBody.transform.localScale = new Vector3(planetUnscaled,planetUnscaled,planetUnscaled);
+            
+        }
+
+    }
+    public void ShowInfoBox()
+    {
+        
+        if (UXPanel.transform.childCount != 1)
+        {
+            Destroy(UXPanel.transform.GetChild(1).gameObject);
+        }
+        
+
+
+        UXPanel.SetActive(true);
 
         InfoBar.transform.Find("NameIn").GetComponent<TMP_Text>().text = bodyName;
 
@@ -174,12 +218,28 @@ public class CelestialBody : MonoBehaviour
 
         InfoBar.transform.Find("ValueIn").GetComponent<TMP_Text>().text = total_info_string;
 
-        InfoBar.transform.Find("Scroll View/Viewport/DescriptionIn").GetComponent<TMP_Text>().text = notes;
+        InfoBar.transform.Find("DescriptionIn").GetComponent<TMP_Text>().text = notes;
+        InfoBar.transform.Find("DescriptionIn").GetComponent<TMP_Text>().pageToDisplay = 1;
 
         InfoBar.transform.Find("OuterPanel").GetComponent<UnityEngine.UI.Image>().color = descColor;
 
         InfoBar.transform.Find("DescriptionPanel").GetComponent<UnityEngine.UI.Image>().color = descColor;
 
+        InfoBar.transform.Find("ButtonBack").GetComponent<UnityEngine.UI.Image>().color = descColor;
 
+        InfoBar.transform.Find("ButtonForward").GetComponent<UnityEngine.UI.Image>().color = descColor;
+
+        VisualBody = Instantiate(VisualBodyPrefab);
+        
+
+        Transform PanelTransform = GameObject.Find("UXPanel").GetComponent<Transform>();
+        VisualBody.transform.SetParent(PanelTransform);
+        Destroy(VisualBody.GetNamedChild("CanvasCelestialBodyInfo(Clone)").gameObject);
+        VisualBody.GetComponent<TrailRenderer>().enabled = false;
+        VisualBody.transform.localPosition = new Vector3(0.1f, 0.1f, 0);
+
+        
+        
+        
     }
 }

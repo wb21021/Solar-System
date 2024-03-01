@@ -116,22 +116,16 @@ public class SolarSystemManager : MonoBehaviour
             celestialBodyInit.tag = "interactable";
 
 
-             
-            //Create small sphere within the celestial body, so that if the body shrinks down too small,
-            //this sphere will always be visible.
-            GameObject MinimumSizeBodyPrefab = Resources.Load<GameObject>($"UIElements/MinimumSizeBody");
-            GameObject MinimumSizeBody = Instantiate(MinimumSizeBodyPrefab);
-            MinimumSizeBody.tag = "interactable";
-            MinimumSizeBody.transform.SetParent(celestialBodyInit.transform);
-            MinimumSizeBody.transform.localPosition = new Vector3(0, 0, 0);
+           
 
 
             //Create text box over planet
             GameObject hoverUIPrefab = Resources.Load<GameObject>($"UIElements/CanvasCelestialBodyInfo");
             GameObject hoveringUIbox = Instantiate(hoverUIPrefab);
             hoveringUIbox.transform.SetParent(celestialBodyInit.transform);
-            hoveringUIbox.transform.localPosition = new Vector3(0, 2, 0);
+            hoveringUIbox.transform.localPosition = new Vector3(0, 1, 0);
             hoveringUIbox.GetComponentInChildren<TMP_Text>().text = celestialBodyName;
+            //hoveringUIbox.transform.localScale = new Vector3((float)scaleSize,(float)scaleSize,(float)scaleSize);
             hoveringUIbox.SetActive(true);
 
                 
@@ -195,6 +189,8 @@ public class SolarSystemManager : MonoBehaviour
         scaleDist = planeScale.magnitude/distFromSun;
         //Debug.Log(largestScale);
         scaleSize = (planeScale.magnitude*0.005f)/largestScale;
+
+
     }
 
     private void UpdateGravitationalAcceleration(CelestialBody celestialBody)

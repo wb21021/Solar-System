@@ -4903,9 +4903,10 @@ MonoBehaviour:
   ringRadius: 0
   ringDepth: 0
   massOfCentralBody: 0
-  pos: {x: 0, y: 0, z: 0}
-  vel: {x: 0, y: 0, z: 0}
-  acc: {x: 0, y: 0, z: 0}
+  isMoon: 0
+  notes: 
+  descColor: {r: 1, g: 1, b: 1, a: 1}
+  VisualBodyPrefab: {fileID: 1123243791319946}
 --- !u!114 &-4284684220713945894
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -18,7 +18,9 @@ public class CloseVrMenu : MonoBehaviour
     private void Start()
     {
         _inputData = GetComponent<InputData>();
-        infoBar = GameObject.Find("InfoMenu");
+        infoBar = GameObject.Find("UXPanel");
+        
+        //infoBar.SetActive(false);
     }
 
     void Update()

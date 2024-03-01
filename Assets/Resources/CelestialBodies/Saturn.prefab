@@ -213,6 +213,7 @@ MonoBehaviour:
   isMoon: 0
   notes: 
   descColor: {r: 1, g: 1, b: 1, a: 1}
+  VisualBodyPrefab: {fileID: 1377197793697218}
 --- !u!114 &-8526651202949447790
 MonoBehaviour:
   m_ObjectHideFlags: 0
