@@ -210,7 +210,7 @@ public class CelestialBody : MonoBehaviour
             double V_rel = Math.Sqrt(Math.Pow(vel.x - V_observer.x, 2) + Math.Pow(vel.y - V_observer.y,2) + Math.Pow(vel.z - V_observer.z,2));
             foreach ( double wavelength in wavelengths){
                 double wavelength_new = wavelength * Math.Sqrt((1-(V_rel)/(c))/(1+(V_rel)/(c)));
-                Debug.Log(wavelength_new);
+                Debug.Log("DOPPLER: "+wavelength_new);
             }
             // ---------------------------------
         }
@@ -261,7 +261,7 @@ public class CelestialBody : MonoBehaviour
         Destroy(VisualBody.GetNamedChild("CanvasCelestialBodyInfo(Clone)").gameObject);
         VisualBody.GetComponent<TrailRenderer>().enabled = false;
         VisualBody.transform.localPosition = new Vector3(0.1f, 0.1f, 0);
-        VisualBody.transform.localRotation = Quaternion.identity;
+        VisualBody.transform.localRotation = new Quaternion(0.707f,0.707f,0f,0f);
 
         
         

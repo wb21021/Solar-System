@@ -5136,6 +5136,8 @@ MonoBehaviour:
   notes: 
   descColor: {r: 1, g: 1, b: 1, a: 1}
   VisualBodyPrefab: {fileID: 1856687845478954}
+  wavelengths:
+  - 500
 --- !u!114 &-5939442032907013553
 MonoBehaviour:
   m_ObjectHideFlags: 0

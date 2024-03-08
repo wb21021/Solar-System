@@ -9,8 +9,6 @@ public class InfoMenuButton : MonoBehaviour
     public void ButtonForwardPress()
     {
         int totalpages = descriptionText.textInfo.pageCount;
-        Debug.Log("PAGES: " + totalpages);
-        Debug.Log("FORWARD CURRENT PAGES: " + descriptionText.pageToDisplay);
         if (descriptionText.pageToDisplay < totalpages)
         {
             descriptionText.pageToDisplay++;
@@ -20,7 +18,7 @@ public class InfoMenuButton : MonoBehaviour
     {
         int totalpages = descriptionText.textInfo.pageCount;
 
-        Debug.Log("BACK CURRENT PAGES: " + descriptionText.pageToDisplay);
+        
 
         if (descriptionText.pageToDisplay >= 1)
         {
