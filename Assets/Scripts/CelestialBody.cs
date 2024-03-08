@@ -199,10 +199,15 @@ public class CelestialBody : MonoBehaviour
     }
     public void ShowInfoBox()
     {
-        
+
+        Debug.Log("BUTTON: " + UXPanel.transform.childCount);
         if (UXPanel.transform.childCount != 1)
         {
-            Destroy(UXPanel.transform.GetChild(1).gameObject);
+            for (int i = 1; i < UXPanel.transform.childCount; i++)
+            {
+                Destroy(UXPanel.transform.GetChild(i).gameObject);
+            }
+            
         }
         
 
@@ -237,6 +242,7 @@ public class CelestialBody : MonoBehaviour
         Destroy(VisualBody.GetNamedChild("CanvasCelestialBodyInfo(Clone)").gameObject);
         VisualBody.GetComponent<TrailRenderer>().enabled = false;
         VisualBody.transform.localPosition = new Vector3(0.1f, 0.1f, 0);
+        VisualBody.transform.localRotation = Quaternion.identity;
 
         
         
