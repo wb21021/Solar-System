@@ -56,8 +56,13 @@ public class CelestialBody : MonoBehaviour
     public doubleVector3 vel;            // Velocity vector
     public doubleVector3 velDouble;      // Velocity vector (using double precision)
     public doubleVector3 acc;            // Acceleration vector
-    public doubleVector3 accDouble;      // Acceleration vector (using double precision)
+    public doubleVector3 accDouble;      // Acceleration vector (using double precision) 
 
+    public List<float> wavelengths = new List<float>();
+    private GameObject player;
+    private doubleVector3 prevPos;
+    private doubleVector3 V_observer;
+    private const double c = 299792458;
 
     private Transform transform; // for position
 
@@ -143,14 +148,14 @@ public class CelestialBody : MonoBehaviour
         
         // position vector in cartesian coordinates
         pos.x = distance * ( Mathf.Cos(Omega) * Mathf.Cos(w + nu) - Mathf.Sin(Omega) * Mathf.Sin(w + nu) * Mathf.Cos(i) );
-        pos.y = distance * ( Mathf.Sin(Omega) * Mathf.Cos(w + nu) + Mathf.Cos(Omega) * Mathf.Sin(w + nu) * Mathf.Cos(i) );
-        pos.z = distance * ( Mathf.Sin(i) * Mathf.Sin(w + nu) );
+        pos.z = distance * ( Mathf.Sin(Omega) * Mathf.Cos(w + nu) + Mathf.Cos(Omega) * Mathf.Sin(w + nu) * Mathf.Cos(i) );
+        pos.y = distance * ( Mathf.Sin(i) * Mathf.Sin(w + nu) );
         //Debug.Log(pos + "THIS IS INITIALPOS");
 
         // velocity vector in cartesian coordinates
         vel.x = speed * ( Mathf.Cos(Omega) * Mathf.Sin(w+nu) + Mathf.Sin(Omega) * Mathf.Cos(w+nu) * Mathf.Cos(i) );
-        vel.y = speed * ( Mathf.Sin(Omega) * Mathf.Sin(w+nu) - Mathf.Cos(Omega) * Mathf.Cos(w+nu) * Mathf.Cos(i) );
-        vel.z = speed * ( Mathf.Cos(w+nu) * Mathf.Sin(i) );
+        vel.z = speed * ( Mathf.Sin(Omega) * Mathf.Sin(w+nu) - Mathf.Cos(Omega) * Mathf.Cos(w+nu) * Mathf.Cos(i) );
+        vel.y = speed * ( Mathf.Cos(w+nu) * Mathf.Sin(i) );
     }
 
     void Start()
@@ -179,7 +184,10 @@ public class CelestialBody : MonoBehaviour
         Debug.Log("TRANS: " + bodyName + " " + TextTransformed);
         Debug.Log("SCALE: " + bodyName + " " + transform.Find("CanvasCelestialBodyInfo(Clone)").transform.localScale);
 
-
+        // --------------
+        // Doppler
+        player = GameObject.Find("Main Camera");
+        prevPos = player.transform.position;
     }
 
     private void FixedUpdate()
@@ -193,7 +201,18 @@ public class CelestialBody : MonoBehaviour
 
             Debug.Log("SCALE: " + planetUnscaled);
             VisualBody.transform.localScale = new Vector3(planetUnscaled,planetUnscaled,planetUnscaled);
-            
+
+
+            // --------------------------------
+            // Doppler
+            V_observer = (player.transform.position - prevPos) / Time.deltaTime;
+            prevPos = player.transform.position;
+            double V_rel = Math.Sqrt(Math.Pow(vel.x - V_observer.x, 2) + Math.Pow(vel.y - V_observer.y,2) + Math.Pow(vel.z - V_observer.z,2));
+            foreach ( double wavelength in wavelengths){
+                double wavelength_new = wavelength * Math.Sqrt((1-(V_rel)/(c))/(1+(V_rel)/(c)));
+                Debug.Log(wavelength_new);
+            }
+            // ---------------------------------
         }
 
     }
