@@ -14,6 +14,12 @@ namespace doubleVector3namespace
             this.y = y;
             this.z = z;
         }
+        public doubleVector3(UnityEngine.Vector3 v)
+        {
+            this.x = v.x;
+            this.y = v.y;
+            this.z = v.z;
+        }
 
         // default vectors
         public static readonly doubleVector3 zero = new doubleVector3(0, 0, 0);

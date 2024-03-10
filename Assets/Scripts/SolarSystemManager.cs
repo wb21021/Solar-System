@@ -15,6 +15,7 @@ using UnityEditor.MemoryProfiler;
 using UnityEngine.InputSystem.Utilities;
 using doubleVector3namespace;
 using System.Data.Common;
+using System.Xml;
 
 
 public class SolarSystemManager : MonoBehaviour
@@ -255,6 +256,15 @@ public class SolarSystemManager : MonoBehaviour
 
     void FixedUpdate()
     {
+        // velocitiesVerletMethod();
+        // rungeKuttaMethod();
+        yoshidaMethod();
+        offsetMoons();
+        
+    }
+
+    void velocitiesVerletMethod()
+    {
         float customTimeScale = 400000.0f;
         float dt = Time.fixedDeltaTime * customTimeScale;
         Debug.Log(dt*Time.timeScale + "TJIOS IS THE DT");
@@ -280,8 +290,130 @@ public class SolarSystemManager : MonoBehaviour
             // half step velocity (using updated acceleration)
             celestialBody.vel += 0.5f * dt * celestialBody.acc;
         }
-        offsetMoons();
-        
     }
+
+
+    void rungeKuttaMethod()
+    {
+        float customTimeScale = 400000.0f;
+        float dt = Time.fixedDeltaTime * customTimeScale;
+
+        foreach(CelestialBody celestialBody in celestialBodiesList)
+        {
+            celestialBody.vel = new doubleVector3(double.IsNaN(celestialBody.vel.x) ? 0 : celestialBody.vel.x, double.IsNaN(celestialBody.vel.y) ? 0 : celestialBody.vel.y, double.IsNaN(celestialBody.vel.z) ? 0 : celestialBody.vel.z);
+
+            // initial pos and vel
+            doubleVector3 initialPos = celestialBody.pos;
+            doubleVector3 initialVel = celestialBody.vel;
+            
+            // calculate k1
+            UpdateGravitationalAcceleration(celestialBody);
+            doubleVector3 k1v = dt * celestialBody.acc;
+            doubleVector3 k1r = dt * initialVel;
+
+            // calculate k2
+            celestialBody.pos = initialPos + 0.5f * k1r;
+            celestialBody.vel = initialVel + 0.5f * k1v;
+            UpdateGravitationalAcceleration(celestialBody);
+            doubleVector3 k2v = dt * celestialBody.acc;
+            doubleVector3 k2r = dt * celestialBody.vel;
+
+            // calculate k3
+            celestialBody.pos = initialPos + 0.5f * k2r;
+            celestialBody.vel = initialVel + 0.5f * k2v;
+            UpdateGravitationalAcceleration(celestialBody);
+            doubleVector3 k3v = dt * celestialBody.acc;
+            doubleVector3 k3r = dt * celestialBody.vel;
+
+            // calculate k4
+            celestialBody.pos = initialPos + k3r;
+            celestialBody.vel = initialVel + k3v;
+            UpdateGravitationalAcceleration(celestialBody);
+            doubleVector3 k4v = dt * celestialBody.acc;
+            doubleVector3 k4r = dt * celestialBody.vel;
+
+            // update position and velocity
+            celestialBody.pos = initialPos + (1.0f / 6.0f) * (k1r + 2.0f * k2r + 2.0f * k3r + k4r);
+            celestialBody.vel = initialVel + (1.0f / 6.0f) * (k1v + 2.0f * k2v + 2.0f * k3v + k4v);
+
+            Vector3 newPos = celestialBody.pos.ToVector3();
+            celestialBody.transform.position = newPos*(float)scaleDist;
+        }
+    }
+
+
+    void yoshidaMethod()
+    {
+        // fourth order numerical integrator using the Yoshida method
+
+        float customTimeScale = 400000.0f;
+        float dt = Time.fixedDeltaTime * customTimeScale;
+
+        float third = 1.0f / 3.0f;
+
+        double w_0 = - Mathf.Pow(2, third) / (2 - Mathf.Pow(2, third));
+        double w_1 = 1 / (2 - Mathf.Pow(2, third));
+
+        double c_1 = w_1 / 2;
+        double c_2 = (w_0 + w_1) / 2;
+        double c_3 = c_2;
+        double c_4 = c_1;
+
+        double d_1 = w_1;
+        double d_2 = w_0;
+        double d_3 = w_1;
+
+        foreach(CelestialBody celestialBody in celestialBodiesList)
+        {
+            celestialBody.vel = new doubleVector3(double.IsNaN(celestialBody.vel.x) ? 0 : celestialBody.vel.x, double.IsNaN(celestialBody.vel.y) ? 0 : celestialBody.vel.y, double.IsNaN(celestialBody.vel.z) ? 0 : celestialBody.vel.z);
+
+            // first step
+            //////////////////////////////////////////
+            // update pos (x_1)
+            celestialBody.pos = celestialBody.pos + (c_1 * dt * celestialBody.vel);
+            // update acc
+            UpdateGravitationalAcceleration(celestialBody);
+            // update vel (v_1)
+            celestialBody.vel = celestialBody.vel + (d_1 * dt * celestialBody.acc);
+
+
+
+            // second step
+            //////////////////////////////////////////
+            // update pos (x_2)
+            celestialBody.pos = celestialBody.pos + (c_2 * dt * celestialBody.vel);
+            // update acc
+            UpdateGravitationalAcceleration(celestialBody);
+            // update vel (v_2)
+            celestialBody.vel = celestialBody.vel + (d_2 * dt * celestialBody.acc);
+
+
+
+            // third step
+            //////////////////////////////////////////
+            // update pos (x_3)
+            celestialBody.pos = celestialBody.pos + (c_3 * dt * celestialBody.vel);
+            // update acc
+            UpdateGravitationalAcceleration(celestialBody);
+            // update vel (v_3)
+            celestialBody.vel = celestialBody.vel + (d_3 * dt * celestialBody.acc);
+
+
+
+            // full step (last step)
+            //////////////////////////////////////////
+            // update pos (x_4)
+            celestialBody.pos = celestialBody.pos + (c_4 * dt * celestialBody.vel);
+            // update vel (v_4 = v_3) 
+            // celestialBody.vel = celestialBody.vel;
+
+
+
+            // update position of the asset
+            Vector3 newPos = celestialBody.pos.ToVector3();
+            celestialBody.transform.position = newPos*(float)scaleDist;
+        }   
+    }
+
 }
 
