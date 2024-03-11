@@ -246,7 +246,9 @@ public class SolarSystemManager : MonoBehaviour
                         // Set the central body of the celestial body as the other celestial body
                         celestialBody.isMoon = otherCelestialBody.id;
                         // offset the body.
-                        celestialBody.pos = otherCelestialBody.pos;  // + new doubleVector3(celestialBody.semiMajorAxis, 0, 0); ???
+                        celestialBody.pos += otherCelestialBody.pos;  // + new doubleVector3(celestialBody.semiMajorAxis, 0, 0); ???
+                        // add the velocity of the central body to the moon
+                        celestialBody.vel += otherCelestialBody.vel;
                     }
                 }
             }
@@ -259,7 +261,7 @@ public class SolarSystemManager : MonoBehaviour
         // velocitiesVerletMethod();
         // rungeKuttaMethod();
         yoshidaMethod();
-        offsetMoons();
+        // offsetMoons();
         
     }
 
