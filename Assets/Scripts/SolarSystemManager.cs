@@ -1,22 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
-using Unity.XR.CoreUtils;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Antlr3.Runtime;
-using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
-using UnityEngine.Rendering;
-using System.Linq.Expressions;
-using UnityEditor.MemoryProfiler;
-using UnityEngine.InputSystem.Utilities;
 using doubleVector3namespace;
-using System.Data.Common;
-using System.Xml;
-
 
 public class SolarSystemManager : MonoBehaviour
 {
@@ -37,12 +23,24 @@ public class SolarSystemManager : MonoBehaviour
 
     public TMP_Text PlanetNameText;
 
+    //BUILD DEBUG ONLY
+    public TMP_Text buildDebugLog;
+
     void Start()
     {
+        //Debug build ONLY
+        buildDebugLog.text = "START";
+
         // Populate the dictionary with celestial body names and prefab paths
         PopulatePrefabPathsDictionary();
 
-        string[] lines = System.IO.File.ReadAllLines(dataFilePath);
+
+        string text = Resources.Load<TextAsset>("SolarData").text;
+
+        string[] lines = text.Split('\n');
+        
+        //Debug build only
+        buildDebugLog.text = buildDebugLog.text + "\nLoading: " + lines.Length + " bodies";
 
         for (int i = 1; i< lines.Length; i++)
         {
@@ -51,6 +49,12 @@ public class SolarSystemManager : MonoBehaviour
 
             // Get the name from the CSV data
             string celestialBodyName = values[0].Trim();
+
+
+            //Debug build only
+            buildDebugLog.text = buildDebugLog.text + "\nLoading: " + celestialBodyName + " bodies";
+
+
 
             // Determine the prefab path to use based on the name
             string prefabPath;
@@ -64,6 +68,9 @@ public class SolarSystemManager : MonoBehaviour
             {
                 Debug.LogWarning($"No prefab path found for celestial body: {celestialBodyName}");
                 celestialBodyPrefab = defaultCelestialBodyPrefab;
+
+                //Debug build only
+                buildDebugLog.text = buildDebugLog.text + "\nNo prefab found for body, defaulting.";
             }
             // Instantiate celestial body prefab
             GameObject celestialBodyInit = Instantiate(celestialBodyPrefab);
@@ -106,7 +113,10 @@ public class SolarSystemManager : MonoBehaviour
                     values[27] // Color
 
                 );
-            //Debug.Log(values[26].Replace(";", ","));
+
+            //Debug build only
+            buildDebugLog.text = buildDebugLog.text + "\nProperties set";
+
             celestialBodyScript.bodyName = celestialBodyName;
 
             celestialBodiesList.Add(celestialBodyScript);
@@ -129,9 +139,10 @@ public class SolarSystemManager : MonoBehaviour
             //hoveringUIbox.transform.localScale = new Vector3((float)scaleSize,(float)scaleSize,(float)scaleSize);
             hoveringUIbox.SetActive(true);
 
-                
+            //Debug build only
+            buildDebugLog.text = buildDebugLog.text + "\nHoveringUIBox set";
 
-                //------------------------------------------------------------------
+            //------------------------------------------------------------------
         }
         // Set the initial positions and velocities of the celestial bodies
         InitialiseCelestialBodies();

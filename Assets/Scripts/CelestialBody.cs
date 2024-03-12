@@ -1,14 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using doubleVector3namespace;
-using Microsoft.Unity.VisualStudio.Editor;
-using UnityEngine.UI;
-using static System.Net.Mime.MediaTypeNames;
-using UnityEngine.UIElements;
 using Unity.XR.CoreUtils;
 
 public class CelestialBody : MonoBehaviour
