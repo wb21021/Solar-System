@@ -110,7 +110,7 @@ public class SolarSystemManager : MonoBehaviour
 
                     centralBodyMass,  // Mass of the central body
                     values[26].Replace(";",","), // Notes
-                    values[27] // Color
+                    values[27].Trim() // Color
 
                 );
 
