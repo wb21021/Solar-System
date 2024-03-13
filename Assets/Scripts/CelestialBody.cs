@@ -199,7 +199,7 @@ public class CelestialBody : MonoBehaviour
 
             // --------------------------------
             // Doppler
-            V_observer = (player.transform.position - prevPos) / Time.deltaTime;
+            V_observer = (player.transform.localPosition - prevPos) / Time.deltaTime;
             prevPos = player.transform.position;
             double V_rel = Math.Sqrt(Math.Pow(vel.x - V_observer.x, 2) + Math.Pow(vel.y - V_observer.y,2) + Math.Pow(vel.z - V_observer.z,2));
             foreach ( double wavelength in wavelengths){

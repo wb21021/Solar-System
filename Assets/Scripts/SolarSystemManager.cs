@@ -18,6 +18,8 @@ public class SolarSystemManager : MonoBehaviour
     // Using the plane size as the maximum size possible for the solar system
     public GameObject plane;
 
+    public GameObject WholeSolarSystem;
+
     public double scaleDist;
     public double scaleSize;
 
@@ -123,8 +125,7 @@ public class SolarSystemManager : MonoBehaviour
 
             //Added by Iris ---------------------------------------------------
 
-            //Set tag so that object can be highlighted
-            celestialBodyInit.tag = "interactable";
+            celestialBodyInit.transform.parent = WholeSolarSystem.transform;
 
 
            
@@ -295,7 +296,7 @@ public class SolarSystemManager : MonoBehaviour
             // full step position (using half step velocity)
             celestialBody.pos += celestialBody.vel * dt;
             Vector3 newPos = celestialBody.pos.ToVector3();
-            celestialBody.transform.position = newPos*(float)scaleDist;
+            celestialBody.transform.localPosition = newPos*(float)scaleDist;
 
             // update acceleration (using new position)
             UpdateGravitationalAcceleration(celestialBody);
@@ -350,7 +351,7 @@ public class SolarSystemManager : MonoBehaviour
             celestialBody.vel = initialVel + (1.0f / 6.0f) * (k1v + 2.0f * k2v + 2.0f * k3v + k4v);
 
             Vector3 newPos = celestialBody.pos.ToVector3();
-            celestialBody.transform.position = newPos*(float)scaleDist;
+            celestialBody.transform.localPosition = newPos*(float)scaleDist;
         }
     }
 
@@ -424,7 +425,7 @@ public class SolarSystemManager : MonoBehaviour
 
             // update position of the asset
             Vector3 newPos = celestialBody.pos.ToVector3();
-            celestialBody.transform.position = newPos*(float)scaleDist;
+            celestialBody.transform.localPosition = newPos*(float)scaleDist;
         }   
     }
 
