@@ -28,6 +28,11 @@ public class SolarSystemManager : MonoBehaviour
     //BUILD DEBUG ONLY
     public TMP_Text buildDebugLog;
 
+
+
+    //TIMESTEP (DEFAULT 400000f)
+    public float customTimeScale = 400000.0f;
+
     void Start()
     {
         //Debug build ONLY
@@ -148,6 +153,8 @@ public class SolarSystemManager : MonoBehaviour
         // Set the initial positions and velocities of the celestial bodies
         InitialiseCelestialBodies();
 
+
+        
         // Use the position components to position the assests and scale the in the scene
         // foreach (CelestialBody celestialBody in celestialBodiesList)
         // {
@@ -279,7 +286,6 @@ public class SolarSystemManager : MonoBehaviour
 
     void velocitiesVerletMethod()
     {
-        float customTimeScale = 400000.0f;
         float dt = Time.fixedDeltaTime * customTimeScale;
         Debug.Log(dt*Time.timeScale + "TJIOS IS THE DT");
 
@@ -309,7 +315,6 @@ public class SolarSystemManager : MonoBehaviour
 
     void rungeKuttaMethod()
     {
-        float customTimeScale = 400000.0f;
         float dt = Time.fixedDeltaTime * customTimeScale;
 
         foreach(CelestialBody celestialBody in celestialBodiesList)
@@ -360,7 +365,6 @@ public class SolarSystemManager : MonoBehaviour
     {
         // fourth order numerical integrator using the Yoshida method
 
-        float customTimeScale = 400000.0f;
         float dt = Time.fixedDeltaTime * customTimeScale;
 
         float third = 1.0f / 3.0f;

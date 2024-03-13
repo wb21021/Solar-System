@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +8,7 @@ public class WholeSolarSystemScale : MonoBehaviour
 {
     public GameObject WholeSolarSystem;
     public SolarSystemManager SolarSystemManager;
-    public void SliderChanged()
+    public void SizeSliderChanged()
     {
         float rawSliderValue = this.GetComponent<Scrollbar>().value;
 
@@ -19,5 +20,14 @@ public class WholeSolarSystemScale : MonoBehaviour
         {
             body.GetComponent<TrailRenderer>().Clear();
         }
+    }
+
+    public void TimeScaleSliderChanged()
+    {
+        float rawSliderValue = this.GetComponent <Scrollbar>().value;
+        float scale = (rawSliderValue * 10000000) + 100000f;
+
+        Debug.Log("TIMESCALE: " + scale);
+        SolarSystemManager.customTimeScale = scale;
     }
 }

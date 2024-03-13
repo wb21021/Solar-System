@@ -382,7 +382,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 294545166}
         m_TargetAssemblyTypeName: WholeSolarSystemScale, Assembly-CSharp
-        m_MethodName: SliderChanged
+        m_MethodName: SizeSliderChanged
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3029,6 +3029,7 @@ MonoBehaviour:
   scaleSize: 0
   PlanetNameText: {fileID: 0}
   buildDebugLog: {fileID: 1116111511}
+  customTimeScale: 40000
 --- !u!4 &837642298
 Transform:
   m_ObjectHideFlags: 0
@@ -4240,6 +4241,7 @@ GameObject:
   - component: {fileID: 1166366623}
   - component: {fileID: 1166366626}
   - component: {fileID: 1166366625}
+  - component: {fileID: 1166366627}
   - component: {fileID: 1166366624}
   m_Layer: 0
   m_Name: TimeSpeedScrollBar
@@ -4311,12 +4313,24 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1088381048}
   m_HandleRect: {fileID: 1088381047}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 0.2
+  m_Value: 0.5
+  m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1166366627}
+        m_TargetAssemblyTypeName: WholeSolarSystemScale, Assembly-CSharp
+        m_MethodName: TimeScaleSliderChanged
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1166366625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4355,6 +4369,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1166366622}
   m_CullTransparentMesh: 1
+--- !u!114 &1166366627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166366622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3a3755eb01f0b5449014ac31770ca14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WholeSolarSystem: {fileID: 1146938661}
+  SolarSystemManager: {fileID: 837642297}
 --- !u!1 &1193702326
 GameObject:
   m_ObjectHideFlags: 0
