@@ -35,8 +35,7 @@ public class CelestialBody : MonoBehaviour
     public float ringRadius;       // Ring radius
     public float ringDepth;        // Ring depth
     public float massOfCentralBody; // Mass of the central body
-    public int isMoon;            // if not a moon = 0, if a moon = index of the planet it orbits
-    
+    public int isMoon;            // if not a moon = 0, if a moon = index of the planet it orbits    
     public string notes;
     public Color descColor = Color.white;
     private GameObject InfoBar;

@@ -10,6 +10,9 @@ public class SolarSystemManager : MonoBehaviour
     private GameObject defaultCelestialBodyPrefab;  // Default prefab to use if no match is found
     private Dictionary<string, string> celestialBodyPrefabPaths = new Dictionary<string, string>();
     public string dataFilePath;
+    private long initialisationTime; // the time and date of the data in the csv (2nd of feb 2024)
+    private long simulationTime; // the time of the simulation (changes as the simulation runs)
+    private uint IterPerFrame = 1; // Number of iterations per frame
     public string prefabsFolder;
 
     // colection of all the celestial bodies
@@ -35,6 +38,20 @@ public class SolarSystemManager : MonoBehaviour
 
     void Start()
     {
+
+        // Set the initialisation time to the 2nd of February 2024
+        string dateString = "2024-02-02 00:00:00"; 
+        DateTime dateTime;
+        if (DateTime.TryParse(dateString, out dateTime))
+        {
+            initialisationTime = ((DateTimeOffset)dateTime).ToUnixTimeSeconds();
+        }
+        else 
+        {
+            Debug.LogError("Failed to parse date");
+        }
+
+
         //Debug build ONLY
         buildDebugLog.text = "START";
 
@@ -275,18 +292,39 @@ public class SolarSystemManager : MonoBehaviour
 
     }
 
+    // Get Datetime
+    public string GetDateTimeString()
+    {
+        DateTime dateTime = DateTimeOffset.FromUnixTimeSeconds(initialisationTime + simulationTime).UtcDateTime;
+        // Debug.Log(dateTime.ToString("yyyy-MM-dd HH:mm:ss"));
+        return dateTime.ToString("yyyy-MM-dd HH:mm:ss");
+    }
+
+    public long GetDateTimeNum()
+    {
+        return simulationTime;
+    }
+
     void FixedUpdate()
     {
         // velocitiesVerletMethod();
         // rungeKuttaMethod();
-        yoshidaMethod();
+
+        for (int n = 0; n < IterPerFrame; n++)
+        {
+            yoshidaMethod();
+        }
+        
+        // GetDateTime();
         // offsetMoons();
         
     }
 
     void velocitiesVerletMethod()
     {
-        float dt = Time.fixedDeltaTime * customTimeScale;
+        float customTimeScale = 400000.0f;
+        float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
+        simulationTime += (long)(dt) ;
         Debug.Log(dt*Time.timeScale + "TJIOS IS THE DT");
 
         foreach (CelestialBody celestialBody in celestialBodiesList)
@@ -297,7 +335,7 @@ public class SolarSystemManager : MonoBehaviour
             celestialBody.vel += 0.5f * dt * celestialBody.acc;
             celestialBody.vel = new doubleVector3(double.IsNaN(celestialBody.vel.x) ? 0 : celestialBody.vel.x, double.IsNaN(celestialBody.vel.y) ? 0 : celestialBody.vel.y, double.IsNaN(celestialBody.vel.z) ? 0 : celestialBody.vel.z);
 
-            Debug.Log(celestialBody.vel + "VEL");
+            // Debug.Log(celestialBody.vel + "VEL");
 
             // full step position (using half step velocity)
             celestialBody.pos += celestialBody.vel * dt;
@@ -315,7 +353,9 @@ public class SolarSystemManager : MonoBehaviour
 
     void rungeKuttaMethod()
     {
-        float dt = Time.fixedDeltaTime * customTimeScale;
+        float customTimeScale = 400000.0f;
+        float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
+        simulationTime += (long)(dt) ;
 
         foreach(CelestialBody celestialBody in celestialBodiesList)
         {
@@ -365,7 +405,9 @@ public class SolarSystemManager : MonoBehaviour
     {
         // fourth order numerical integrator using the Yoshida method
 
-        float dt = Time.fixedDeltaTime * customTimeScale;
+        float customTimeScale = 400000.0f;
+        float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
+        simulationTime += (long)(dt) ;
 
         float third = 1.0f / 3.0f;
 
@@ -432,6 +474,5 @@ public class SolarSystemManager : MonoBehaviour
             celestialBody.transform.localPosition = newPos*(float)scaleDist;
         }   
     }
-
 }
 
