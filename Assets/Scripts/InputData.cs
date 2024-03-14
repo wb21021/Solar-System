@@ -4,6 +4,8 @@ using UnityEngine.XR;
 
 public class InputData : MonoBehaviour
 {
+    //This class finds the controllers and head-mounted-display (HMD) and sets them up so that the
+    //inputs can be read.
     public InputDevice _rightController;
     public InputDevice _leftController;
     public InputDevice _HMD;
@@ -11,6 +13,7 @@ public class InputData : MonoBehaviour
 
     void Update()
     {
+        //Check if any controller is turned off
         if (!_rightController.isValid || !_leftController.isValid || !_HMD.isValid)
             InitializeInputDevices();
     }

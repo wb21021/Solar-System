@@ -2,15 +2,11 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class AnimateHand : MonoBehaviour
 {
+    //This code was included in the Oculus package.
     public InputActionProperty pinchAnimationAction;
     public InputActionProperty gripAnimationAction;
 
     public Animator handAnimator;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()

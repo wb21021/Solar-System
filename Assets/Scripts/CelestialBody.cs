@@ -211,8 +211,11 @@ public class CelestialBody : MonoBehaviour
     }
     public void ShowInfoBox()
     {
+        //Updates the left hand to show a copy of the selected planet, and a canvas containing useful information
 
         Debug.Log("BUTTON: " + UXPanel.transform.childCount);
+        
+        //Clear any children of UXPanel apart from the canvas, so that new planets are not overlaid on top of each other
         if (UXPanel.transform.childCount != 1)
         {
             for (int i = 1; i < UXPanel.transform.childCount; i++)
@@ -223,9 +226,9 @@ public class CelestialBody : MonoBehaviour
         }
         
 
-
         UXPanel.SetActive(true);
 
+        //Set descriptive information to the InfoMenu canvas
         InfoBar.transform.Find("NameIn").GetComponent<TMP_Text>().text = bodyName;
 
         string total_info_string = "Mass: " + mass + "kg / " + massEarth + " Earths\n" +
@@ -236,8 +239,11 @@ public class CelestialBody : MonoBehaviour
         InfoBar.transform.Find("ValueIn").GetComponent<TMP_Text>().text = total_info_string;
 
         InfoBar.transform.Find("DescriptionIn").GetComponent<TMP_Text>().text = notes;
+
+        //Reset what page the long text should be on
         InfoBar.transform.Find("DescriptionIn").GetComponent<TMP_Text>().pageToDisplay = 1;
 
+        //Change the colour of the panel to match the selected planet
         InfoBar.transform.Find("OuterPanel").GetComponent<UnityEngine.UI.Image>().color = descColor;
 
         InfoBar.transform.Find("DescriptionPanel").GetComponent<UnityEngine.UI.Image>().color = descColor;
@@ -246,13 +252,19 @@ public class CelestialBody : MonoBehaviour
 
         InfoBar.transform.Find("ButtonForward").GetComponent<UnityEngine.UI.Image>().color = descColor;
 
+
+        //Create a clone of the selected planet
         VisualBody = Instantiate(VisualBodyPrefab);
         
 
         Transform PanelTransform = GameObject.Find("UXPanel").GetComponent<Transform>();
+
+        //Set planet to be a child of the UXPanel, and clear trail
         VisualBody.transform.SetParent(PanelTransform);
         Destroy(VisualBody.GetNamedChild("CanvasCelestialBodyInfo(Clone)").gameObject);
         VisualBody.GetComponent<TrailRenderer>().enabled = false;
+
+        //Set position to be just above the hand, and rotate planet so its N/S pole align with the hand.
         VisualBody.transform.localPosition = new Vector3(0.1f, 0.1f, 0);
         VisualBody.transform.localRotation = new Quaternion(0.707f,0.707f,0f,0f);
 
