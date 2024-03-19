@@ -59,7 +59,7 @@ public class SolarSystemManager : MonoBehaviour
         PopulatePrefabPathsDictionary();
 
 
-        string text = Resources.Load<TextAsset>("SolarData").text;
+        string text = Resources.Load<TextAsset>(dataFilePath).text;
 
         string[] lines = text.Split('\n');
         

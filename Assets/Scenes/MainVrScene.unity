@@ -3359,7 +3359,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultCelestialBodyPrefab: {fileID: 1966357835764949342, guid: bfcf34818f95deb4c8eb507d6cd06e15,
     type: 3}
-  dataFilePath: Assets/SolarData.csv
+  dataFilePath: SolarData Full
   prefabsFolder: CelestialBodies
   celestialBodiesList: []
   plane: {fileID: 331698138}
@@ -6441,15 +6441,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f74facbf67b545f4a8a0ccff00088e2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedValue: {fileID: 1893428818}
-  universeTimeValue: {fileID: 497605803}
-  playerTimeValue: {fileID: 642761928}
-  pauseButton: {fileID: 989046993}
-  pauseButtonPressed: 0
-  stdButton: {fileID: 1195139249}
-  stdButtonPressed: 0
-  speedSlider: {fileID: 1166366624}
-  speedSliderValue: 0
 --- !u!4 &1567574271
 Transform:
   m_ObjectHideFlags: 0
