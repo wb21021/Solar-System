@@ -38,6 +38,12 @@ public class SolarSystemManager : MonoBehaviour
 
     void Start()
     {
+        //IF YOURE NOT ABLE TO RUN THIS IN VR, UNCOMMENT THIS LINE SO THE SIMULATION RUNS ON STARTUP
+        
+        //Init()
+    }
+    public void Init()
+    {
 
         // Set the initialisation time to the 2nd of February 2024
         string dateString = "2024-02-02 00:00:00"; 
@@ -322,7 +328,6 @@ public class SolarSystemManager : MonoBehaviour
 
     void velocitiesVerletMethod()
     {
-        float customTimeScale = 400000.0f;
         float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
         simulationTime += (long)(dt) ;
         Debug.Log(dt*Time.timeScale + "TJIOS IS THE DT");
@@ -353,7 +358,6 @@ public class SolarSystemManager : MonoBehaviour
 
     void rungeKuttaMethod()
     {
-        float customTimeScale = 400000.0f;
         float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
         simulationTime += (long)(dt) ;
 
@@ -405,7 +409,6 @@ public class SolarSystemManager : MonoBehaviour
     {
         // fourth order numerical integrator using the Yoshida method
 
-        float customTimeScale = 400000.0f;
         float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
         simulationTime += (long)(dt) ;
 

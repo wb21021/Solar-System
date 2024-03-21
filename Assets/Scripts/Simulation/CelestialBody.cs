@@ -40,6 +40,7 @@ public class CelestialBody : MonoBehaviour
     public Color descColor = Color.white;
     private GameObject InfoBar;
     private GameObject UXPanel;
+    private GameObject OptionsMenu;
     public GameObject VisualBodyPrefab;
     private GameObject VisualBody;
 
@@ -154,9 +155,11 @@ public class CelestialBody : MonoBehaviour
     {
         solarSystemManager = GameObject.Find("Solar System Manager");
 
-        InfoBar = GameObject.Find("InfoMenu");
-        UXPanel = GameObject.Find("UXPanel");
-
+        //Get the ui elements using this method as opposed to .Find since .Find cannot find deactivated Gameobjects
+        List<GameObject> UIElements = GameObject.Find("CloseOpenVRMenu").GetComponent<CloseVrMenu>().GetUI();
+        OptionsMenu = UIElements[1];
+        UXPanel = UIElements[0];
+        InfoBar = UXPanel.transform.GetChild(0).gameObject;
 
         solarScript = solarSystemManager.GetComponent<SolarSystemManager>();
         scaleDist = solarScript.scaleDist > 0 ? solarScript.scaleDist : 1;
@@ -211,9 +214,7 @@ public class CelestialBody : MonoBehaviour
     public void ShowInfoBox()
     {
         //Updates the left hand to show a copy of the selected planet, and a canvas containing useful information
-
-        Debug.Log("BUTTON: " + UXPanel.transform.childCount);
-        
+        //
         //Clear any children of UXPanel apart from the canvas, so that new planets are not overlaid on top of each other
         if (UXPanel.transform.childCount != 1)
         {
@@ -223,9 +224,16 @@ public class CelestialBody : MonoBehaviour
             }
             
         }
-        
+
+        //Turn off the Options menu if its on
+
+        if (OptionsMenu.activeSelf)
+        {
+            OptionsMenu.SetActive(false);
+        }
 
         UXPanel.SetActive(true);
+
 
         //Set descriptive information to the InfoMenu canvas
         InfoBar.transform.Find("NameIn").GetComponent<TMP_Text>().text = bodyName;
@@ -264,8 +272,8 @@ public class CelestialBody : MonoBehaviour
         VisualBody.GetComponent<TrailRenderer>().enabled = false;
 
         //Set position to be just above the hand, and rotate planet so its N/S pole align with the hand.
-        VisualBody.transform.localPosition = new Vector3(0.1f, 0.1f, 0);
-        VisualBody.transform.localRotation = new Quaternion(0.707f,0.707f,0f,0f);
+        VisualBody.transform.localPosition = new Vector3(0.2f, 0f, 0f);
+        VisualBody.transform.localRotation = new Quaternion(0f,0f,0f,0f);
 
         
         
