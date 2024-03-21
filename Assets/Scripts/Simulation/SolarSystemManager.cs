@@ -12,7 +12,7 @@ public class SolarSystemManager : MonoBehaviour
     public string dataFilePath;
     private long initialisationTime; // the time and date of the data in the csv (2nd of feb 2024)
     private long simulationTime; // the time of the simulation (changes as the simulation runs)
-    private uint IterPerFrame = 1; // Number of iterations per frame
+    private uint IterPerFrame = 50; // Number of iterations per frame
     public string prefabsFolder;
 
     // colection of all the celestial bodies
@@ -65,7 +65,7 @@ public class SolarSystemManager : MonoBehaviour
         PopulatePrefabPathsDictionary();
 
 
-        string text = Resources.Load<TextAsset>("SolarData").text;
+        string text = Resources.Load<TextAsset>(dataFilePath).text;
 
         string[] lines = text.Split('\n');
         
@@ -313,17 +313,10 @@ public class SolarSystemManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        // velocitiesVerletMethod();
-        // rungeKuttaMethod();
-
         for (int n = 0; n < IterPerFrame; n++)
         {
-            yoshidaMethod();
+            yoshidaMethod_8();
         }
-        
-        // GetDateTime();
-        // offsetMoons();
-        
     }
 
     void velocitiesVerletMethod()
@@ -354,8 +347,6 @@ public class SolarSystemManager : MonoBehaviour
             celestialBody.vel += 0.5f * dt * celestialBody.acc;
         }
     }
-
-
     void rungeKuttaMethod()
     {
         float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
@@ -404,78 +395,154 @@ public class SolarSystemManager : MonoBehaviour
         }
     }
 
+    // Old yoshida method (Legacy)
+    // void yoshidaMethod()
+    // {
+    //     // fourth order numerical integrator using the Yoshida method
 
-    void yoshidaMethod()
+    //     float customTimeScale = 400000.0f;
+    //     float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
+    //     simulationTime += (long)(dt) ;
+
+    //     float third = 1.0f / 3.0f;
+
+    //     double w_0 = - Mathf.Pow(2, third) / (2 - Mathf.Pow(2, third));
+    //     double w_1 = 1 / (2 - Mathf.Pow(2, third));
+
+    //     double c_1 = w_1 / 2;
+    //     double c_2 = (w_0 + w_1) / 2;
+    //     double c_3 = c_2;
+    //     double c_4 = c_1;
+
+    //     double d_1 = w_1;
+    //     double d_2 = w_0;
+    //     double d_3 = w_1;
+
+    //     foreach(CelestialBody celestialBody in celestialBodiesList)
+    //     {
+    //         celestialBody.vel = new doubleVector3(double.IsNaN(celestialBody.vel.x) ? 0 : celestialBody.vel.x, double.IsNaN(celestialBody.vel.y) ? 0 : celestialBody.vel.y, double.IsNaN(celestialBody.vel.z) ? 0 : celestialBody.vel.z);
+
+    //         // first step
+    //         //////////////////////////////////////////
+    //         // update pos (x_1)
+    //         celestialBody.pos = celestialBody.pos + (c_1 * dt * celestialBody.vel);
+    //         // update acc
+    //         UpdateGravitationalAcceleration(celestialBody);
+    //         // update vel (v_1)
+    //         celestialBody.vel = celestialBody.vel + (d_1 * dt * celestialBody.acc);
+
+
+
+    //         // second step
+    //         //////////////////////////////////////////
+    //         // update pos (x_2)
+    //         celestialBody.pos = celestialBody.pos + (c_2 * dt * celestialBody.vel);
+    //         // update acc
+    //         UpdateGravitationalAcceleration(celestialBody);
+    //         // update vel (v_2)
+    //         celestialBody.vel = celestialBody.vel + (d_2 * dt * celestialBody.acc);
+
+
+
+    //         // third step
+    //         //////////////////////////////////////////
+    //         // update pos (x_3)
+    //         celestialBody.pos = celestialBody.pos + (c_3 * dt * celestialBody.vel);
+    //         // update acc
+    //         UpdateGravitationalAcceleration(celestialBody);
+    //         // update vel (v_3)
+    //         celestialBody.vel = celestialBody.vel + (d_3 * dt * celestialBody.acc);
+
+
+
+    //         // full step (last step)
+    //         //////////////////////////////////////////
+    //         // update pos (x_4)
+    //         celestialBody.pos = celestialBody.pos + (c_4 * dt * celestialBody.vel);
+    //         // update vel (v_4 = v_3) 
+    //         // celestialBody.vel = celestialBody.vel;
+
+
+
+    //         // update position of the asset
+    //         Vector3 newPos = celestialBody.pos.ToVector3();
+    //         celestialBody.transform.localPosition = newPos*(float)scaleDist;
+    //     }   
+    // }
+
+    private void yoshidaMethod()
     {
         // fourth order numerical integrator using the Yoshida method
 
         float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
-        simulationTime += (long)(dt) ;
+        simulationTime += (long)(dt);
 
         float third = 1.0f / 3.0f;
 
         double w_0 = - Mathf.Pow(2, third) / (2 - Mathf.Pow(2, third));
         double w_1 = 1 / (2 - Mathf.Pow(2, third));
 
-        double c_1 = w_1 / 2;
-        double c_2 = (w_0 + w_1) / 2;
-        double c_3 = c_2;
-        double c_4 = c_1;
-
-        double d_1 = w_1;
-        double d_2 = w_0;
-        double d_3 = w_1;
+        double[] c = { w_1 / 2, (w_0 + w_1) / 2, (w_0 + w_1) / 2, w_1 / 2 };
+        double[] d = { w_1, w_0, w_1 };
 
         foreach(CelestialBody celestialBody in celestialBodiesList)
         {
             celestialBody.vel = new doubleVector3(double.IsNaN(celestialBody.vel.x) ? 0 : celestialBody.vel.x, double.IsNaN(celestialBody.vel.y) ? 0 : celestialBody.vel.y, double.IsNaN(celestialBody.vel.z) ? 0 : celestialBody.vel.z);
 
-            // first step
-            //////////////////////////////////////////
-            // update pos (x_1)
-            celestialBody.pos = celestialBody.pos + (c_1 * dt * celestialBody.vel);
-            // update acc
-            UpdateGravitationalAcceleration(celestialBody);
-            // update vel (v_1)
-            celestialBody.vel = celestialBody.vel + (d_1 * dt * celestialBody.acc);
-
-
-
-            // second step
-            //////////////////////////////////////////
-            // update pos (x_2)
-            celestialBody.pos = celestialBody.pos + (c_2 * dt * celestialBody.vel);
-            // update acc
-            UpdateGravitationalAcceleration(celestialBody);
-            // update vel (v_2)
-            celestialBody.vel = celestialBody.vel + (d_2 * dt * celestialBody.acc);
-
-
-
-            // third step
-            //////////////////////////////////////////
-            // update pos (x_3)
-            celestialBody.pos = celestialBody.pos + (c_3 * dt * celestialBody.vel);
-            // update acc
-            UpdateGravitationalAcceleration(celestialBody);
-            // update vel (v_3)
-            celestialBody.vel = celestialBody.vel + (d_3 * dt * celestialBody.acc);
-
-
-
-            // full step (last step)
-            //////////////////////////////////////////
-            // update pos (x_4)
-            celestialBody.pos = celestialBody.pos + (c_4 * dt * celestialBody.vel);
-            // update vel (v_4 = v_3) 
-            // celestialBody.vel = celestialBody.vel;
-
-
+            for (int i = 0; i < 4; i++)
+            {
+                // update pos
+                celestialBody.pos += c[i] * dt * celestialBody.vel;
+                // update acc
+                UpdateGravitationalAcceleration(celestialBody);
+                // update vel
+                if (i < 3) // no velocity update on the last step
+                {
+                    celestialBody.vel += d[i] * dt * celestialBody.acc;
+                }
+            }
 
             // update position of the asset
             Vector3 newPos = celestialBody.pos.ToVector3();
             celestialBody.transform.localPosition = newPos*(float)scaleDist;
         }   
     }
+
+    private void yoshidaMethod_8() 
+    {
+        // sixth order numerical integrator using the Yoshida method
+
+        float customTimeScale = 400000.0f;
+        float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
+        simulationTime += (long)(dt) ;
+
+        // Coefficients for the 6th order Yoshida integrator
+
+        double[] c = new double[] {0.392256805238780, 0.510043411918458, -0.471053385409757, 0.068753168252518, 0.068753168252518, -0.471053385409757, 0.510043411918458, 0.392256805238780};
+        double[] d = new double[] {0.784513610477560, 0.235573213359357, -1.177679984178870, 1.315186320683906, -1.177679984178870, 0.235573213359357, 0.784513610477560, 0};
+
+        foreach (CelestialBody celestialBody in celestialBodiesList)
+        {
+            celestialBody.vel = new doubleVector3(double.IsNaN(celestialBody.vel.x) ? 0 : celestialBody.vel.x, double.IsNaN(celestialBody.vel.y) ? 0 : celestialBody.vel.y, double.IsNaN(celestialBody.vel.z) ? 0 : celestialBody.vel.z);
+
+            for (int i = 0; i < 8; i++)
+            {
+                // update pos
+                celestialBody.pos += c[i] * dt * celestialBody.vel;
+                // update acc
+                UpdateGravitationalAcceleration(celestialBody);
+                // update vel
+                if (i < 7) // no velocity update on the last step
+                {
+                    celestialBody.vel += d[i] * dt * celestialBody.acc;
+                }
+            }
+
+            // update position of the asset
+            Vector3 newPos = celestialBody.pos.ToVector3();
+            celestialBody.transform.localPosition = newPos*(float)scaleDist;
+        }
+    }
+
 }
 
