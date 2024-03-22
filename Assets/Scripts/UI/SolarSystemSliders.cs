@@ -63,7 +63,7 @@ public class WholeSolarSystemScale : MonoBehaviour
         //function to convert a ScrollBar value {0 -> 1} into a usable timescale
         scrollbarvalue = scrollbarvalue - 0.5f;
         float scale = ((scrollbarvalue * scrollbarvalue * 19.95f) + (scrollbarvalue * 19.95f) + 5.0375f) * 400000f;
-        Debug.Log(scale);
+        Debug.Log("TIMESCALE: "+scale);
         return scale;
 
     }

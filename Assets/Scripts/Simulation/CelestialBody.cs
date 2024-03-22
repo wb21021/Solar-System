@@ -199,11 +199,12 @@ public class CelestialBody : MonoBehaviour
             float TextUnscaled = (float)scaleSize * 5E12f / this.transform.parent.localScale.x / radius;
             transform.Find("CanvasCelestialBodyInfo(Clone)").transform.localScale = new Vector3(TextUnscaled, TextUnscaled, TextUnscaled);
             float TextTransformed = (float)scaleSize * 2.5E12f / this.transform.parent.localScale.x / radius;
-
             this.GetComponent<TrailRenderer>().widthMultiplier = (float)scaleSize * 1E12f / this.transform.parent.localScale.x / radius;
+
             Debug.Log("SCALE: " + this.transform.parent.localScale);
             transform.Find("CanvasCelestialBodyInfo(Clone)").transform.localPosition = new Vector3(0, TextTransformed, 0);
         }
+
     }
     private void FixedUpdate()
     {

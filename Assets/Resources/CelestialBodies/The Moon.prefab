@@ -4935,7 +4935,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4693579709242440}
   - component: {fileID: 205066459857805224}
-  - component: {fileID: 6353123651212667173}
   - component: {fileID: -2576527842326221260}
   - component: {fileID: -8710574445256190148}
   - component: {fileID: 626151284023918310}
@@ -4990,27 +4989,6 @@ LODGroup:
     - renderer: {fileID: 23857910435866848}
     - renderer: {fileID: 0}
   m_Enabled: 1
---- !u!135 &6353123651212667173
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1408581670749804}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &-2576527842326221260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5053,7 +5031,9 @@ MonoBehaviour:
   isMoon: 0
   notes: 
   descColor: {r: 1, g: 1, b: 1, a: 1}
+  moonsList: []
   VisualBodyPrefab: {fileID: 1408581670749804}
+  wavelengths: []
 --- !u!114 &-8710574445256190148
 MonoBehaviour:
   m_ObjectHideFlags: 0
