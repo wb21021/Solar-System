@@ -238,7 +238,7 @@ public class SolarSystemManager : MonoBehaviour
 
         scaleDist = planeScale.magnitude/distFromSun;
         //Debug.Log(largestScale);
-        scaleSize = (planeScale.magnitude*0.005f)/largestScale;
+        scaleSize = scaleDist;//(planeScale.magnitude*0.005f)/largestScale;
 
         foreach (CelestialBody celestialBody in celestialBodiesList)
         {
