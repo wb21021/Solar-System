@@ -10,10 +10,15 @@ public class HideUI : MonoBehaviour
     {
         foreach(CelestialBody body in solarSystemManager.celestialBodiesList)
         {
-            Debug.Log("BODY: "+body.transform.childCount);
-            GameObject UI = body.transform.Find("CanvasCelestialBodyInfo(Clone)").gameObject;
-            UI.GetComponentInChildren<RawImage>().enabled = !UI.GetComponentInChildren<RawImage>().enabled;
-            UI.GetComponentInChildren<TMP_Text>().enabled = !UI.GetComponentInChildren<TMP_Text>().enabled;
+            //only look at the bodies that have text boxes over them to begin with
+            //ie just the 'parent' bodies
+            if(body.isMoon == 0)
+            {
+                GameObject UI = body.transform.Find("CanvasCelestialBodyInfo(Clone)").gameObject;
+                UI.GetComponentInChildren<RawImage>().enabled = !UI.GetComponentInChildren<RawImage>().enabled;
+                UI.GetComponentInChildren<TMP_Text>().enabled = !UI.GetComponentInChildren<TMP_Text>().enabled;
+            }
+            
         }
     }
 }

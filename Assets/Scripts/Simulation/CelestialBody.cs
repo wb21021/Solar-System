@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using doubleVector3namespace;
 using Unity.XR.CoreUtils;
+using UnityEngine.UI;
 
 public class CelestialBody : MonoBehaviour
 {
@@ -38,6 +39,9 @@ public class CelestialBody : MonoBehaviour
     public int isMoon;            // if not a moon = 0, if a moon = index of the planet it orbits    
     public string notes;
     public Color descColor = Color.white;
+
+    public List<CelestialBody> moonsList; //list of moons this body has
+
     private GameObject InfoBar;
     private GameObject UXPanel;
     private GameObject OptionsMenu;
@@ -166,37 +170,55 @@ public class CelestialBody : MonoBehaviour
         scaleSize = solarScript.scaleSize > 0 ? solarScript.scaleSize : 1;
 
 
+        foreach(CelestialBody body in solarScript.celestialBodiesList)
+        {
+            if (body.isMoon == this.id && this.id != 0) 
+            {
+                Debug.Log(body.bodyName + "IS A MOON TO: " + this.bodyName);
+                this.moonsList.Add(body);
+            }
+        }
         
 
         transform = GetComponent<Transform>();
         transform.localScale = new Vector3(radius*(float)scaleSize, radius*(float)scaleSize, radius*(float)scaleSize);
 
-        Debug.Log("SCALE: " + bodyName + " " + transform.Find("CanvasCelestialBodyInfo(Clone)").transform.localScale);
-        float TextUnscaled = (float)scaleSize * 5E12f / radius;
-        transform.Find("CanvasCelestialBodyInfo(Clone)").transform.localScale = new Vector3(TextUnscaled, TextUnscaled, TextUnscaled);
-        float TextTransformed = (float)scaleSize * 2.5E12f / radius;
-        transform.Find("CanvasCelestialBodyInfo(Clone)").transform.localPosition = new Vector3(0, TextTransformed,0);
-        Debug.Log("TRANS: " + bodyName + " " + TextTransformed);
-        Debug.Log("SCALE: " + bodyName + " " + transform.Find("CanvasCelestialBodyInfo(Clone)").transform.localScale);
+        
+        
 
         // --------------
         // Doppler
         player = GameObject.Find("Main Camera");
         prevPos = player.transform.position;
     }
+    private void Update()
+    {
+        //To keep the hovering text boxes visible at all times, we remove the local scaling by dividing by both the celestial body scale, and the solar system scale
+        if (this.isMoon == 0)
+        {
+            float TextUnscaled = (float)scaleSize * 5E12f / this.transform.parent.localScale.x / radius;
+            transform.Find("CanvasCelestialBodyInfo(Clone)").transform.localScale = new Vector3(TextUnscaled, TextUnscaled, TextUnscaled);
+            float TextTransformed = (float)scaleSize * 2.5E12f / this.transform.parent.localScale.x / radius;
 
+            this.GetComponent<TrailRenderer>().widthMultiplier = (float)scaleSize * 1E12f / this.transform.parent.localScale.x / radius;
+            Debug.Log("SCALE: " + this.transform.parent.localScale);
+            transform.Find("CanvasCelestialBodyInfo(Clone)").transform.localPosition = new Vector3(0, TextTransformed, 0);
+        }
+    }
     private void FixedUpdate()
     {
 
         if (VisualBody  != null)
         {
-            VisualBody.transform.Rotate(0, orbitalPeriod/24, 0);
+            //VisualBody.transform.Rotate(0, orbitalPeriod/24, 0);
 
-            float planetUnscaled = 0.000000005f / (float)scaleSize;
+            float planetUnscaled = 0.00000001f / (float)scaleSize;
 
-            Debug.Log("SCALE: " + planetUnscaled);
             VisualBody.transform.localScale = new Vector3(planetUnscaled,planetUnscaled,planetUnscaled);
 
+            double angleRad = this.axialTilt * (Math.PI / 180);
+            Vector3 axisOfRotation = new Vector3((float)Math.Sin(angleRad), (float)Math.Cos(angleRad), 0);
+            VisualBody.transform.Rotate(Quaternion.AngleAxis(orbitalPeriod / 24, axisOfRotation).eulerAngles);
 
             // --------------------------------
             // Doppler
@@ -225,6 +247,16 @@ public class CelestialBody : MonoBehaviour
             
         }
 
+        Transform moonButtons = InfoBar.transform.Find("MoonButtons");
+        if (moonButtons.childCount != 0)
+        {
+            for (int i = 0; i < moonButtons.childCount; i++)
+            {
+                Destroy(moonButtons.GetChild(i).gameObject);
+            }
+
+        }
+
         //Turn off the Options menu if its on
 
         if (OptionsMenu.activeSelf)
@@ -250,13 +282,29 @@ public class CelestialBody : MonoBehaviour
         //Reset what page the long text should be on
         InfoBar.transform.Find("DescriptionIn").GetComponent<TMP_Text>().pageToDisplay = 1;
 
+        UnityEngine.Object MoonButtonPrefab = Resources.Load("UIElements/MoonButtonPrefab");
+
+        float y = 0;
+        foreach (CelestialBody moon in moonsList)
+        {
+ 
+            GameObject MoonButton = Instantiate(MoonButtonPrefab, moonButtons) as GameObject;
+            MoonButton.GetComponentInChildren<TMP_Text>().text = moon.bodyName;
+            MoonButton.transform.localPosition = new Vector3(0f, (60 - (y * 40f)), 0f);
+            MoonButton.GetComponent<Button>().onClick.AddListener(delegate() { moon.ShowInfoBox(); });
+            MoonButton.GetComponent<UnityEngine.UI.Image>().color = moon.descColor;
+            y++;
+            
+        }
+
         //Change the colour of the panel to match the selected planet
         InfoBar.transform.Find("OuterPanel").GetComponent<UnityEngine.UI.Image>().color = descColor;
 
         InfoBar.transform.Find("DescriptionPanel").GetComponent<UnityEngine.UI.Image>().color = descColor;
-
+        InfoBar.transform.Find("ValuePanel").GetComponent<UnityEngine.UI.Image>().color = descColor;
+        InfoBar.transform.Find("MoonPanel").GetComponent<UnityEngine.UI.Image>().color = descColor;
+        InfoBar.transform.Find("ButtonClose").GetComponent<UnityEngine.UI.Image>().color = descColor;
         InfoBar.transform.Find("ButtonBack").GetComponent<UnityEngine.UI.Image>().color = descColor;
-
         InfoBar.transform.Find("ButtonForward").GetComponent<UnityEngine.UI.Image>().color = descColor;
 
 
@@ -268,7 +316,14 @@ public class CelestialBody : MonoBehaviour
 
         //Set planet to be a child of the UXPanel, and clear trail
         VisualBody.transform.SetParent(PanelTransform);
-        Destroy(VisualBody.GetNamedChild("CanvasCelestialBodyInfo(Clone)").gameObject);
+        
+        if(this.isMoon == 0)
+        {
+            Destroy(VisualBody.GetNamedChild("CanvasCelestialBodyInfo(Clone)").gameObject);
+    
+        }
+
+        GameObject Cylinder = Instantiate(Resources.Load("UIElements/Cylinder"),VisualBody.transform) as GameObject;
         VisualBody.GetComponent<TrailRenderer>().enabled = false;
 
         //Set position to be just above the hand, and rotate planet so its N/S pole align with the hand.

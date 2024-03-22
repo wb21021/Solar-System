@@ -12,7 +12,7 @@ public class SolarSystemManager : MonoBehaviour
     public string dataFilePath;
     private long initialisationTime; // the time and date of the data in the csv (2nd of feb 2024)
     private long simulationTime; // the time of the simulation (changes as the simulation runs)
-    private uint IterPerFrame = 50; // Number of iterations per frame
+    private uint IterPerFrame = 1; // Number of iterations per frame
     public string prefabsFolder;
 
     // colection of all the celestial bodies
@@ -39,8 +39,8 @@ public class SolarSystemManager : MonoBehaviour
     void Start()
     {
         //IF YOURE NOT ABLE TO RUN THIS IN VR, UNCOMMENT THIS LINE SO THE SIMULATION RUNS ON STARTUP
-        
-        //Init()
+
+        //Init();
     }
     public void Init()
     {
@@ -114,7 +114,7 @@ public class SolarSystemManager : MonoBehaviour
                 centralBodyMass = 0;
             }
             celestialBodyScript.SetPropertiesFromData(
-                    i, // ID of the celestial body
+                    i-1, // ID of the celestial body
                     float.Parse(values[2]), // Mass of the celestial body in kg
                     float.Parse(values[3]), // Mass of the celestial body in Earth masses
                     float.Parse(values[4]), // Mean radius of the celestial body in km
@@ -156,23 +156,27 @@ public class SolarSystemManager : MonoBehaviour
             celestialBodyInit.transform.parent = WholeSolarSystem.transform;
 
 
-           
 
+            //Only create a hovering text box if its a proper planet / the sun
+            if (values[25] == "Sun" || values[25] == "N/A")
+            {
+                //Create text box over planet
+                GameObject hoverUIPrefab = Resources.Load<GameObject>($"UIElements/CanvasCelestialBodyInfo");
+                GameObject hoveringUIbox = Instantiate(hoverUIPrefab);
+                hoveringUIbox.transform.SetParent(celestialBodyInit.transform);
+                hoveringUIbox.transform.localPosition = new Vector3(0, 1, 0);
+                hoveringUIbox.GetComponentInChildren<TMP_Text>().text = celestialBodyName;
+                //hoveringUIbox.transform.localScale = new Vector3((float)scaleSize,(float)scaleSize,(float)scaleSize);
+                hoveringUIbox.SetActive(true);
 
-            //Create text box over planet
-            GameObject hoverUIPrefab = Resources.Load<GameObject>($"UIElements/CanvasCelestialBodyInfo");
-            GameObject hoveringUIbox = Instantiate(hoverUIPrefab);
-            hoveringUIbox.transform.SetParent(celestialBodyInit.transform);
-            hoveringUIbox.transform.localPosition = new Vector3(0, 1, 0);
-            hoveringUIbox.GetComponentInChildren<TMP_Text>().text = celestialBodyName;
-            //hoveringUIbox.transform.localScale = new Vector3((float)scaleSize,(float)scaleSize,(float)scaleSize);
-            hoveringUIbox.SetActive(true);
-
-            //Debug build only
-            buildDebugLog.text = buildDebugLog.text + "\nHoveringUIBox set";
+                //Debug build only
+                buildDebugLog.text = buildDebugLog.text + "\nHoveringUIBox set";
+            }
+            
 
             //------------------------------------------------------------------
         }
+
         // Set the initial positions and velocities of the celestial bodies
         InitialiseCelestialBodies();
 
@@ -187,6 +191,8 @@ public class SolarSystemManager : MonoBehaviour
 
 
     }
+
+    
 
     private void PopulatePrefabPathsDictionary()
     {
@@ -315,7 +321,7 @@ public class SolarSystemManager : MonoBehaviour
     {
         for (int n = 0; n < IterPerFrame; n++)
         {
-            yoshidaMethod_8();
+            yoshidaMethod();
         }
     }
 
@@ -508,11 +514,10 @@ public class SolarSystemManager : MonoBehaviour
         }   
     }
 
-    private void yoshidaMethod_8() 
+    private void yoshidaMethod_6() 
     {
         // sixth order numerical integrator using the Yoshida method
 
-        float customTimeScale = 400000.0f;
         float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
         simulationTime += (long)(dt) ;
 

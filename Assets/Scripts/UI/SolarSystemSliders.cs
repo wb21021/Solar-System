@@ -17,7 +17,7 @@ public class WholeSolarSystemScale : MonoBehaviour
         //Get the slider value {0 -> 1] and convert it into a meaningful scale.
         float rawSliderValue = this.GetComponent<Scrollbar>().value;
 
-        float scale = (rawSliderValue * 3) + 0.1f;
+        float scale = (rawSliderValue * 5) + 0.1f;
 
         WholeSolarSystem.transform.localScale = new Vector3(scale,scale,scale);
 
@@ -61,7 +61,10 @@ public class WholeSolarSystemScale : MonoBehaviour
     {
 
         //function to convert a ScrollBar value {0 -> 1} into a usable timescale
-        return (scrollbarvalue * 10000000f) + 100000f;
+        scrollbarvalue = scrollbarvalue - 0.5f;
+        float scale = ((scrollbarvalue * scrollbarvalue * 19.95f) + (scrollbarvalue * 19.95f) + 5.0375f) * 400000f;
+        Debug.Log(scale);
+        return scale;
 
     }
     private void ClearTrails()

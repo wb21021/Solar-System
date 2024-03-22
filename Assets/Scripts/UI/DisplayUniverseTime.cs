@@ -5,9 +5,19 @@ public class DisplayUniverseTime : MonoBehaviour
 {
     public SolarSystemManager SolarSystemManager;
 
+    private bool started = false;
 
     void Update()
     {
-        this.GetComponent<TMP_Text>().text = SolarSystemManager.GetDateTimeString();
+        if (started)
+        {
+            this.GetComponent<TMP_Text>().text = SolarSystemManager.GetDateTimeString();
+        }
+        
+    }
+
+    public void StartedButtonPress()
+    {
+        started = true;
     }
 }
