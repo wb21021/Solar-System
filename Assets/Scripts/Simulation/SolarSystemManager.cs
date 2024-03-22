@@ -230,6 +230,7 @@ public class SolarSystemManager : MonoBehaviour
             {
                 largestScale = newLargestScale;
             }
+
         }
         
         // Offset the moons
@@ -239,7 +240,11 @@ public class SolarSystemManager : MonoBehaviour
         //Debug.Log(largestScale);
         scaleSize = (planeScale.magnitude*0.005f)/largestScale;
 
-
+        foreach (CelestialBody celestialBody in celestialBodiesList)
+        {
+            celestialBody.transform.localPosition = celestialBody.posDouble.ToVector3() * (float)scaleDist;
+            celestialBody.GetComponent<TrailRenderer>().Clear();
+        }
     }
 
     private void UpdateGravitationalAcceleration(CelestialBody celestialBody)
