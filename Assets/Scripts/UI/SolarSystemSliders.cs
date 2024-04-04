@@ -12,6 +12,10 @@ public class WholeSolarSystemScale : MonoBehaviour
     public GameObject WholeSolarSystem;
     public SolarSystemManager SolarSystemManager;
 
+    void Update(){
+        ClearTrails();
+    }
+
     public void SizeSliderChanged()
     {
         //Get the slider value {0 -> 1] and convert it into a meaningful scale.

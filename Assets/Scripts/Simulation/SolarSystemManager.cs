@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using doubleVector3namespace;
 
 public class SolarSystemManager : MonoBehaviour
@@ -14,6 +15,9 @@ public class SolarSystemManager : MonoBehaviour
     private long simulationTime; // the time of the simulation (changes as the simulation runs)
     private uint IterPerFrame = 1; // Number of iterations per frame
     public string prefabsFolder;
+
+    public GameObject buttonPrefab; // Assign the button prefab in the inspector
+    public Transform buttonContainer; // Assign the parent object for the buttons in the inspector
 
     // colection of all the celestial bodies
     public List<CelestialBody> celestialBodiesList = new List<CelestialBody>();
@@ -39,8 +43,101 @@ public class SolarSystemManager : MonoBehaviour
     void Start()
     {
         //IF YOURE NOT ABLE TO RUN THIS IN VR, UNCOMMENT THIS LINE SO THE SIMULATION RUNS ON STARTUP
+        
+        Init();
+        CreateButtons();
+    }
 
-        //Init();
+
+    public GameObject player; // Needed to teleport player
+
+    public GameObject nextPageButtonPrefab; // Assign the next page button prefab in the inspector
+    public GameObject prevPageButtonPrefab; // Assign the previous page button prefab in the inspector
+    private GameObject nextPageButton; // Reference to the instantiated next page button
+    private GameObject prevPageButton; // Reference to the instantiated previous page button
+
+    public int buttonsPerPage = 5;
+    private int currentPage = 0;
+
+
+    public float distanceThreshold;
+
+    public void CreateButtons()
+    {
+        // Calculate the start and end index for the current page
+        int startIndex = currentPage * buttonsPerPage;
+        int endIndex = Mathf.Min(startIndex + buttonsPerPage, celestialBodiesList.Count);
+        
+        // Start position for the first button
+        Vector3 buttonPosition = buttonContainer.position - new Vector3(0, 0.105f, 0);
+                
+        // Instantiate buttons for current page
+        for (int i = startIndex; i < endIndex; i++)
+        {
+            CelestialBody body = celestialBodiesList[i];
+            GameObject buttonGO = Instantiate(buttonPrefab, buttonContainer);
+            Button button = buttonGO.GetComponent<Button>();
+            if (button == null)
+            {
+                Debug.LogError("Button component not found on the button prefab.");
+                return;
+            }
+            // Set button text to celestial body's name
+            button.GetComponentInChildren<TextMeshProUGUI>().text = body.bodyName;
+            // Add listener to teleport player to the celestial body
+            button.onClick.AddListener(() => TeleportPlayer(body));
+            
+            // Set position of the button
+            buttonGO.transform.position = buttonPosition;
+            
+            // Adjust position for the next button
+            buttonPosition -= new Vector3(0, 0.025f, 0);
+        }
+        
+        // Instantiate previous page button if not on first page
+        if (currentPage > 0)
+        {
+            prevPageButton = Instantiate(prevPageButtonPrefab, buttonContainer);
+            prevPageButton.GetComponent<Button>().onClick.AddListener(PreviousPage);
+            prevPageButton.transform.position = buttonPosition - new Vector3(0.039f, 0.02f, 0);
+        }
+
+        // Instantiate next page button if not on last page
+        if (endIndex < celestialBodiesList.Count)
+        {
+            nextPageButton = Instantiate(nextPageButtonPrefab, buttonContainer);
+            nextPageButton.GetComponent<Button>().onClick.AddListener(NextPage);
+            nextPageButton.transform.position = buttonPosition - new Vector3(-0.039f, 0.02f, 0);
+        }
+    }
+
+    public void TeleportPlayer(CelestialBody body)
+    {
+        player.transform.position = body.transform.position;
+    }
+
+    public void NextPage()
+    {
+        currentPage++;
+        RefreshButtons();
+    }
+
+    public void PreviousPage()
+    {
+        currentPage--;
+        RefreshButtons();
+    }
+
+    public void RefreshButtons()
+    {
+        // Destroy existing buttons
+        foreach (Transform child in buttonContainer)
+        {
+            Destroy(child.gameObject);
+        }
+        
+        // Create buttons for the new page
+        CreateButtons();
     }
     public void Init()
     {
@@ -225,21 +322,20 @@ public class SolarSystemManager : MonoBehaviour
             {
                 distFromSun = newDistFromSun;
             }
-            newLargestScale = new doubleVector3(celestialBody.radius, celestialBody.radius, celestialBody.radius).magnitude;
-            if (newLargestScale > largestScale)
+            newLargestScale = new doubleVector3(celestialBody.radiusEarth, celestialBody.radiusEarth, celestialBody.radiusEarth).magnitude;
+            /*if (newLargestScale > largestScale)
             {
                 largestScale = newLargestScale;
-            }
-
+            }*/
         }
         
         // Offset the moons
         offsetMoons();
 
-        scaleDist = planeScale.magnitude/distFromSun;
+        scaleDist = 1.56786e-7/10;//planeScale.magnitude/distFromSun;
         //Debug.Log(largestScale);
-        scaleSize = scaleDist;//(planeScale.magnitude*0.005f)/largestScale;
-
+        scaleSize = 1/10;//scaleDist;//(planeScale.magnitude*0.005f)/largestScale;
+        
         foreach (CelestialBody celestialBody in celestialBodiesList)
         {
             celestialBody.transform.localPosition = celestialBody.posDouble.ToVector3() * (float)scaleDist;
@@ -327,6 +423,35 @@ public class SolarSystemManager : MonoBehaviour
         for (int n = 0; n < IterPerFrame; n++)
         {
             yoshidaMethod();
+        }
+    }
+
+    void LateUpdate()
+    {
+        foreach(CelestialBody celestialBody in celestialBodiesList) {
+            float distance = Vector3.Distance(celestialBody.transform.position, player.transform.position);
+            Transform iconTransform = celestialBody.transform.Find("icon");
+            if (distance > distanceThreshold) 
+            {
+                iconTransform.gameObject.SetActive(true);
+                // Calculate direction vector from player to celestial body and normalize it
+                Vector3 direction = (celestialBody.transform.position - player.transform.position).normalized;
+                Vector3 iconPosition = player.transform.position + direction * 1000f;
+
+                iconTransform.position = iconPosition;
+                iconTransform.LookAt(player.transform.position);
+
+                // Normalize icon scale relative to parent scale
+                Vector3 parentScale = celestialBody.transform.lossyScale;
+                float normalizedScaleFactor = 10.0f;
+
+                Vector3 iconScale = new Vector3(1 / parentScale.x, 1 / parentScale.y, 1 / parentScale.z) * normalizedScaleFactor;
+                iconTransform.localScale = iconScale;
+            } else 
+            {
+                // Object is close, hide its icon
+                iconTransform.gameObject.SetActive(false);
+            }
         }
     }
 
