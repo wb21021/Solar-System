@@ -190,6 +190,7 @@ public class CelestialBody : MonoBehaviour
         // Doppler
         player = GameObject.Find("Main Camera");
         prevPos = player.transform.position;
+
     }
     private void Update()
     {
@@ -208,18 +209,15 @@ public class CelestialBody : MonoBehaviour
     }
     private void FixedUpdate()
     {
-
+        Debug.Log("FIXED: "+ VisualBody);
         if (VisualBody  != null)
         {
-            //VisualBody.transform.Rotate(0, orbitalPeriod/24, 0);
+            Debug.Log("FIXED: Running");
 
-            float planetUnscaled = 0.00000001f / (float)scaleSize;
+            float final_scale = 0.0000001f/(float)scaleSize;
+            VisualBody.transform.localScale = new Vector3(final_scale, final_scale,final_scale);
 
-            VisualBody.transform.localScale = new Vector3(planetUnscaled,planetUnscaled,planetUnscaled);
-
-            double angleRad = this.axialTilt * (Math.PI / 180);
-            Vector3 axisOfRotation = new Vector3((float)Math.Sin(angleRad), (float)Math.Cos(angleRad), 0);
-            VisualBody.transform.Rotate(Quaternion.AngleAxis(orbitalPeriod / 24, axisOfRotation).eulerAngles);
+            VisualBody.transform.Find(bodyName).GetComponent<Transform>().Rotate(new Vector3(0f, orbitalPeriod / 50, 0f));
 
             // --------------------------------
             // Doppler
@@ -329,10 +327,10 @@ public class CelestialBody : MonoBehaviour
 
         //Set position to be just above the hand, and rotate planet so its N/S pole align with the hand.
         VisualBody.transform.localPosition = new Vector3(0.2f, 0f, 0f);
-        VisualBody.transform.localRotation = new Quaternion(0f,0f,0f,0f);
+        VisualBody.transform.Rotate(new Vector3(0, 0, -axialTilt));
 
-        
-        
-        
+
+
+
     }
 }
