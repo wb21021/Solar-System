@@ -12,23 +12,23 @@ public class WholeSolarSystemScale : MonoBehaviour
     public GameObject WholeSolarSystem;
     public SolarSystemManager SolarSystemManager;
 
-    void Update(){
-        ClearTrails();
-    }
 
     public void SizeSliderChanged()
     {
         //Get the slider value {0 -> 1] and convert it into a meaningful scale.
         float rawSliderValue = this.GetComponent<Scrollbar>().value;
 
-        float scale = (rawSliderValue * 5) + 0.1f;
+        float scale = (rawSliderValue * 0.01f) + 0.0005f;
 
         WholeSolarSystem.transform.localScale = new Vector3(scale,scale,scale);
 
         //Reset the trails so that the planets dont look like theyve moved in / out
         ClearTrails();
+        //UpdateTrailScale();
         
     }
+
+
 
     public void PauseButtonPress()
     {
@@ -56,6 +56,8 @@ public class WholeSolarSystemScale : MonoBehaviour
         SolarSystemManager.customTimeScale = ScrollBarValueToTimeScale(rawSliderValue);
     }
 
+
+
     public void ClearTrailsButtonPress()
     {
         ClearTrails();
@@ -77,6 +79,14 @@ public class WholeSolarSystemScale : MonoBehaviour
         foreach (CelestialBody body in SolarSystemManager.celestialBodiesList)
         {
             body.GetComponent<TrailRenderer>().Clear();
+        }
+    }
+
+    private void UpdateTrailScale() 
+    {
+        foreach (CelestialBody body in SolarSystemManager.celestialBodiesList)
+        {
+            body.GetComponent<TrailRenderer>().widthMultiplier = body.transform.localScale.x;
         }
     }
 }

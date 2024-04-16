@@ -26,6 +26,7 @@ public class StartButton : MonoBehaviour
         Destroy(this.transform.parent.gameObject);
 
         solarSystemManager.Init();
+        solarSystemManager.CreateButtons();
      
     }
 }

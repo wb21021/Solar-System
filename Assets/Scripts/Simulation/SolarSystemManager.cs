@@ -35,7 +35,7 @@ public class SolarSystemManager : MonoBehaviour
     //BUILD DEBUG ONLY
     public TMP_Text buildDebugLog;
 
-
+    private bool started = false;
 
     //TIMESTEP (DEFAULT 400000f)
     public float customTimeScale = 400000.0f;
@@ -43,9 +43,10 @@ public class SolarSystemManager : MonoBehaviour
     void Start()
     {
         //IF YOURE NOT ABLE TO RUN THIS IN VR, UNCOMMENT THIS LINE SO THE SIMULATION RUNS ON STARTUP
-        
-        Init();
-        CreateButtons();
+
+        //Init();
+        //CreateButtons();
+
     }
 
 
@@ -69,13 +70,13 @@ public class SolarSystemManager : MonoBehaviour
         int endIndex = Mathf.Min(startIndex + buttonsPerPage, celestialBodiesList.Count);
         
         // Start position for the first button
-        Vector3 buttonPosition = buttonContainer.position - new Vector3(0, 0.105f, 0);
+        Vector3 buttonPosition = new Vector3(0f, 0f, 0f);
                 
         // Instantiate buttons for current page
         for (int i = startIndex; i < endIndex; i++)
         {
             CelestialBody body = celestialBodiesList[i];
-            GameObject buttonGO = Instantiate(buttonPrefab, buttonContainer);
+            GameObject buttonGO = Instantiate(buttonPrefab, buttonContainer) as GameObject;
             Button button = buttonGO.GetComponent<Button>();
             if (button == null)
             {
@@ -88,10 +89,10 @@ public class SolarSystemManager : MonoBehaviour
             button.onClick.AddListener(() => TeleportPlayer(body));
             
             // Set position of the button
-            buttonGO.transform.position = buttonPosition;
+            buttonGO.transform.localPosition = buttonPosition;
             
             // Adjust position for the next button
-            buttonPosition -= new Vector3(0, 0.025f, 0);
+            buttonPosition -= new Vector3(0, 35f, 0);
         }
         
         // Instantiate previous page button if not on first page
@@ -99,7 +100,7 @@ public class SolarSystemManager : MonoBehaviour
         {
             prevPageButton = Instantiate(prevPageButtonPrefab, buttonContainer);
             prevPageButton.GetComponent<Button>().onClick.AddListener(PreviousPage);
-            prevPageButton.transform.position = buttonPosition - new Vector3(0.039f, 0.02f, 0);
+            prevPageButton.transform.localPosition = buttonPosition - new Vector3(40f, 10f, 0);
         }
 
         // Instantiate next page button if not on last page
@@ -107,7 +108,7 @@ public class SolarSystemManager : MonoBehaviour
         {
             nextPageButton = Instantiate(nextPageButtonPrefab, buttonContainer);
             nextPageButton.GetComponent<Button>().onClick.AddListener(NextPage);
-            nextPageButton.transform.position = buttonPosition - new Vector3(-0.039f, 0.02f, 0);
+            nextPageButton.transform.localPosition = buttonPosition - new Vector3(-40f, 10f, 0);
         }
     }
 
@@ -259,17 +260,19 @@ public class SolarSystemManager : MonoBehaviour
             {
                 //Create text box over planet
                 GameObject hoverUIPrefab = Resources.Load<GameObject>($"UIElements/CanvasCelestialBodyInfo");
-                GameObject hoveringUIbox = Instantiate(hoverUIPrefab);
-                hoveringUIbox.transform.SetParent(celestialBodyInit.transform);
+                GameObject hoveringUIbox = Instantiate(hoverUIPrefab, celestialBodyInit.transform);
+
+
                 hoveringUIbox.transform.localPosition = new Vector3(0, 1, 0);
+
                 hoveringUIbox.GetComponentInChildren<TMP_Text>().text = celestialBodyName;
-                //hoveringUIbox.transform.localScale = new Vector3((float)scaleSize,(float)scaleSize,(float)scaleSize);
                 hoveringUIbox.SetActive(true);
 
                 //Debug build only
                 buildDebugLog.text = buildDebugLog.text + "\nHoveringUIBox set";
             }
-            
+
+            celestialBodyInit.GetComponent<TrailRenderer>().widthMultiplier = 0.05f;
 
             //------------------------------------------------------------------
         }
@@ -339,7 +342,7 @@ public class SolarSystemManager : MonoBehaviour
         foreach (CelestialBody celestialBody in celestialBodiesList)
         {
             celestialBody.transform.localPosition = celestialBody.posDouble.ToVector3() * (float)scaleDist;
-            celestialBody.GetComponent<TrailRenderer>().Clear();
+            
         }
     }
 
@@ -420,9 +423,24 @@ public class SolarSystemManager : MonoBehaviour
 
     void FixedUpdate()
     {
+        
+        
         for (int n = 0; n < IterPerFrame; n++)
         {
             yoshidaMethod();
+        }
+
+        //Clear the trails after the first iteration, so that the trails dont show the bodies originating from the origin
+        //this is a pretty hacky way of doing it, but i genuinely couldnt clear the trails up until this point during the 
+        //initialisation process.
+        if (started == false)
+        {
+            foreach (CelestialBody body in celestialBodiesList)
+            {
+                body.GetComponent<TrailRenderer>().Clear();
+                Debug.Log("CLEAR");
+                started = true;
+            }
         }
     }
 
@@ -431,22 +449,28 @@ public class SolarSystemManager : MonoBehaviour
         foreach(CelestialBody celestialBody in celestialBodiesList) {
             float distance = Vector3.Distance(celestialBody.transform.position, player.transform.position);
             Transform iconTransform = celestialBody.transform.Find("icon");
-            if (distance > distanceThreshold) 
+            if (distance > distanceThreshold && celestialBody.isMoon == 0) 
             {
+
                 iconTransform.gameObject.SetActive(true);
                 // Calculate direction vector from player to celestial body and normalize it
                 Vector3 direction = (celestialBody.transform.position - player.transform.position).normalized;
-                Vector3 iconPosition = player.transform.position + direction * 1000f;
+                Vector3 iconPosition = player.transform.position + direction * 100f;
 
                 iconTransform.position = iconPosition;
                 iconTransform.LookAt(player.transform.position);
 
                 // Normalize icon scale relative to parent scale
                 Vector3 parentScale = celestialBody.transform.lossyScale;
-                float normalizedScaleFactor = 10.0f;
+                float normalizedScaleFactor = 1.0f;
 
                 Vector3 iconScale = new Vector3(1 / parentScale.x, 1 / parentScale.y, 1 / parentScale.z) * normalizedScaleFactor;
                 iconTransform.localScale = iconScale;
+                if(celestialBody.bodyName == "Sun")
+                {
+                    iconTransform.localScale *= 2;
+                }
+
             } else 
             {
                 // Object is close, hide its icon
