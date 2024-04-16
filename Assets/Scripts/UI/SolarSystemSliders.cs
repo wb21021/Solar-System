@@ -28,7 +28,13 @@ public class WholeSolarSystemScale : MonoBehaviour
         
     }
 
+    public void IterationsPerFrameSliderChanged()
+    {
+        float rawSliderValue = this.GetComponent<Scrollbar>().value;
 
+        uint scale = (uint)Mathf.RoundToInt((rawSliderValue * 39) + 1);
+        SolarSystemManager.IterPerFrame = scale;
+    }
 
     public void PauseButtonPress()
     {
@@ -53,6 +59,7 @@ public class WholeSolarSystemScale : MonoBehaviour
         //Then set the simulation timescale
         float rawSliderValue = this.GetComponent<Scrollbar>().value;
         
+
         SolarSystemManager.customTimeScale = ScrollBarValueToTimeScale(rawSliderValue);
     }
 
@@ -67,9 +74,7 @@ public class WholeSolarSystemScale : MonoBehaviour
     {
 
         //function to convert a ScrollBar value {0 -> 1} into a usable timescale
-        scrollbarvalue = scrollbarvalue - 0.5f;
-        float scale = ((scrollbarvalue * scrollbarvalue * 19.95f) + (scrollbarvalue * 19.95f) + 5.0375f) * 400000f;
-        Debug.Log("TIMESCALE: "+scale);
+        float scale = (500000f*scrollbarvalue) + 100000;
         return scale;
 
     }

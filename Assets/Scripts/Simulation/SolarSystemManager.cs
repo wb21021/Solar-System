@@ -13,7 +13,7 @@ public class SolarSystemManager : MonoBehaviour
     public string dataFilePath;
     private long initialisationTime; // the time and date of the data in the csv (2nd of feb 2024)
     private long simulationTime; // the time of the simulation (changes as the simulation runs)
-    private uint IterPerFrame = 1; // Number of iterations per frame
+    public uint IterPerFrame = 1; // Number of iterations per frame
     public string prefabsFolder;
 
     public GameObject buttonPrefab; // Assign the button prefab in the inspector
@@ -32,8 +32,7 @@ public class SolarSystemManager : MonoBehaviour
 
     public TMP_Text PlanetNameText;
 
-    //BUILD DEBUG ONLY
-    public TMP_Text buildDebugLog;
+    public int integrationMethodIndex = 0;
 
     private bool started = false;
 
@@ -155,10 +154,6 @@ public class SolarSystemManager : MonoBehaviour
             Debug.LogError("Failed to parse date");
         }
 
-
-        //Debug build ONLY
-        buildDebugLog.text = "START";
-
         // Populate the dictionary with celestial body names and prefab paths
         PopulatePrefabPathsDictionary();
 
@@ -167,8 +162,7 @@ public class SolarSystemManager : MonoBehaviour
 
         string[] lines = text.Split('\n');
         
-        //Debug build only
-        buildDebugLog.text = buildDebugLog.text + "\nLoading: " + lines.Length + " bodies";
+
 
         for (int i = 1; i< lines.Length; i++)
         {
@@ -178,9 +172,6 @@ public class SolarSystemManager : MonoBehaviour
             // Get the name from the CSV data
             string celestialBodyName = values[0].Trim();
 
-
-            //Debug build only
-            buildDebugLog.text = buildDebugLog.text + "\nLoading: " + celestialBodyName + " bodies";
 
 
 
@@ -197,8 +188,7 @@ public class SolarSystemManager : MonoBehaviour
                 Debug.LogWarning($"No prefab path found for celestial body: {celestialBodyName}");
                 celestialBodyPrefab = defaultCelestialBodyPrefab;
 
-                //Debug build only
-                buildDebugLog.text = buildDebugLog.text + "\nNo prefab found for body, defaulting.";
+
             }
             // Instantiate celestial body prefab
             GameObject celestialBodyInit = Instantiate(celestialBodyPrefab);
@@ -242,8 +232,6 @@ public class SolarSystemManager : MonoBehaviour
 
                 );
 
-            //Debug build only
-            buildDebugLog.text = buildDebugLog.text + "\nProperties set";
 
             celestialBodyScript.bodyName = celestialBodyName;
 
@@ -268,8 +256,6 @@ public class SolarSystemManager : MonoBehaviour
                 hoveringUIbox.GetComponentInChildren<TMP_Text>().text = celestialBodyName;
                 hoveringUIbox.SetActive(true);
 
-                //Debug build only
-                buildDebugLog.text = buildDebugLog.text + "\nHoveringUIBox set";
             }
 
             celestialBodyInit.GetComponent<TrailRenderer>().widthMultiplier = 0.05f;
@@ -427,7 +413,22 @@ public class SolarSystemManager : MonoBehaviour
         
         for (int n = 0; n < IterPerFrame; n++)
         {
-            yoshidaMethod();
+            //Use the integration method selected by the user's dropdown menu.
+            switch (integrationMethodIndex)
+            {
+                case 0:
+                    yoshidaMethod();
+                    break;
+                case 1:
+                    velocitiesVerletMethod();
+                    break;
+                case 2:
+                    rungeKuttaMethod();
+                    break;
+                case 3:
+                    yoshidaMethod_6();
+                    break;
+            }
         }
 
         //Clear the trails after the first iteration, so that the trails dont show the bodies originating from the origin
