@@ -53,6 +53,7 @@ public class SolarSystemManager : MonoBehaviour
     }
 
     public float iconDistAbove;
+    public float iconDist;
 
     public GameObject player; // Needed to teleport player
 
@@ -66,8 +67,6 @@ public class SolarSystemManager : MonoBehaviour
 
 
     public float distanceThreshold;
-
-    public float iconDist;
 
     public void CreateButtons()
     {
@@ -484,6 +483,8 @@ public class SolarSystemManager : MonoBehaviour
             Transform iconTransform = celestialBody.transform.Find("icon");
             
             celestialBody.distanceText.text = distance.ToString();
+            celestialBody.nameText.text = celestialBody.bodyName;
+
             if (celestialBody.isMoon == 0)
             {
                 // Normalize icon scale relative to parent scale
@@ -501,7 +502,7 @@ public class SolarSystemManager : MonoBehaviour
 
                 if (distance > distanceThreshold) 
                 {
-
+                    celestialBody.button.sizeDelta = new Vector2(2.5f,2.5f);
                     iconTransform.gameObject.SetActive(true);
                     // Calculate direction vector from player to celestial body and normalize it
                     Vector3 direction = (celestialBody.transform.position - player.transform.position).normalized;
@@ -514,6 +515,7 @@ public class SolarSystemManager : MonoBehaviour
 
                 } else
                 {
+                    celestialBody.button.sizeDelta = new Vector2(20.0f,20.0f);
                     float ifSun = 1.0f;
                     if (celestialBody.bodyName == "Sun")
                     {

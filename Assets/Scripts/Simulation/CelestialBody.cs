@@ -67,6 +67,9 @@ public class CelestialBody : MonoBehaviour
     private GameObject solarSystemManager;
 
     public TextMeshProUGUI distanceText;
+    public TextMeshProUGUI nameText;
+
+    public RectTransform button;
 
     private SolarSystemManager solarScript;
     private double scaleDist;
