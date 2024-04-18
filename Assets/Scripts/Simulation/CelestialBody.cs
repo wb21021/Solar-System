@@ -175,7 +175,7 @@ public class CelestialBody : MonoBehaviour
         {
             if (body.isMoon == this.id && this.id != 0) 
             {
-                Debug.Log(body.bodyName + "IS A MOON TO: " + this.bodyName);
+                // Debug.Log(body.bodyName + "IS A MOON TO: " + this.bodyName);
                 this.moonsList.Add(body);
             }
         }
@@ -212,10 +212,10 @@ public class CelestialBody : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        Debug.Log("FIXED: "+ VisualBody);
+        // Debug.Log("FIXED: "+ VisualBody);
         if (VisualBody  != null)
         {
-            Debug.Log("FIXED: Running");
+            // Debug.Log("FIXED: Running");
 
             float final_scale = 0.1f/(float)scaleSize;
             VisualBody.transform.localScale = new Vector3(final_scale, final_scale,final_scale);
@@ -229,7 +229,7 @@ public class CelestialBody : MonoBehaviour
             double V_rel = Math.Sqrt(Math.Pow(vel.x - V_observer.x, 2) + Math.Pow(vel.y - V_observer.y,2) + Math.Pow(vel.z - V_observer.z,2));
             foreach ( double wavelength in wavelengths){
                 double wavelength_new = wavelength * Math.Sqrt((1-(V_rel)/(c))/(1+(V_rel)/(c)));
-                Debug.Log("DOPPLER: "+wavelength_new);
+                // Debug.Log("DOPPLER: "+wavelength_new);
             }
             // ---------------------------------
         }
