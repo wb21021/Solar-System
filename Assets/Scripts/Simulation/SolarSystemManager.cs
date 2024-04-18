@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using doubleVector3namespace;
+using Unity.VisualScripting;
 
 public class SolarSystemManager : MonoBehaviour
 {
@@ -29,6 +30,8 @@ public class SolarSystemManager : MonoBehaviour
 
     public double scaleDist;
     public double scaleSize;
+    Vector3 playerPos;
+    Vector3 prevPlayerPos = new Vector3(0,0,0);
 
     public TMP_Text PlanetNameText;
 
@@ -412,6 +415,25 @@ public class SolarSystemManager : MonoBehaviour
         return simulationTime;
     }
 
+    public Vector3 GetPlayerVelocity()
+    {
+        // Time delta 
+        float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame; 
+        // calculate the scale factor from the current scale
+        
+        // How far the player has moved
+        Vector3 playerVelocity = (player.transform.position - prevPlayerPos) * (float)scaleDist / dt;
+        prevPlayerPos = player.transform.position;
+
+        return playerVelocity;
+    }
+
+    public float GetPlayerSpeed()
+    {
+
+        return GetPlayerVelocity().magnitude;
+    }
+
     void FixedUpdate()
     {
         
@@ -493,7 +515,7 @@ public class SolarSystemManager : MonoBehaviour
     {
         float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
         simulationTime += (long)(dt) ;
-        Debug.Log(dt*Time.timeScale + "TJIOS IS THE DT");
+        // Debug.Log(dt*Time.timeScale + "THIS IS THE DT");
 
         foreach (CelestialBody celestialBody in celestialBodiesList)
         {
@@ -712,6 +734,5 @@ public class SolarSystemManager : MonoBehaviour
             celestialBody.transform.localPosition = newPos*(float)scaleDist;
         }
     }
-
 }
 
