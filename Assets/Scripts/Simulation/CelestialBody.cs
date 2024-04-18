@@ -40,6 +40,7 @@ public class CelestialBody : MonoBehaviour
     public int isMoon;            // if not a moon = 0, if a moon = index of the planet it orbits    
     public string notes;
     public Color descColor = Color.white;
+    public float nthMoon; // nth moon from its planet, needed for icon offset
 
     public List<CelestialBody> moonsList; //list of moons this body has
 
@@ -85,7 +86,7 @@ public class CelestialBody : MonoBehaviour
                                       float averageDensity, float surfaceTemp, float surfaceGravity,
                                       int hasMoons, float ringRadius, float ringDepth,
                                       float eccentricity, float longditudeOfAscendingNode, 
-                                      float trueAnomaly, float massOfCentralBody, string notes, string descColor)
+                                      float trueAnomaly, float massOfCentralBody, string notes, string descColor, float nthMoon)
     {
         this.id = id;
         this.mass = mass;
@@ -111,13 +112,14 @@ public class CelestialBody : MonoBehaviour
         this.longditudeOfAscendingNode = longditudeOfAscendingNode;
         this.trueAnomaly = trueAnomaly;
         this.massOfCentralBody = massOfCentralBody;
-
-        
+                
         gravParameter = 6.67430e-11f * (mass + massOfCentralBody);
         isMoon = 0;  // default to not a moon
 
         this.notes = notes;
         UnityEngine.ColorUtility.TryParseHtmlString(descColor, out this.descColor);
+        
+        this.nthMoon = nthMoon;
     }
 
     public double DistanceFromSun()

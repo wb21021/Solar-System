@@ -52,7 +52,6 @@ public class SolarSystemManager : MonoBehaviour
 
     }
 
-    public float iconDistAbove;
     public float iconDist;
 
     public GameObject player; // Needed to teleport player
@@ -237,11 +236,12 @@ public class SolarSystemManager : MonoBehaviour
                     float.Parse(values[21]), // Eccentricity of the celestial body's orbit
                     float.Parse(values[22]), // Longitude of the ascending node in degrees
                     float.Parse(values[23]),  // True Anomaly in degrees
+                    
 
-                    centralBodyMass,  // Mass of the central body
+                    centralBodyMass,  // Mass of the7 central body
                     values[26].Replace(";",","), // Notes
-                    values[27].Trim() // Color
-
+                    values[27], // Color
+                    float.Parse(values[28].Trim()) // nth Moon from planet, needed for icon offset
                 );
 
 
@@ -479,59 +479,73 @@ public class SolarSystemManager : MonoBehaviour
     void LateUpdate()
     {
         foreach(CelestialBody celestialBody in celestialBodiesList) {
+            float iconDistAbove = 0.1f;
             float distance = Vector3.Distance(celestialBody.transform.position, player.transform.position);
             Transform iconTransform = celestialBody.transform.Find("icon");
             
             celestialBody.distanceText.text = distance.ToString();
             celestialBody.nameText.text = celestialBody.bodyName;
 
-            if (celestialBody.isMoon == 0)
+            // Normalize icon scale relative to parent scale
+            Vector3 parentScale = celestialBody.transform.lossyScale;
+
+            float normalizedScaleFactor = 2.0f;
+
+
+            Vector3 iconScale = new Vector3(1 / parentScale.x, 1 / parentScale.y, 1 / parentScale.z) * normalizedScaleFactor;
+            iconTransform.localScale = iconScale;
+            if(celestialBody.bodyName == "Sun")
             {
-                // Normalize icon scale relative to parent scale
-                Vector3 parentScale = celestialBody.transform.lossyScale;
+                iconTransform.localScale *= 2;
+            }
 
-                float normalizedScaleFactor = 2.0f;
+            if (distance > distanceThreshold && celestialBody.isMoon == 0) 
+            {
+                celestialBody.button.sizeDelta = new Vector2(2.5f,2.5f);
+                iconTransform.gameObject.SetActive(true);
+                // Calculate direction vector from player to celestial body and normalize it
+                Vector3 direction = (celestialBody.transform.position - player.transform.position).normalized;
+
+                Vector3 iconPosition = player.transform.position + direction * Mathf.Min(iconDist, distance);
 
 
-                Vector3 iconScale = new Vector3(1 / parentScale.x, 1 / parentScale.y, 1 / parentScale.z) * normalizedScaleFactor;
-                iconTransform.localScale = iconScale;
-                if(celestialBody.bodyName == "Sun")
+                iconTransform.position = iconPosition;
+                iconTransform.LookAt(player.transform.position);
+
+            } else
+            {
+                celestialBody.button.sizeDelta = new Vector2(20.0f,20.0f);
+                float ifSun = 1.0f;
+                if (celestialBody.bodyName == "Sun")
                 {
-                    iconTransform.localScale *= 2;
+                    ifSun = 2.0f;
+                }
+                iconTransform.gameObject.SetActive(true);
+                // Object is close, move the icon above the parent object
+                
+                Vector3 iconOffsetPosition = celestialBody.transform.position + Vector3.up * (parentScale.magnitude/2.0f+iconDistAbove*ifSun);
+
+                if (celestialBody.isMoon == 0){
+                    iconOffsetPosition = celestialBody.transform.position + Vector3.up * (parentScale.magnitude/2.0f+iconDistAbove*ifSun);
+                    iconTransform.localScale = iconScale/40;
+                }else
+                {
+                    foreach(CelestialBody parentBody in celestialBodiesList)
+                    {
+                        if (parentBody.id == celestialBody.isMoon)
+                        {
+                            iconOffsetPosition = parentBody.transform.position - Vector3.up * (parentScale.magnitude/2.0f+iconDistAbove*ifSun) * celestialBody.nthMoon;
+                        }
+                    }                    
+                    iconTransform.localScale = iconScale/80;
                 }
 
-                if (distance > distanceThreshold) 
-                {
-                    celestialBody.button.sizeDelta = new Vector2(2.5f,2.5f);
-                    iconTransform.gameObject.SetActive(true);
-                    // Calculate direction vector from player to celestial body and normalize it
-                    Vector3 direction = (celestialBody.transform.position - player.transform.position).normalized;
+                iconTransform.position = iconOffsetPosition;
+                
+                
+                iconTransform.LookAt(player.transform.position);                 
+            } 
 
-                    Vector3 iconPosition = player.transform.position + direction * Mathf.Min(iconDist, distance);
-
-
-                    iconTransform.position = iconPosition;
-                    iconTransform.LookAt(player.transform.position);
-
-                } else
-                {
-                    celestialBody.button.sizeDelta = new Vector2(20.0f,20.0f);
-                    float ifSun = 1.0f;
-                    if (celestialBody.bodyName == "Sun")
-                    {
-                        ifSun = 2.0f;
-                    }
-                    iconTransform.gameObject.SetActive(true);
-                    // Object is close, move the icon above the parent object
-                    Vector3 iconAbovePosition = celestialBody.transform.position + Vector3.up * (parentScale.magnitude/2.0f+iconDistAbove*ifSun);
-                    iconTransform.position = iconAbovePosition;
-                    iconTransform.localScale = iconScale/40;
-                    iconTransform.LookAt(player.transform.position);                   
-                } 
-            }else
-            {
-                iconTransform.gameObject.SetActive(false);
-            }
         }
     }
 
