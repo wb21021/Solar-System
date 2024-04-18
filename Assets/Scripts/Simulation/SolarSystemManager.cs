@@ -79,6 +79,7 @@ public class SolarSystemManager : MonoBehaviour
             CelestialBody body = celestialBodiesList[i];
             GameObject buttonGO = Instantiate(buttonPrefab, buttonContainer) as GameObject;
             Button button = buttonGO.GetComponent<Button>();
+
             if (button == null)
             {
                 Debug.LogError("Button component not found on the button prefab.");
@@ -117,8 +118,10 @@ public class SolarSystemManager : MonoBehaviour
     {
         float bodyRadius = body.transform.localScale.magnitude;
         player.transform.position = body.transform.position + new Vector3(-bodyRadius,-1,-bodyRadius);
-        Vector3 targetPosition = new Vector3(body.transform.position.x,body.transform.position.y,player.transform.position.z);
-        player.transform.LookAt(targetPosition);
+        player.transform.LookAt(body.transform.position);
+        Vector3 zeroZ = player.transform.eulerAngles;
+        zeroZ.z = 0f;
+        player.transform.eulerAngles = zeroZ;
     }
 
     public void NextPage()
