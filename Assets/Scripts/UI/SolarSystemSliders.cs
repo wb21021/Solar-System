@@ -12,22 +12,28 @@ public class WholeSolarSystemScale : MonoBehaviour
     public GameObject WholeSolarSystem;
     public SolarSystemManager SolarSystemManager;
 
-    void Update(){
-        ClearTrails();
-    }
 
     public void SizeSliderChanged()
     {
         //Get the slider value {0 -> 1] and convert it into a meaningful scale.
         float rawSliderValue = this.GetComponent<Scrollbar>().value;
 
-        float scale = (rawSliderValue * 5) + 0.1f;
+        float scale = (rawSliderValue * 0.01f) + 0.0005f;
 
         WholeSolarSystem.transform.localScale = new Vector3(scale,scale,scale);
 
         //Reset the trails so that the planets dont look like theyve moved in / out
         ClearTrails();
+        //UpdateTrailScale();
         
+    }
+
+    public void IterationsPerFrameSliderChanged()
+    {
+        float rawSliderValue = this.GetComponent<Scrollbar>().value;
+
+        uint scale = (uint)Mathf.RoundToInt((rawSliderValue * 39) + 1);
+        SolarSystemManager.IterPerFrame = scale;
     }
 
     public void PauseButtonPress()
@@ -53,8 +59,11 @@ public class WholeSolarSystemScale : MonoBehaviour
         //Then set the simulation timescale
         float rawSliderValue = this.GetComponent<Scrollbar>().value;
         
+
         SolarSystemManager.customTimeScale = ScrollBarValueToTimeScale(rawSliderValue);
     }
+
+
 
     public void ClearTrailsButtonPress()
     {
@@ -65,9 +74,7 @@ public class WholeSolarSystemScale : MonoBehaviour
     {
 
         //function to convert a ScrollBar value {0 -> 1} into a usable timescale
-        scrollbarvalue = scrollbarvalue - 0.5f;
-        float scale = ((scrollbarvalue * scrollbarvalue * 19.95f) + (scrollbarvalue * 19.95f) + 5.0375f) * 400000f;
-        Debug.Log("TIMESCALE: "+scale);
+        float scale = (500000f*scrollbarvalue) + 100000;
         return scale;
 
     }
@@ -77,6 +84,14 @@ public class WholeSolarSystemScale : MonoBehaviour
         foreach (CelestialBody body in SolarSystemManager.celestialBodiesList)
         {
             body.GetComponent<TrailRenderer>().Clear();
+        }
+    }
+
+    private void UpdateTrailScale() 
+    {
+        foreach (CelestialBody body in SolarSystemManager.celestialBodiesList)
+        {
+            body.GetComponent<TrailRenderer>().widthMultiplier = body.transform.localScale.x;
         }
     }
 }
