@@ -42,15 +42,17 @@ public class SolarSystemManager : MonoBehaviour
     //TIMESTEP (DEFAULT 400000f)
     public float customTimeScale = 400000.0f;
 
+
     void Start()
     {
         //IF YOURE NOT ABLE TO RUN THIS IN VR, UNCOMMENT THIS LINE SO THE SIMULATION RUNS ON STARTUP
 
-        //Init();
-        //CreateButtons();
+        Init();
+        CreateButtons();
 
     }
 
+    public float iconDistAbove;
 
     public GameObject player; // Needed to teleport player
 
@@ -480,23 +482,14 @@ public class SolarSystemManager : MonoBehaviour
         foreach(CelestialBody celestialBody in celestialBodiesList) {
             float distance = Vector3.Distance(celestialBody.transform.position, player.transform.position);
             Transform iconTransform = celestialBody.transform.Find("icon");
-            if (distance > distanceThreshold && celestialBody.isMoon == 0) 
+            
+            celestialBody.distanceText.text = distance.ToString();
+            if (celestialBody.isMoon == 0)
             {
-
-                iconTransform.gameObject.SetActive(true);
-                // Calculate direction vector from player to celestial body and normalize it
-                Vector3 direction = (celestialBody.transform.position - player.transform.position).normalized;
-
-                Vector3 iconPosition = player.transform.position + direction * iconDist;
-
-
-                iconTransform.position = iconPosition;
-                iconTransform.LookAt(player.transform.position);
-
                 // Normalize icon scale relative to parent scale
                 Vector3 parentScale = celestialBody.transform.lossyScale;
 
-                float normalizedScaleFactor = 5.0f;
+                float normalizedScaleFactor = 2.0f;
 
 
                 Vector3 iconScale = new Vector3(1 / parentScale.x, 1 / parentScale.y, 1 / parentScale.z) * normalizedScaleFactor;
@@ -506,9 +499,35 @@ public class SolarSystemManager : MonoBehaviour
                     iconTransform.localScale *= 2;
                 }
 
-            } else 
+                if (distance > distanceThreshold) 
+                {
+
+                    iconTransform.gameObject.SetActive(true);
+                    // Calculate direction vector from player to celestial body and normalize it
+                    Vector3 direction = (celestialBody.transform.position - player.transform.position).normalized;
+
+                    Vector3 iconPosition = player.transform.position + direction * Mathf.Min(iconDist, distance);
+
+
+                    iconTransform.position = iconPosition;
+                    iconTransform.LookAt(player.transform.position);
+
+                } else
+                {
+                    float ifSun = 1.0f;
+                    if (celestialBody.bodyName == "Sun")
+                    {
+                        ifSun = 2.0f;
+                    }
+                    iconTransform.gameObject.SetActive(true);
+                    // Object is close, move the icon above the parent object
+                    Vector3 iconAbovePosition = celestialBody.transform.position + Vector3.up * (parentScale.magnitude/2.0f+iconDistAbove*ifSun);
+                    iconTransform.position = iconAbovePosition;
+                    iconTransform.localScale = iconScale/40;
+                    iconTransform.LookAt(player.transform.position);                   
+                } 
+            }else
             {
-                // Object is close, hide its icon
                 iconTransform.gameObject.SetActive(false);
             }
         }
