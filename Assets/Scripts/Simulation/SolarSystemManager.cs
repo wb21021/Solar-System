@@ -62,6 +62,8 @@ public class SolarSystemManager : MonoBehaviour
 
     public float distanceThreshold;
 
+    public float iconDist;
+
     public void CreateButtons()
     {
         // Calculate the start and end index for the current page
@@ -113,7 +115,10 @@ public class SolarSystemManager : MonoBehaviour
 
     public void TeleportPlayer(CelestialBody body)
     {
-        player.transform.position = body.transform.position;
+        float bodyRadius = body.transform.localScale.magnitude;
+        player.transform.position = body.transform.position + new Vector3(-bodyRadius,-1,-bodyRadius);
+        Vector3 targetPosition = new Vector3(body.transform.position.x,body.transform.position.y,player.transform.position.z);
+        player.transform.LookAt(targetPosition);
     }
 
     public void NextPage()
@@ -436,14 +441,14 @@ public class SolarSystemManager : MonoBehaviour
                 iconTransform.gameObject.SetActive(true);
                 // Calculate direction vector from player to celestial body and normalize it
                 Vector3 direction = (celestialBody.transform.position - player.transform.position).normalized;
-                Vector3 iconPosition = player.transform.position + direction * 1000f;
+                Vector3 iconPosition = player.transform.position + direction * iconDist;
 
                 iconTransform.position = iconPosition;
                 iconTransform.LookAt(player.transform.position);
 
                 // Normalize icon scale relative to parent scale
                 Vector3 parentScale = celestialBody.transform.lossyScale;
-                float normalizedScaleFactor = 10.0f;
+                float normalizedScaleFactor = 5.0f;
 
                 Vector3 iconScale = new Vector3(1 / parentScale.x, 1 / parentScale.y, 1 / parentScale.z) * normalizedScaleFactor;
                 iconTransform.localScale = iconScale;
