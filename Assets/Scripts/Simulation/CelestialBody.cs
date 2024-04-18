@@ -220,7 +220,7 @@ public class CelestialBody : MonoBehaviour
             float final_scale = 0.1f/(float)scaleSize;
             VisualBody.transform.localScale = new Vector3(final_scale, final_scale,final_scale);
 
-            VisualBody.transform.Find(bodyName).GetComponent<Transform>().Rotate(new Vector3(0f, orbitalPeriod / 50, 0f));
+            VisualBody.transform.Find(bodyName).GetComponent<Transform>().Rotate(new Vector3(0f, orbitalPeriod / 75, 0f));
 
             // --------------------------------
             // Doppler
@@ -334,7 +334,7 @@ public class CelestialBody : MonoBehaviour
             Destroy(VisualBody.GetNamedChild("CanvasCelestialBodyInfo(Clone)").gameObject);
     
         }
-
+        Destroy(VisualBody.GetNamedChild("icon").gameObject);
         GameObject Cylinder = Instantiate(Resources.Load("UIElements/Cylinder"),VisualBody.transform) as GameObject;
         VisualBody.GetComponent<TrailRenderer>().enabled = false;
 
