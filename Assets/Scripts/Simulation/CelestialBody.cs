@@ -195,6 +195,11 @@ public class CelestialBody : MonoBehaviour
         transform = GetComponent<Transform>();
         transform.localScale = new Vector3(radiusEarth*(float)scaleSize, radiusEarth*(float)scaleSize, radiusEarth*(float)scaleSize);
 
+        if (this.bodyName == "Pluto")
+        {
+            this.ShowInfoBox();
+        }
+
     }
     private void Update()
     {
@@ -223,15 +228,6 @@ public class CelestialBody : MonoBehaviour
 
             VisualBody.transform.Find(bodyName).GetComponent<Transform>().Rotate(new Vector3(0f, orbitalPeriod / 75, 0f));
 
-            
-        }
-
-    }
-
-    public void LateUpdate()
-    {
-        if(VisualBody != null)
-        {
             // --------------------------------
             // Doppler
 
@@ -244,13 +240,14 @@ public class CelestialBody : MonoBehaviour
                 wavelengths_new.Add(wavelength_new);
             }
 
-            dopplerGraph.UpdateSpectra(wavelengths_new);
+            dopplerGraph.UpdateSpectra(wavelengths_new,wavelengths);
 
 
             // ---------------------------------
+            
         }
-    }
 
+    }
     public void ShowInfoBox()
     {
         //Turn off the Options menu if its on
