@@ -38,8 +38,8 @@ public class SolarSystemManager : MonoBehaviour
 
     private bool started = false;
 
-    //TIMESTEP (DEFAULT 400000f)
-    public float customTimeScale = 1f;
+    //TIMESTEP (DEFAULT 40000f)
+    public float customTimeScale;
 
     public GravitationalPotentialCalculator spaceTimeWarper;
     void Start()
@@ -433,8 +433,8 @@ public class SolarSystemManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        
-        
+
+        Debug.Log("TIMEFRAME: " + customTimeScale);
         for (int n = 0; n < IterPerFrame; n++)
         {
             //Use the integration method selected by the user's dropdown menu.

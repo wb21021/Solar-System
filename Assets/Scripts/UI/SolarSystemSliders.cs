@@ -43,6 +43,7 @@ public class WholeSolarSystemScale : MonoBehaviour
         bool isPaused = this.GetComponent<Toggle>().isOn;
         if (!isPaused)
         {
+            Debug.Log("PauseButtonPress");
             //When unpausing, get the value of the TimeSpeedScrollBar {0 -> 1}, and convert that into a meaningful time scale
             //Then set that to the current timescale.
             SolarSystemManager.customTimeScale = ScrollBarValueToTimeScale(this.transform.parent.Find("TimeSpeedScrollBar").transform.GetComponent<Scrollbar>().value);
@@ -63,6 +64,7 @@ public class WholeSolarSystemScale : MonoBehaviour
             //Then set the simulation timescale
             float rawSliderValue = this.GetComponent<Scrollbar>().value;
 
+            Debug.Log("TimeSlider");
 
             SolarSystemManager.customTimeScale = ScrollBarValueToTimeScale(rawSliderValue);
 
@@ -81,7 +83,7 @@ public class WholeSolarSystemScale : MonoBehaviour
     {
 
         //function to convert a ScrollBar value {0 -> 1} into a usable timescale
-        float scale = (500000f*scrollbarvalue) + 50000;
+        float scale = (116666f*scrollbarvalue) + 5000;
         return scale;
 
     }

@@ -7,7 +7,6 @@ public class GravitationalPotentialCalculator : MonoBehaviour
 
     public void CalculateGravitationalPotentials(GameObject body)
     {
-        Debug.Log("SPACETIME: RUNNING");
         GameObject planePrefab = Resources.Load("UIElements/SpaceTimePlane") as GameObject;
         GameObject plane = Instantiate(planePrefab, body.transform) as GameObject;
 
@@ -18,13 +17,12 @@ public class GravitationalPotentialCalculator : MonoBehaviour
 
         Vector3 objectPosition = new Vector3(0, 0, 0);
         float planetMass = body.GetComponent<CelestialBody>().mass;
-        Debug.Log("SPACETIME: " + body.GetComponent<CelestialBody>().bodyName);
-        Debug.Log("SPACETIME: " + planetMass);
+
         for (int i = 0; i < planeMesh.vertices.Length; i++)
         {
 
             Vector3 vertexPosition = planeMesh.vertices[i];
-            Debug.Log("SPACETIME VERTEX POS: " + vertexPosition);
+
             float maxPotential = float.MinValue; // Initialize maxPotential as the smallest possible float value
 
                 float distance = Vector3.Distance(vertexPosition, objectPosition);
@@ -35,7 +33,7 @@ public class GravitationalPotentialCalculator : MonoBehaviour
             {
                 // Calculate gravitational potential due to this planet and update maxPotential if necessary
                 float potential = CalculateGravitationalPotential(distance, planetMass);
-                Debug.Log("SPACETIME POTENTIAL: " + potential);
+
                 if (potential > maxPotential)
                 {
                     maxPotential = potential;
@@ -63,7 +61,7 @@ public class GravitationalPotentialCalculator : MonoBehaviour
 
         // Apply the warp effect to the space-time plane
         Vector3[] vertices = planeMesh.vertices;
-        Debug.Log("SPACETIME VERTICES: " + vertices.Length);
+
         for (int i = 0; i < vertices.Length; i++)
         {
             float scaledPot = (gravitationalPotentials[i]/maxPot)*2;
@@ -72,7 +70,6 @@ public class GravitationalPotentialCalculator : MonoBehaviour
             {
                 scaledPot = 5f;
             }
-            Debug.Log("SPACETIME SCALE: " + scaledPot);
             
 
             vertices[i] = new Vector3(vertices[i].x, -scaledPot, vertices[i].z); // Adjust the y-coordinate based on the gravitational potential
