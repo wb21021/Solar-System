@@ -415,12 +415,12 @@ public class SolarSystemManager : MonoBehaviour
     public doubleVector3 GetPlayerVelocity()
     {
         // Time delta 
-        float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame; 
+        float dt = Time.fixedDeltaTime * customTimeScale; 
         // calculate the scale factor from the current scale
         
         // How far the player has moved
         doubleVector3 playerVelocity = player.transform.position - prevPlayerPos;
-        playerVelocity *= scaleDist / dt;
+        playerVelocity *= dt / scaleDist;
         prevPlayerPos = player.transform.position;
 
         return playerVelocity;
@@ -432,9 +432,13 @@ public class SolarSystemManager : MonoBehaviour
     }
 
     void FixedUpdate()
-    {
-
-        Debug.Log("TIMEFRAME: " + customTimeScale);
+    {  
+        // Debug.Log("dt:" + Time.fixedDeltaTime * customTimeScale);
+        // Debug.Log("Time scale:" + customTimeScale);
+        // Debug.Log("Distance scale:" + scaleDist);
+        // Debug.Log("Speed:" + GetPlayerSpeed());
+        
+        
         for (int n = 0; n < IterPerFrame; n++)
         {
             //Use the integration method selected by the user's dropdown menu.
