@@ -48,7 +48,7 @@ public class CelestialBody : MonoBehaviour
     private GameObject UXPanel;
     private GameObject OptionsMenu;
     public GameObject VisualBodyPrefab;
-    private GameObject VisualBody;
+    private GameObject VisualBody = null;
 
     public doubleVector3 pos;            // Position vector
     public doubleVector3 posDouble; // Position vector (using double precision)
@@ -197,30 +197,14 @@ public class CelestialBody : MonoBehaviour
         prevPos = player.transform.position;
 
     }
-    private void Update()
-    {
-        //To keep the hovering text boxes visible at all times, we remove the local scaling by dividing by both the celestial body scale, and the solar system scale
-        if (this.isMoon == 0 && this.transform.parent.name != "UXPanel")
-        {
-            Transform uielement = transform.Find("CanvasCelestialBodyInfo(Clone)");
-            float TextUnscaled = (float)scaleSize * 1E3f/ this.transform.parent.localScale.x / radius;
-            uielement.transform.localScale = new Vector3(TextUnscaled, TextUnscaled, TextUnscaled);
 
-            Debug.Log("PLANET: SCALED");
-
-            Debug.Log("PLANET: " + this.bodyName + " " + this.transform.localScale.x);
-            uielement.transform.localPosition = new Vector3(0, 1+(uielement.transform.localScale.x/2), 0);
-            Debug.Log("PLANET: TRANSFORMED");
-        }
-
-    }
     private void FixedUpdate()
     {
-        // Debug.Log("FIXED: "+ VisualBody);
-        if (VisualBody  != null)
+        if (UXPanel.activeSelf == true && VisualBody != null)
         {
             // Debug.Log("FIXED: Running");
 
+            
             float final_scale = 0.1f/(float)scaleSize;
             VisualBody.transform.localScale = new Vector3(final_scale, final_scale,final_scale);
 
@@ -256,6 +240,8 @@ public class CelestialBody : MonoBehaviour
             return;
         }
 
+        
+
         //Updates the left hand to show a copy of the selected planet, and a canvas containing useful information
         //
         //Clear any children of UXPanel apart from the canvas, so that new planets are not overlaid on top of each other
@@ -265,7 +251,7 @@ public class CelestialBody : MonoBehaviour
             {
                 Destroy(UXPanel.transform.GetChild(i).gameObject);
             }
-            
+            VisualBody = null;
         }
 
         Transform moonButtons = InfoBar.transform.Find("MoonButtons");
@@ -329,16 +315,23 @@ public class CelestialBody : MonoBehaviour
 
         //Create a clone of the selected planet
         VisualBody = Instantiate(VisualBodyPrefab, PanelTransform);
+        Destroy(VisualBody.GetNamedChild("icon").gameObject);
+        try
+        {
+            Destroy(VisualBody.GetNamedChild("SpaceTimePlane(Clone)").gameObject);
+        }
+        catch (Exception)
+        {
+        }
+            
+
         float final_scale = 0.1f / (float)scaleSize;
 
         VisualBody.transform.localScale = new Vector3(final_scale, final_scale, final_scale);
 
-        if (this.isMoon == 0)
-        {
-            Destroy(VisualBody.GetNamedChild("CanvasCelestialBodyInfo(Clone)").gameObject);
-    
-        }
-        Destroy(VisualBody.GetNamedChild("icon").gameObject);
+
+        
+
         GameObject Cylinder = Instantiate(Resources.Load("UIElements/Cylinder"),VisualBody.transform) as GameObject;
         VisualBody.GetComponent<TrailRenderer>().enabled = false;
 

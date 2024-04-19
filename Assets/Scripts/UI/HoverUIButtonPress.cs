@@ -5,8 +5,8 @@ public class HoverUIButtonPress : MonoBehaviour
     public void OnButtonPress()
     {
 
-        
-        CelestialBody celes = transform.parent.GetComponentInParent<CelestialBody>();
+        Debug.Log(this.transform.parent.parent.name);
+        CelestialBody celes = this.transform.parent.parent.GetComponentInParent<CelestialBody>();
         celes.ShowInfoBox();
     }
 }

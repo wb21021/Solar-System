@@ -9,6 +9,8 @@ public class CloseVrMenu : MonoBehaviour
 
     //This class deals with toggling the Left and Right hand information panels
 
+    //if simulation hasn't been started yet, ignore any button presses
+    public bool hasSimulationStarted = false;
     //right hand 'options menu'
     public GameObject OptionsMenu;
 
@@ -27,48 +29,52 @@ public class CloseVrMenu : MonoBehaviour
     }
     void Update()
     {
-        //Get values of the Y button and menu button (both on left hand)
-        _inputData._leftController.TryGetFeatureValue(CommonUsages.menuButton, out bool menubuttonValue);
-        _inputData._leftController.TryGetFeatureValue(CommonUsages.secondaryButton, out bool secondarybuttonValue);
-
-        //if the menu button is pressed down and wasnt held down the previous frame
-        if (menubuttonValue == true && _menubuttonHeld == false)
+        if (hasSimulationStarted == true)
         {
-            //Turn off other menu so they dont overlap
-            if (InfoMenu.activeSelf)
+
+            //Get values of the Y button and menu button (both on left hand)
+            _inputData._leftController.TryGetFeatureValue(CommonUsages.menuButton, out bool menubuttonValue);
+            _inputData._leftController.TryGetFeatureValue(CommonUsages.secondaryButton, out bool secondarybuttonValue);
+
+            //if the menu button is pressed down and wasnt held down the previous frame
+            if (menubuttonValue == true && _menubuttonHeld == false)
             {
-                InfoMenu.SetActive(false);
+                //Turn off other menu so they dont overlap
+                if (InfoMenu.activeSelf)
+                {
+                    InfoMenu.SetActive(false);
+                }
+
+                //toggle menu
+                OptionsMenu.SetActive(!OptionsMenu.activeSelf);
+
+                //the button was pressed this current frame
+                _menubuttonHeld = true;
             }
 
-            //toggle menu
-            OptionsMenu.SetActive(!OptionsMenu.activeSelf);
-
-            //the button was pressed this current frame
-            _menubuttonHeld = true;
-        }
-
-        //if the menu button was not pressed this frame
-        if (menubuttonValue == false)
-        {
-            //the button is not being held
-            _menubuttonHeld = false;
-        }
-
-        if (secondarybuttonValue == true && _secondarybuttonHeld == false)
-        {
-            //Turn off other menu so they dont overlap
-            if (OptionsMenu.activeSelf)
+            //if the menu button was not pressed this frame
+            if (menubuttonValue == false)
             {
-                OptionsMenu.SetActive(false);
+                //the button is not being held
+                _menubuttonHeld = false;
             }
 
-            InfoMenu.SetActive(!InfoMenu.activeSelf);
-            _secondarybuttonHeld = true;
-        }
+            if (secondarybuttonValue == true && _secondarybuttonHeld == false)
+            {
+                //Turn off other menu so they dont overlap
+                if (OptionsMenu.activeSelf)
+                {
+                    OptionsMenu.SetActive(false);
+                }
 
-        if (secondarybuttonValue == false)
-        {
-            _secondarybuttonHeld = false;
+                InfoMenu.SetActive(!InfoMenu.activeSelf);
+                _secondarybuttonHeld = true;
+            }
+
+            if (secondarybuttonValue == false)
+            {
+                _secondarybuttonHeld = false;
+            }
         }
     }
     public List<GameObject> GetUI()

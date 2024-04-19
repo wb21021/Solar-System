@@ -4921,6 +4921,7 @@ MonoBehaviour:
   isMoon: 0
   notes: 
   descColor: {r: 1, g: 1, b: 1, a: 1}
+  nthMoon: 0
   moonsList: []
   VisualBodyPrefab: {fileID: 1733945558841920}
   wavelengths:
@@ -5378,7 +5379,7 @@ GameObject:
   - component: {fileID: 7556281924263286619}
   - component: {fileID: 922278561634154905}
   - component: {fileID: 2307424050940647270}
-  - component: {fileID: 2170121417600894469}
+  - component: {fileID: 1224886009000274447}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -5398,9 +5399,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7588247463238356063}
   - {fileID: 3216031530766457431}
   - {fileID: 5023490980610377594}
+  - {fileID: 7588247463238356063}
   m_Father: {fileID: 3136880966068162999}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -5454,7 +5455,7 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 1
---- !u!114 &2170121417600894469
+--- !u!114 &1224886009000274447
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5463,14 +5464,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 4487709784953171139}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Script: {fileID: 11500000, guid: 7951c64acb0fa62458bf30a60089fe2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
+  m_IgnoreReversedGraphics: 0
+  m_CheckFor2DOcclusion: 0
+  m_CheckFor3DOcclusion: 0
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  m_RaycastTriggerInteraction: 1
 --- !u!1 &5827532916334263813
 GameObject:
   m_ObjectHideFlags: 0

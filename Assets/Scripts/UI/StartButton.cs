@@ -10,7 +10,7 @@ public class StartButton : MonoBehaviour
 
     public ContinuousMoveProviderBase moveProvider;
     public SolarSystemManager solarSystemManager;
-  
+    public CloseVrMenu CloseOpenVrMenu;
 
     void Start()
     {
@@ -27,6 +27,6 @@ public class StartButton : MonoBehaviour
 
         solarSystemManager.Init();
         solarSystemManager.CreateButtons();
-     
+        CloseOpenVrMenu.hasSimulationStarted = true;
     }
 }

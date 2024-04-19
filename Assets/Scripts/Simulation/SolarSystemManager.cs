@@ -40,15 +40,15 @@ public class SolarSystemManager : MonoBehaviour
     private bool started = false;
 
     //TIMESTEP (DEFAULT 400000f)
-    public float customTimeScale = 400000.0f;
+    public float customTimeScale = 1f;
 
-
+    public GravitationalPotentialCalculator spaceTimeWarper;
     void Start()
     {
         //IF YOURE NOT ABLE TO RUN THIS IN VR, UNCOMMENT THIS LINE SO THE SIMULATION RUNS ON STARTUP
 
-        Init();
-        CreateButtons();
+        //Init();
+        //CreateButtons();
 
     }
 
@@ -120,11 +120,13 @@ public class SolarSystemManager : MonoBehaviour
     public void TeleportPlayer(CelestialBody body)
     {
         float bodyRadius = body.transform.localScale.magnitude;
-        player.transform.position = body.transform.position + new Vector3(-bodyRadius,-1,-bodyRadius);
+       
+        player.transform.position = body.transform.position + new Vector3(-1,-1,-1);
         player.transform.LookAt(body.transform.position);
-        Vector3 zeroZ = player.transform.eulerAngles;
-        zeroZ.z = 0f;
-        player.transform.eulerAngles = zeroZ;
+        Vector3 zeroXZ = player.transform.eulerAngles;
+        zeroXZ.z = 0f;
+        zeroXZ.x = 0f;
+        player.transform.eulerAngles = zeroXZ;
     }
 
     public void NextPage()
@@ -251,24 +253,16 @@ public class SolarSystemManager : MonoBehaviour
 
             //Added by Iris ---------------------------------------------------
 
+            
+            
+
             celestialBodyInit.transform.parent = WholeSolarSystem.transform;
 
+            Debug.Log(celestialBodyInit.name);
+            spaceTimeWarper.CalculateGravitationalPotentials(celestialBodyInit);
 
-
-            //Only create a hovering text box if its a proper planet / the sun
-            if (values[25] == "Sun" || values[25] == "N/A")
-            {
-                //Create text box over planet
-                GameObject hoverUIPrefab = Resources.Load<GameObject>($"UIElements/CanvasCelestialBodyInfo");
-                GameObject hoveringUIbox = Instantiate(hoverUIPrefab, celestialBodyInit.transform);
-
-
-                hoveringUIbox.transform.localPosition = new Vector3(0, 1, 0);
-
-                hoveringUIbox.GetComponentInChildren<TMP_Text>().text = celestialBodyName;
-                hoveringUIbox.SetActive(true);
-
-            }
+            celestialBodyInit.transform.Find("SpaceTimePlane(Clone)").gameObject.SetActive(false);
+            
 
             celestialBodyInit.GetComponent<TrailRenderer>().widthMultiplier = 0.05f;
 
@@ -470,7 +464,6 @@ public class SolarSystemManager : MonoBehaviour
             foreach (CelestialBody body in celestialBodiesList)
             {
                 body.GetComponent<TrailRenderer>().Clear();
-                Debug.Log("CLEAR");
                 started = true;
             }
         }
@@ -703,8 +696,11 @@ public class SolarSystemManager : MonoBehaviour
     private void yoshidaMethod()
     {
         // fourth order numerical integrator using the Yoshida method
-
+        
+        
         float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
+        
+
         simulationTime += (long)(dt);
 
         float third = 1.0f / 3.0f;
