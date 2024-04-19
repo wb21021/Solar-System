@@ -342,11 +342,7 @@ public class CelestialBody : MonoBehaviour
 
         VisualBody.transform.localScale = new Vector3(final_scale, final_scale, final_scale);
 
-        if (this.isMoon == 0)
-        {
-            Destroy(VisualBody.GetNamedChild("CanvasCelestialBodyInfo(Clone)").gameObject);
-    
-        }
+
         Transform iconTransform = VisualBody.transform.Find("icon");
         iconTransform.gameObject.SetActive(true);
         Destroy(VisualBody.GetNamedChild("icon").gameObject);

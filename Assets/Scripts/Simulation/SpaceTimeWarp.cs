@@ -1,8 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
-
 public class GravitationalPotentialCalculator : MonoBehaviour
 {
     public float gravitationalConstant = 6.67430e-11f; // Gravitational constant in m^3 kg^-1 s^-2
