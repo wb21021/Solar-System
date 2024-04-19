@@ -7,8 +7,6 @@ using Unity.XR.CoreUtils;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
-using XCharts.Runtime;
-
 public class CelestialBody : MonoBehaviour
 {
     // Properties of the celestial body
@@ -77,9 +75,7 @@ public class CelestialBody : MonoBehaviour
     private SolarSystemManager solarScript;
     private double scaleDist;
     private double scaleSize;
-
     //private Rigidbody rigidbody; // for velocity
-    private DopplerGraph dopplerGraph;
 
     // Set properties based on data from the CSV file
     public void SetPropertiesFromData(int id, 
@@ -124,7 +120,6 @@ public class CelestialBody : MonoBehaviour
         UnityEngine.ColorUtility.TryParseHtmlString(descColor, out this.descColor);
         
         this.nthMoon = nthMoon;
-        
     }
 
     public double DistanceFromSun()
@@ -165,17 +160,15 @@ public class CelestialBody : MonoBehaviour
         vel.y = speed * ( Mathf.Cos(w+nu) * Mathf.Sin(i) );
     }
 
-
     void Start()
     {
         solarSystemManager = GameObject.Find("Solar System Manager");
-        
+
         //Get the ui elements using this method as opposed to .Find since .Find cannot find deactivated Gameobjects
         List<GameObject> UIElements = GameObject.Find("CloseOpenVRMenu").GetComponent<CloseVrMenu>().GetUI();
         OptionsMenu = UIElements[1];
         UXPanel = UIElements[0];
         InfoBar = UXPanel.transform.GetChild(0).gameObject;
-        dopplerGraph = InfoBar.transform.Find("EmissionSpectra").GetComponent<DopplerGraph>();
 
         solarScript = solarSystemManager.GetComponent<SolarSystemManager>();
         scaleDist = solarScript.scaleDist > 0 ? solarScript.scaleDist : 1;
@@ -219,27 +212,21 @@ public class CelestialBody : MonoBehaviour
 
             // --------------------------------
             // Doppler
-
-            V_observer = solarScript.GetPlayerVelocity();
+            V_observer = (player.transform.position - prevPos) / Time.deltaTime;
+            prevPos = player.transform.position;
             double V_rel = Math.Sqrt(Math.Pow(vel.x - V_observer.x, 2) + Math.Pow(vel.y - V_observer.y,2) + Math.Pow(vel.z - V_observer.z,2));
-
-            List<double> wavelengths_new = new List<double>();
             foreach ( double wavelength in wavelengths){
                 double wavelength_new = wavelength * Math.Sqrt((1-(V_rel)/(c))/(1+(V_rel)/(c)));
-                wavelengths_new.Add(wavelength_new);
+                // Debug.Log("DOPPLER: "+wavelength_new);
             }
-
-            dopplerGraph.UpdateSpectra(wavelengths_new,wavelengths);
-
-
             // ---------------------------------
-            
         }
 
     }
     public void ShowInfoBox()
     {
         //Turn off the Options menu if its on
+
         if (OptionsMenu.activeSelf)
         {
             OptionsMenu.SetActive(false);
@@ -342,14 +329,9 @@ public class CelestialBody : MonoBehaviour
 
         VisualBody.transform.localScale = new Vector3(final_scale, final_scale, final_scale);
 
-        if (this.isMoon == 0)
-        {
-            Destroy(VisualBody.GetNamedChild("CanvasCelestialBodyInfo(Clone)").gameObject);
-    
-        }
-        Transform iconTransform = VisualBody.transform.Find("icon");
-        iconTransform.gameObject.SetActive(true);
-        Destroy(VisualBody.GetNamedChild("icon").gameObject);
+
+        
+
         GameObject Cylinder = Instantiate(Resources.Load("UIElements/Cylinder"),VisualBody.transform) as GameObject;
         VisualBody.GetComponent<TrailRenderer>().enabled = false;
 
@@ -357,6 +339,9 @@ public class CelestialBody : MonoBehaviour
         VisualBody.transform.localPosition = new Vector3(0.2f, 0f, 0f);
         
         VisualBody.transform.Rotate(new Vector3(0, 0, -axialTilt));
+
+
+
 
     }
 }
