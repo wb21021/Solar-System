@@ -30,7 +30,6 @@ public class SolarSystemManager : MonoBehaviour
 
     public double scaleDist;
     public double scaleSize;
-    Vector3 playerPos;
     Vector3 prevPlayerPos = new Vector3(0,0,0);
 
     public TMP_Text PlanetNameText;
@@ -47,9 +46,8 @@ public class SolarSystemManager : MonoBehaviour
     {
         //IF YOURE NOT ABLE TO RUN THIS IN VR, UNCOMMENT THIS LINE SO THE SIMULATION RUNS ON STARTUP
 
-        Init();
+        // Init();
         CreateButtons();
-
     }
 
     public float iconDist;
@@ -419,14 +417,15 @@ public class SolarSystemManager : MonoBehaviour
         return simulationTime;
     }
 
-    public Vector3 GetPlayerVelocity()
+    public doubleVector3 GetPlayerVelocity()
     {
         // Time delta 
         float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame; 
         // calculate the scale factor from the current scale
         
         // How far the player has moved
-        Vector3 playerVelocity = (player.transform.position - prevPlayerPos) * (float)scaleDist / dt;
+        doubleVector3 playerVelocity = player.transform.position - prevPlayerPos;
+        playerVelocity *= scaleDist / dt;
         prevPlayerPos = player.transform.position;
 
         return playerVelocity;
@@ -434,8 +433,7 @@ public class SolarSystemManager : MonoBehaviour
 
     public float GetPlayerSpeed()
     {
-
-        return GetPlayerVelocity().magnitude;
+        return (float)GetPlayerVelocity().magnitude;
     }
 
     void FixedUpdate()
