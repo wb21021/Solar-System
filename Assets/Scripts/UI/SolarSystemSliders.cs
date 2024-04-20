@@ -32,7 +32,7 @@ public class WholeSolarSystemScale : MonoBehaviour
     {
         float rawSliderValue = this.GetComponent<Scrollbar>().value;
 
-        uint scale = (uint)Mathf.RoundToInt((rawSliderValue * 39) + 1);
+        uint scale = (uint)Mathf.RoundToInt((rawSliderValue * 15) + 1);
         SolarSystemManager.IterPerFrame = scale;
     }
 
