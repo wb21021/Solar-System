@@ -30,6 +30,12 @@ public class SolarSystemManager : MonoBehaviour
 
     public double scaleDist;
     public double scaleSize;
+
+    public Vector3 solarScale;
+    public double trueScale;
+
+    private double AU = 149597870700; // 1 astronomical unit in m
+
     Vector3 prevPlayerPos = new Vector3(0,0,0);
 
     public TMP_Text PlanetNameText;
@@ -46,8 +52,8 @@ public class SolarSystemManager : MonoBehaviour
     {
         //IF YOURE NOT ABLE TO RUN THIS IN VR, UNCOMMENT THIS LINE SO THE SIMULATION RUNS ON STARTUP
 
-        //Init();
-        //CreateButtons();
+        Init();
+        CreateButtons();
 
     }
 
@@ -153,7 +159,6 @@ public class SolarSystemManager : MonoBehaviour
     }
     public void Init()
     {
-
         // Set the initialisation time to the 2nd of February 2024
         string dateString = "2024-02-02 00:00:00"; 
         DateTime dateTime;
@@ -307,28 +312,25 @@ public class SolarSystemManager : MonoBehaviour
         double newLargestScale = 0;
         doubleVector3 planeScale2D = plane.transform.localScale;
         doubleVector3 planeScale = new doubleVector3(planeScale2D.x, planeScale2D.x,planeScale2D.z);
+
+        double earthRadius;
         
         foreach (CelestialBody celestialBody in celestialBodiesList)
         {
             celestialBody.CalculateInitialPositionVelocity();
-            newDistFromSun = celestialBody.DistanceFromSun();
-            if (newDistFromSun > distFromSun)
+            if (celestialBody.bodyName == "Earth")
             {
-                distFromSun = newDistFromSun;
+                earthRadius = celestialBody.radius;
+                scaleDist = ((1/earthRadius)/10000);
             }
-            newLargestScale = new doubleVector3(celestialBody.radiusEarth, celestialBody.radiusEarth, celestialBody.radiusEarth).magnitude;
-            /*if (newLargestScale > largestScale)
-            {
-                largestScale = newLargestScale;
-            }*/
         }
         
         // Offset the moons
         offsetMoons();
 
-        scaleDist = 1.56786e-7/10;//planeScale.magnitude/distFromSun;
+        //planeScale.magnitude/distFromSun;
         //Debug.Log(largestScale);
-        scaleSize = 1/10;//scaleDist;//(planeScale.magnitude*0.005f)/largestScale;
+        scaleSize = (1/10000);//scaleDist;//(planeScale.magnitude*0.005f)/largestScale;
         
         foreach (CelestialBody celestialBody in celestialBodiesList)
         {
@@ -420,7 +422,7 @@ public class SolarSystemManager : MonoBehaviour
         
         // How far the player has moved
         doubleVector3 playerVelocity = player.transform.position - prevPlayerPos;
-        playerVelocity *= dt / scaleDist;
+        playerVelocity *= dt / trueScale;
         prevPlayerPos = player.transform.position;
 
         return playerVelocity;
@@ -437,8 +439,9 @@ public class SolarSystemManager : MonoBehaviour
         // Debug.Log("Time scale:" + customTimeScale);
         // Debug.Log("Distance scale:" + scaleDist);
         // Debug.Log("Speed:" + GetPlayerSpeed());
-        
-        
+        solarScale = WholeSolarSystem.transform.localScale;
+        trueScale = (solarScale.x*scaleDist);
+
         for (int n = 0; n < IterPerFrame; n++)
         {
             //Use the integration method selected by the user's dropdown menu.
@@ -478,12 +481,13 @@ public class SolarSystemManager : MonoBehaviour
 
     void LateUpdate()
     {
-        foreach(CelestialBody celestialBody in celestialBodiesList) {
+
+        foreach(CelestialBody celestialBody in celestialBodiesList) {           
             float iconDistAbove = 0.1f;
             float distance = Vector3.Distance(celestialBody.transform.position, player.transform.position);
             Transform iconTransform = celestialBody.transform.Find("icon");
-            
-            celestialBody.distanceText.text = distance.ToString();
+
+            celestialBody.distanceText.text = Math.Round((distance/(trueScale*AU)),2).ToString()+" AU";
             celestialBody.nameText.text = celestialBody.bodyName;
 
             // Normalize icon scale relative to parent scale
@@ -518,7 +522,7 @@ public class SolarSystemManager : MonoBehaviour
                 float ifSun = 1.0f;
                 if (celestialBody.bodyName == "Sun")
                 {
-                    ifSun = 2.0f;
+                    ifSun = 4.0f;
                 }
                 iconTransform.gameObject.SetActive(true);
                 // Object is close, move the icon above the parent object

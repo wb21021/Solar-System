@@ -193,7 +193,7 @@ public class CelestialBody : MonoBehaviour
         
 
         transform = GetComponent<Transform>();
-        transform.localScale = new Vector3(radiusEarth*(float)scaleSize, radiusEarth*(float)scaleSize, radiusEarth*(float)scaleSize);
+        transform.localScale = new Vector3(2*radiusEarth*(float)scaleSize, 2*radiusEarth*(float)scaleSize, 2*radiusEarth*(float)scaleSize);
 
         
         

@@ -7585,18 +7585,20 @@ MonoBehaviour:
   WholeSolarSystem: {fileID: 1146938661}
   scaleDist: 0
   scaleSize: 0
+  solarScale: {x: 0, y: 0, z: 0}
+  trueScale: 0
   PlanetNameText: {fileID: 0}
   integrationMethodIndex: 0
   customTimeScale: 40000
   spaceTimeWarper: {fileID: 837642299}
-  iconDist: 100
+  iconDist: 40
   player: {fileID: 1032332565}
   nextPageButtonPrefab: {fileID: 1976041199266111247, guid: e7db07b4dbbd16345b1a294fe15030fb,
     type: 3}
   prevPageButtonPrefab: {fileID: 1976041199266111247, guid: 4b80b66d08d87cb4483ff02b32f4b7b4,
     type: 3}
   buttonsPerPage: 5
-  distanceThreshold: 80
+  distanceThreshold: 40
 --- !u!4 &837642298
 Transform:
   m_ObjectHideFlags: 0

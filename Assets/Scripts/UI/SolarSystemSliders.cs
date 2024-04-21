@@ -19,6 +19,7 @@ public class WholeSolarSystemScale : MonoBehaviour
         float rawSliderValue = this.GetComponent<Scrollbar>().value;
 
         float scale = (rawSliderValue * 0.01f) + 0.0005f;
+        Debug.Log(scale + "THIS IS THE SCALE ---------------------------");
 
         WholeSolarSystem.transform.localScale = new Vector3(scale,scale,scale);
 
