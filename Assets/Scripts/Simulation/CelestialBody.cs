@@ -79,7 +79,8 @@ public class CelestialBody : MonoBehaviour
     private double scaleSize;
 
     //private Rigidbody rigidbody; // for velocity
-    private DopplerGraph dopplerGraph;
+    private DopplerChangeInGraph dopplerGraph;
+    private DopplerGraph dopplerChangeInGraph;
 
     // Set properties based on data from the CSV file
     public void SetPropertiesFromData(int id, 
@@ -175,7 +176,8 @@ public class CelestialBody : MonoBehaviour
         OptionsMenu = UIElements[1];
         UXPanel = UIElements[0];
         InfoBar = UXPanel.transform.GetChild(0).gameObject;
-        dopplerGraph = InfoBar.transform.Find("EmissionSpectra").GetComponent<DopplerGraph>();
+        dopplerGraph = InfoBar.transform.Find("ChangeInEmissionSpectra").GetComponent<DopplerChangeInGraph>();
+        dopplerChangeInGraph = InfoBar.transform.Find("EmissionSpectra").GetComponent<DopplerGraph>();
 
         solarScript = solarSystemManager.GetComponent<SolarSystemManager>();
         scaleDist = solarScript.scaleDist > 0 ? solarScript.scaleDist : 1;
@@ -194,15 +196,6 @@ public class CelestialBody : MonoBehaviour
 
         transform = GetComponent<Transform>();
         transform.localScale = new Vector3(2*radiusEarth*(float)scaleSize, 2*radiusEarth*(float)scaleSize, 2*radiusEarth*(float)scaleSize);
-
-        
-        
-
-        // --------------
-        // Doppler
-        player = GameObject.Find("Main Camera");
-        prevPos = player.transform.position;
-
     }
 
     private void FixedUpdate()
@@ -229,8 +222,8 @@ public class CelestialBody : MonoBehaviour
                 wavelengths_new.Add(wavelength_new);
             }
 
-            dopplerGraph.UpdateSpectra(wavelengths_new,wavelengths);
-
+            dopplerGraph.UpdateChangeInSpectra(wavelengths_new,wavelengths);
+            dopplerChangeInGraph.UpdateSpectra(wavelengths_new,wavelengths);
 
             // ---------------------------------
             
@@ -328,6 +321,8 @@ public class CelestialBody : MonoBehaviour
 
         //Create a clone of the selected planet
         VisualBody = Instantiate(VisualBodyPrefab, PanelTransform);
+        Transform iconTransform = VisualBody.transform.Find("icon");
+        iconTransform.gameObject.SetActive(true);
         Destroy(VisualBody.GetNamedChild("icon").gameObject);
         try
         {
@@ -342,10 +337,6 @@ public class CelestialBody : MonoBehaviour
 
         VisualBody.transform.localScale = new Vector3(final_scale, final_scale, final_scale);
 
-
-        Transform iconTransform = VisualBody.transform.Find("icon");
-        iconTransform.gameObject.SetActive(true);
-        Destroy(VisualBody.GetNamedChild("icon").gameObject);
         GameObject Cylinder = Instantiate(Resources.Load("UIElements/Cylinder"),VisualBody.transform) as GameObject;
         VisualBody.GetComponent<TrailRenderer>().enabled = false;
 
