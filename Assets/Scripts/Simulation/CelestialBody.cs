@@ -51,6 +51,7 @@ public class CelestialBody : MonoBehaviour
     private GameObject OptionsMenu;
     public GameObject VisualBodyPrefab;
     private GameObject VisualBody = null;
+    public CloseVrMenu closevrmenuScript;
 
     public doubleVector3 pos;            // Position vector
     public doubleVector3 posDouble; // Position vector (using double precision)
@@ -79,8 +80,7 @@ public class CelestialBody : MonoBehaviour
     private double scaleSize;
 
     //private Rigidbody rigidbody; // for velocity
-    private DopplerChangeInGraph dopplerGraph;
-    private DopplerGraph dopplerChangeInGraph;
+    private DopplerGraph dopplerGraph;
 
     // Set properties based on data from the CSV file
     public void SetPropertiesFromData(int id, 
@@ -173,11 +173,12 @@ public class CelestialBody : MonoBehaviour
         
         //Get the ui elements using this method as opposed to .Find since .Find cannot find deactivated Gameobjects
         List<GameObject> UIElements = GameObject.Find("CloseOpenVRMenu").GetComponent<CloseVrMenu>().GetUI();
+        closevrmenuScript = GameObject.Find("CloseOpenVRMenu").GetComponent<CloseVrMenu>();
         OptionsMenu = UIElements[1];
         UXPanel = UIElements[0];
         InfoBar = UXPanel.transform.GetChild(0).gameObject;
-        dopplerGraph = InfoBar.transform.Find("ChangeInEmissionSpectra").GetComponent<DopplerChangeInGraph>();
-        dopplerChangeInGraph = InfoBar.transform.Find("EmissionSpectra").GetComponent<DopplerGraph>();
+
+        dopplerGraph = InfoBar.transform.Find("EmissionSpectra").GetComponent<DopplerGraph>();
 
         solarScript = solarSystemManager.GetComponent<SolarSystemManager>();
         scaleDist = solarScript.scaleDist > 0 ? solarScript.scaleDist : 1;
@@ -216,14 +217,18 @@ public class CelestialBody : MonoBehaviour
             V_observer = solarScript.GetPlayerVelocity();
             double V_rel = Math.Sqrt(Math.Pow(vel.x - V_observer.x, 2) + Math.Pow(vel.y - V_observer.y,2) + Math.Pow(vel.z - V_observer.z,2));
 
-            List<double> wavelengths_new = new List<double>();
-            foreach ( double wavelength in wavelengths){
-                double wavelength_new = wavelength * Math.Sqrt((1-(V_rel)/(c))/(1+(V_rel)/(c)));
-                wavelengths_new.Add(wavelength_new);
-            }
+            if (dopplerGraph.isActiveAndEnabled )
+            {
+                List<double> wavelengths_new = new List<double>();
+                foreach (double wavelength in wavelengths)
+                {
+                    double wavelength_new = wavelength * Math.Sqrt((1 - (V_rel) / (c)) / (1 + (V_rel) / (c)));
+                    wavelengths_new.Add(wavelength_new);
+                }
 
-            dopplerGraph.UpdateChangeInSpectra(wavelengths_new,wavelengths);
-            dopplerChangeInGraph.UpdateSpectra(wavelengths_new,wavelengths);
+                dopplerGraph.UpdateSpectra(wavelengths_new, wavelengths);
+            }
+            
 
             // ---------------------------------
             
@@ -245,8 +250,10 @@ public class CelestialBody : MonoBehaviour
         {
             return;
         }
+        closevrmenuScript.hasClickedOnce = true;
 
-        
+        InfoBar.transform.Find("EmissionSpectra").gameObject.SetActive(true);
+
 
         //Updates the left hand to show a copy of the selected planet, and a canvas containing useful information
         //
@@ -345,5 +352,9 @@ public class CelestialBody : MonoBehaviour
         
         VisualBody.transform.Rotate(new Vector3(0, 0, -axialTilt));
 
+        if(wavelengths.Count == 0)
+        {
+            InfoBar.transform.Find("EmissionSpectra").gameObject.SetActive(false);
+        }
     }
 }

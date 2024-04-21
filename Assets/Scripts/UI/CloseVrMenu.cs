@@ -22,6 +22,7 @@ public class CloseVrMenu : MonoBehaviour
     private bool _menubuttonHeld = false;
     private bool _secondarybuttonHeld = false;
 
+    public bool hasClickedOnce = false;
     void Start()
     {
       InfoMenu.SetActive(false);
@@ -59,7 +60,7 @@ public class CloseVrMenu : MonoBehaviour
                 _menubuttonHeld = false;
             }
 
-            if (secondarybuttonValue == true && _secondarybuttonHeld == false)
+            if (secondarybuttonValue == true && _secondarybuttonHeld == false && hasClickedOnce == true)
             {
                 //Turn off other menu so they dont overlap
                 if (OptionsMenu.activeSelf)

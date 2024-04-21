@@ -4,7 +4,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using doubleVector3namespace;
-using Unity.VisualScripting;
 
 public class SolarSystemManager : MonoBehaviour
 {
@@ -34,7 +33,7 @@ public class SolarSystemManager : MonoBehaviour
     public Vector3 solarScale;
     public double trueScale;
 
-    private double AU = 149597870700; // 1 astronomical unit in m
+    private const double AU = 149597870700; // 1 astronomical unit in m
 
     Vector3 prevPlayerPos = new Vector3(0,0,0);
 
@@ -48,12 +47,14 @@ public class SolarSystemManager : MonoBehaviour
     public float customTimeScale;
 
     public GravitationalPotentialCalculator spaceTimeWarper;
+
+    public Camera mainCamera;
     void Start()
     {
         //IF YOURE NOT ABLE TO RUN THIS IN VR, UNCOMMENT THIS LINE SO THE SIMULATION RUNS ON STARTUP
 
-        Init();
-        CreateButtons();
+        //Init();
+        //CreateButtons();
 
     }
 
@@ -124,9 +125,12 @@ public class SolarSystemManager : MonoBehaviour
 
     public void TeleportPlayer(CelestialBody body)
     {
-        float bodyRadius = body.transform.localScale.magnitude;
-       
-        player.transform.position = body.transform.position + new Vector3(-1,-1,-1);
+        float bodyRadius = body.transform.lossyScale.magnitude;
+        if (bodyRadius < 0.4f) 
+        {
+            bodyRadius = 1;
+        }
+        player.transform.position = body.transform.position + new Vector3(bodyRadius,-1,bodyRadius);
         player.transform.LookAt(body.transform.position);
         Vector3 zeroXZ = player.transform.eulerAngles;
         zeroXZ.z = 0f;
@@ -421,8 +425,8 @@ public class SolarSystemManager : MonoBehaviour
         // calculate the scale factor from the current scale
         
         // How far the player has moved
-        doubleVector3 playerVelocity = player.transform.position - prevPlayerPos;
-        playerVelocity *= dt / trueScale;
+        doubleVector3 playerVelocity = (player.transform.position - prevPlayerPos) / (float)trueScale;
+        playerVelocity /= dt;
         prevPlayerPos = player.transform.position;
 
         return playerVelocity;
@@ -514,11 +518,10 @@ public class SolarSystemManager : MonoBehaviour
 
 
                 iconTransform.position = iconPosition;
-                iconTransform.LookAt(player.transform.position);
-
-            } else
+                iconTransform.rotation = mainCamera.transform.rotation;
+            }
+            else
             {
-                celestialBody.button.sizeDelta = new Vector2(20.0f,20.0f);
                 float ifSun = 1.0f;
                 if (celestialBody.bodyName == "Sun")
                 {
@@ -532,7 +535,11 @@ public class SolarSystemManager : MonoBehaviour
                 if (celestialBody.isMoon == 0){
                     iconOffsetPosition = celestialBody.transform.position + Vector3.up * (parentScale.magnitude/2.0f+iconDistAbove*ifSun);
                     iconTransform.localScale = iconScale/40;
-                }else
+                    celestialBody.button.sizeDelta = new Vector2(10.0f, 10.0f);
+
+
+                }
+                else
                 {
                     foreach(CelestialBody parentBody in celestialBodiesList)
                     {
@@ -542,12 +549,13 @@ public class SolarSystemManager : MonoBehaviour
                         }
                     }                    
                     iconTransform.localScale = iconScale/80;
+
                 }
 
                 iconTransform.position = iconOffsetPosition;
-                
-                
-                iconTransform.LookAt(player.transform.position);                 
+
+
+                iconTransform.rotation = mainCamera.transform.rotation;
             } 
 
         }
