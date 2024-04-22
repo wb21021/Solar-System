@@ -4,10 +4,6 @@ using TMPro;
 using UnityEngine;
 using doubleVector3namespace;
 using Unity.XR.CoreUtils;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
-
-using XCharts.Runtime;
 
 public class CelestialBody : MonoBehaviour
 {
@@ -46,12 +42,13 @@ public class CelestialBody : MonoBehaviour
 
     public List<CelestialBody> moonsList; //list of moons this body has
 
-    private GameObject InfoBar;
-    private GameObject UXPanel;
-    private GameObject OptionsMenu;
-    public GameObject VisualBodyPrefab;
-    private GameObject VisualBody = null;
-    public CloseVrMenu closevrmenuScript;
+    //References for the UI Elements
+    private GameObject InfoBar; //Information tab
+    private GameObject UXPanel; //Parent of the information tab, contains the visual body as well
+    private GameObject OptionsMenu; //Settings
+    public GameObject VisualBodyPrefab; //Prefab of this object
+    private GameObject VisualBody = null; //Reference of the currently selected object's body
+    public CloseVrMenu closevrmenuScript; //CloseVrMenu.cs reference
 
     public doubleVector3 pos;            // Position vector
     public doubleVector3 posDouble; // Position vector (using double precision)
@@ -61,8 +58,8 @@ public class CelestialBody : MonoBehaviour
     public doubleVector3 accDouble;      // Acceleration vector (using double precision) 
 
     public List<float> wavelengths = new List<float>();
-    private GameObject player;
-    private doubleVector3 prevPos;
+
+
     private doubleVector3 V_observer;
     private const double c = 299792458;
 
@@ -169,14 +166,16 @@ public class CelestialBody : MonoBehaviour
 
     void Start()
     {
+        //find solarsystemmanager.cs and attach it.
         solarSystemManager = GameObject.Find("Solar System Manager");
         
-        //Get the ui elements using this method as opposed to .Find since .Find cannot find deactivated Gameobjects
+        //Find the UIElements in the scene and attach it.
         List<GameObject> UIElements = GameObject.Find("CloseOpenVRMenu").GetComponent<CloseVrMenu>().GetUI();
         closevrmenuScript = GameObject.Find("CloseOpenVRMenu").GetComponent<CloseVrMenu>();
         OptionsMenu = UIElements[1];
         UXPanel = UIElements[0];
         InfoBar = UXPanel.transform.GetChild(0).gameObject;
+
 
         dopplerGraph = InfoBar.transform.Find("EmissionSpectra").GetComponent<DopplerGraph>();
 
@@ -201,11 +200,12 @@ public class CelestialBody : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //If the panel is current on and theres a planet being shown
         if (UXPanel.activeSelf == true && VisualBody != null)
         {
             // Debug.Log("FIXED: Running");
 
-            
+            //Set the scale of the visual body and rotate it based on its orbital period
             float final_scale = 0.1f/(float)scaleSize;
             VisualBody.transform.localScale = new Vector3(final_scale, final_scale,final_scale);
 
@@ -237,12 +237,15 @@ public class CelestialBody : MonoBehaviour
     }
     public void ShowInfoBox()
     {
+        //THIS FUNCTION RUNS TO ACTIVATE ON THE INFORMATION TAB
+
         //Turn off the Options menu if its on
         if (OptionsMenu.activeSelf)
         {
             OptionsMenu.SetActive(false);
         }
 
+        //turn on info tab
         UXPanel.SetActive(true);
 
         //if the newly selected planet is the same as the currently shown one
@@ -252,6 +255,7 @@ public class CelestialBody : MonoBehaviour
         }
         closevrmenuScript.hasClickedOnce = true;
 
+        //turn on the emission spectra graph
         InfoBar.transform.Find("EmissionSpectra").gameObject.SetActive(true);
 
 
@@ -267,6 +271,7 @@ public class CelestialBody : MonoBehaviour
             VisualBody = null;
         }
 
+        //Destroy all currently showing buttons that select the moons, if there were any to begin with 
         Transform moonButtons = InfoBar.transform.Find("MoonButtons");
         if (moonButtons.childCount != 0)
         {
@@ -295,16 +300,24 @@ public class CelestialBody : MonoBehaviour
         //Reset what page the long text should be on
         InfoBar.transform.Find("DescriptionIn").GetComponent<TMP_Text>().pageToDisplay = 1;
 
+        //Load the button prefab
         UnityEngine.Object MoonButtonPrefab = Resources.Load("UIElements/MoonButtonPrefab");
 
+        //Incrementally add a button for each moon
         float y = 0;
         foreach (CelestialBody moon in moonsList)
         {
  
             GameObject MoonButton = Instantiate(MoonButtonPrefab, moonButtons) as GameObject;
+
             MoonButton.GetComponentInChildren<TMP_Text>().text = moon.bodyName;
+
+            //position it further down than the last button
             MoonButton.transform.localPosition = new Vector3(0f, (60 - (y * 40f)), 0f);
+
+            //attach the 'onClick' script, which takes it to this function again but for the selected moon
             MoonButton.GetComponent<UnityEngine.UI.Button>().onClick.AddListener(delegate() { moon.ShowInfoBox(); });
+
             MoonButton.GetComponent<UnityEngine.UI.Image>().color = moon.descColor;
             y++;
             
@@ -312,7 +325,6 @@ public class CelestialBody : MonoBehaviour
 
         //Change the colour of the panel to match the selected planet
         InfoBar.transform.Find("OuterPanel").GetComponent<UnityEngine.UI.Image>().color = descColor;
-
         InfoBar.transform.Find("DescriptionPanel").GetComponent<UnityEngine.UI.Image>().color = descColor;
         InfoBar.transform.Find("ValuePanel").GetComponent<UnityEngine.UI.Image>().color = descColor;
         InfoBar.transform.Find("MoonPanel").GetComponent<UnityEngine.UI.Image>().color = descColor;
@@ -329,7 +341,11 @@ public class CelestialBody : MonoBehaviour
         //Create a clone of the selected planet
         VisualBody = Instantiate(VisualBodyPrefab, PanelTransform);
         Transform iconTransform = VisualBody.transform.Find("icon");
+
+        //Turn the icons on so that they can be destroyed, as Destroy does not work on inactive gameObjects
         iconTransform.gameObject.SetActive(true);
+
+        //Delete the icons and stds, so that they cannot be shown in the selected planet
         Destroy(VisualBody.GetNamedChild("icon").gameObject);
         try
         {
@@ -340,11 +356,15 @@ public class CelestialBody : MonoBehaviour
         }
             
 
+        //set scale of body
         float final_scale = 0.1f / (float)scaleSize;
 
         VisualBody.transform.localScale = new Vector3(final_scale, final_scale, final_scale);
 
+        //load a cylinder to represent the axis of rotation
         GameObject Cylinder = Instantiate(Resources.Load("UIElements/Cylinder"),VisualBody.transform) as GameObject;
+
+        //turn off the trails
         VisualBody.GetComponent<TrailRenderer>().enabled = false;
 
         //Set position to be just above the hand, and rotate planet so its N/S pole align with the hand.
@@ -352,6 +372,7 @@ public class CelestialBody : MonoBehaviour
         
         VisualBody.transform.Rotate(new Vector3(0, 0, -axialTilt));
 
+        //if the body has no available emission spectra data, dont show it
         if(wavelengths.Count == 0)
         {
             InfoBar.transform.Find("EmissionSpectra").gameObject.SetActive(false);

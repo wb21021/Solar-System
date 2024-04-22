@@ -7,11 +7,11 @@ public class IntegrationMethodDropdown : MonoBehaviour
 {
     public SolarSystemManager solarSystemManager;
 
+    //This function is called when the dropdown selector for the integration methods is changed
     public void DrowpdownChanged()
     {
-        Debug.Log("INTEGRATION: RUnning");
+        //find the index of the currently selected integration method and update the solarSystemManagers respective index
         int integrationMethodIndex = this.GetComponent<TMP_Dropdown>().value;
-        Debug.Log("INTEGRATION: "+ integrationMethodIndex);
         solarSystemManager.integrationMethodIndex = integrationMethodIndex;
     }
 }

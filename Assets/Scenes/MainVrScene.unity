@@ -800,7 +800,7 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: Runge Kutta
       m_Image: {fileID: 0}
-    - m_Text: Yoshida (6th)
+    - m_Text: Yoshida (8th)
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:

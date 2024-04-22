@@ -263,15 +263,17 @@ public class SolarSystemManager : MonoBehaviour
 
             
             
-
+            // attach the body to the SolarSystem gameObject
             celestialBodyInit.transform.parent = WholeSolarSystem.transform;
 
             Debug.Log(celestialBodyInit.name);
+            //Calculate the potentials using Oscar's script
             spaceTimeWarper.CalculateGravitationalPotentials(celestialBodyInit);
 
+            //turn of the newly created plane
             celestialBodyInit.transform.Find("SpaceTimePlane(Clone)").gameObject.SetActive(false);
             
-
+            //scale the trail down to a fixed size
             celestialBodyInit.GetComponent<TrailRenderer>().widthMultiplier = 0.05f;
 
             //------------------------------------------------------------------

@@ -60,6 +60,7 @@ public class CloseVrMenu : MonoBehaviour
                 _menubuttonHeld = false;
             }
 
+            //If the y button has been pressed, and that theyve already clicked at least one body
             if (secondarybuttonValue == true && _secondarybuttonHeld == false && hasClickedOnce == true)
             {
                 //Turn off other menu so they dont overlap

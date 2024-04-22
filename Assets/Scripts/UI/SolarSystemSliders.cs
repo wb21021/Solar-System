@@ -19,14 +19,11 @@ public class WholeSolarSystemScale : MonoBehaviour
         float rawSliderValue = this.GetComponent<Scrollbar>().value;
 
         float scale = (rawSliderValue * 0.0079f) + 0.0005f;
-        Debug.Log(scale + "THIS IS THE SCALE ---------------------------");
 
         WholeSolarSystem.transform.localScale = new Vector3(scale,scale,scale);
 
         //Reset the trails so that the planets dont look like theyve moved in / out
-        ClearTrails();
-        //UpdateTrailScale();
-        
+        ClearTrails();        
     }
 
     public void IterationsPerFrameSliderChanged()
@@ -94,14 +91,6 @@ public class WholeSolarSystemScale : MonoBehaviour
         foreach (CelestialBody body in SolarSystemManager.celestialBodiesList)
         {
             body.GetComponent<TrailRenderer>().Clear();
-        }
-    }
-
-    private void UpdateTrailScale() 
-    {
-        foreach (CelestialBody body in SolarSystemManager.celestialBodiesList)
-        {
-            body.GetComponent<TrailRenderer>().widthMultiplier = body.transform.localScale.x;
         }
     }
 }
