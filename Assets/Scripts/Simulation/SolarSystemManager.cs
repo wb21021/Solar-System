@@ -460,9 +460,12 @@ public class SolarSystemManager : MonoBehaviour
                     velocitiesVerletMethod();
                     break;
                 case 2:
-                    rungeKuttaMethod();
+                    leapFrogMethod();
                     break;
                 case 3:
+                    rungeKuttaMethod();
+                    break;
+                case 4:
                     yoshidaMethod_8();
                     break;
                 default:
@@ -560,6 +563,33 @@ public class SolarSystemManager : MonoBehaviour
                 iconTransform.rotation = mainCamera.transform.rotation;
             } 
 
+        }
+    }
+
+    void leapFrogMethod()
+    {
+        float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
+        simulationTime += (long)(dt) ;
+        
+        foreach (CelestialBody celestialBody in celestialBodiesList)
+        {
+            // Leapfrog Integration
+
+            // update acceleration
+            UpdateGravitationalAcceleration(celestialBody);
+
+            // Check if the velocity is NaN and set it to 0 if it is
+            celestialBody.vel = new doubleVector3(double.IsNaN(celestialBody.vel.x) ? 0 : celestialBody.vel.x, double.IsNaN(celestialBody.vel.y) ? 0 : celestialBody.vel.y, double.IsNaN(celestialBody.vel.z) ? 0 : celestialBody.vel.z);
+
+            // half step velocity
+            celestialBody.vel += 0.5f * dt * celestialBody.acc;
+
+            // full step position (using half step velocity)
+            celestialBody.pos += celestialBody.vel * dt;
+
+            // update position of the asset
+            Vector3 newPos = celestialBody.pos.ToVector3();
+            celestialBody.transform.localPosition = newPos*(float)scaleDist;
         }
     }
 
