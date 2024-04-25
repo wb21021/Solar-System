@@ -53,9 +53,8 @@ public class SolarSystemManager : MonoBehaviour
     {
         //IF YOURE NOT ABLE TO RUN THIS IN VR, UNCOMMENT THIS LINE SO THE SIMULATION RUNS ON STARTUP
 
-        //Init();
-        //CreateButtons();
-
+        // Init();
+        // CreateButtons();
     }
 
     public float iconDist;
@@ -184,7 +183,6 @@ public class SolarSystemManager : MonoBehaviour
         string[] lines = text.Split('\n');
         
 
-
         for (int i = 1; i< lines.Length; i++)
         {
             string line = lines[i];
@@ -192,8 +190,6 @@ public class SolarSystemManager : MonoBehaviour
 
             // Get the name from the CSV data
             string celestialBodyName = values[0].Trim();
-
-
 
 
             // Determine the prefab path to use based on the name
@@ -281,17 +277,6 @@ public class SolarSystemManager : MonoBehaviour
 
         // Set the initial positions and velocities of the celestial bodies
         InitialiseCelestialBodies();
-
-
-        
-        // Use the position components to position the assests and scale the in the scene
-        // foreach (CelestialBody celestialBody in celestialBodiesList)
-        // {
-        //     celestialBody.transform.position = celestialBody.pos;
-        //     celestialBody.transform.localScale = new doubleVector3(celestialBody.radius, celestialBody.radius, celestialBody.radius);
-        // }
-
-
     }
 
     
@@ -312,10 +297,6 @@ public class SolarSystemManager : MonoBehaviour
 
     public void InitialiseCelestialBodies()
     {
-        double distFromSun = 0;
-        double newDistFromSun = 0;
-        double largestScale = 0;
-        double newLargestScale = 0;
         doubleVector3 planeScale2D = plane.transform.localScale;
         doubleVector3 planeScale = new doubleVector3(planeScale2D.x, planeScale2D.x,planeScale2D.z);
 
@@ -334,9 +315,7 @@ public class SolarSystemManager : MonoBehaviour
         // Offset the moons
         offsetMoons();
 
-        //planeScale.magnitude/distFromSun;
-        //Debug.Log(largestScale);
-        scaleSize = (1/10000);//scaleDist;//(planeScale.magnitude*0.005f)/largestScale;
+        scaleSize = (1/10000);
         
         foreach (CelestialBody celestialBody in celestialBodiesList)
         {
@@ -441,10 +420,6 @@ public class SolarSystemManager : MonoBehaviour
 
     void FixedUpdate()
     {  
-        // Debug.Log("dt:" + Time.fixedDeltaTime * customTimeScale);
-        // Debug.Log("Time scale:" + customTimeScale);
-        // Debug.Log("Distance scale:" + scaleDist);
-        // Debug.Log("Speed:" + GetPlayerSpeed());
         solarScale = WholeSolarSystem.transform.localScale;
         trueScale = (solarScale.x*scaleDist);
 
@@ -581,10 +556,10 @@ public class SolarSystemManager : MonoBehaviour
             // Check if the velocity is NaN and set it to 0 if it is
             celestialBody.vel = new doubleVector3(double.IsNaN(celestialBody.vel.x) ? 0 : celestialBody.vel.x, double.IsNaN(celestialBody.vel.y) ? 0 : celestialBody.vel.y, double.IsNaN(celestialBody.vel.z) ? 0 : celestialBody.vel.z);
 
-            // half step velocity
+            // full step velocity (on a half step)
             celestialBody.vel += 0.5f * dt * celestialBody.acc;
 
-            // full step position (using half step velocity)
+            // step position
             celestialBody.pos += celestialBody.vel * dt;
 
             // update position of the asset
@@ -669,86 +644,9 @@ public class SolarSystemManager : MonoBehaviour
         }
     }
 
-    // Old yoshida method (Legacy)
-    // void yoshidaMethod()
-    // {
-    //     // fourth order numerical integrator using the Yoshida method
-
-    //     float customTimeScale = 400000.0f;
-    //     float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
-    //     simulationTime += (long)(dt) ;
-
-    //     float third = 1.0f / 3.0f;
-
-    //     double w_0 = - Mathf.Pow(2, third) / (2 - Mathf.Pow(2, third));
-    //     double w_1 = 1 / (2 - Mathf.Pow(2, third));
-
-    //     double c_1 = w_1 / 2;
-    //     double c_2 = (w_0 + w_1) / 2;
-    //     double c_3 = c_2;
-    //     double c_4 = c_1;
-
-    //     double d_1 = w_1;
-    //     double d_2 = w_0;
-    //     double d_3 = w_1;
-
-    //     foreach(CelestialBody celestialBody in celestialBodiesList)
-    //     {
-    //         celestialBody.vel = new doubleVector3(double.IsNaN(celestialBody.vel.x) ? 0 : celestialBody.vel.x, double.IsNaN(celestialBody.vel.y) ? 0 : celestialBody.vel.y, double.IsNaN(celestialBody.vel.z) ? 0 : celestialBody.vel.z);
-
-    //         // first step
-    //         //////////////////////////////////////////
-    //         // update pos (x_1)
-    //         celestialBody.pos = celestialBody.pos + (c_1 * dt * celestialBody.vel);
-    //         // update acc
-    //         UpdateGravitationalAcceleration(celestialBody);
-    //         // update vel (v_1)
-    //         celestialBody.vel = celestialBody.vel + (d_1 * dt * celestialBody.acc);
-
-
-
-    //         // second step
-    //         //////////////////////////////////////////
-    //         // update pos (x_2)
-    //         celestialBody.pos = celestialBody.pos + (c_2 * dt * celestialBody.vel);
-    //         // update acc
-    //         UpdateGravitationalAcceleration(celestialBody);
-    //         // update vel (v_2)
-    //         celestialBody.vel = celestialBody.vel + (d_2 * dt * celestialBody.acc);
-
-
-
-    //         // third step
-    //         //////////////////////////////////////////
-    //         // update pos (x_3)
-    //         celestialBody.pos = celestialBody.pos + (c_3 * dt * celestialBody.vel);
-    //         // update acc
-    //         UpdateGravitationalAcceleration(celestialBody);
-    //         // update vel (v_3)
-    //         celestialBody.vel = celestialBody.vel + (d_3 * dt * celestialBody.acc);
-
-
-
-    //         // full step (last step)
-    //         //////////////////////////////////////////
-    //         // update pos (x_4)
-    //         celestialBody.pos = celestialBody.pos + (c_4 * dt * celestialBody.vel);
-    //         // update vel (v_4 = v_3) 
-    //         // celestialBody.vel = celestialBody.vel;
-
-
-
-    //         // update position of the asset
-    //         Vector3 newPos = celestialBody.pos.ToVector3();
-    //         celestialBody.transform.localPosition = newPos*(float)scaleDist;
-    //     }   
-    // }
-
     private void yoshidaMethod()
     {
         // fourth order numerical integrator using the Yoshida method
-        
-        
         float dt = Time.fixedDeltaTime * customTimeScale / IterPerFrame;
         
 
@@ -756,16 +654,20 @@ public class SolarSystemManager : MonoBehaviour
 
         float third = 1.0f / 3.0f;
 
+        // Coefficients for the 4th order Yoshida integrator
         double w_0 = - Mathf.Pow(2, third) / (2 - Mathf.Pow(2, third));
         double w_1 = 1 / (2 - Mathf.Pow(2, third));
 
+        // Coefficients for position and velocity updates respectively
         double[] c = { w_1 / 2, (w_0 + w_1) / 2, (w_0 + w_1) / 2, w_1 / 2 };
         double[] d = { w_1, w_0, w_1 };
 
         foreach(CelestialBody celestialBody in celestialBodiesList)
         {
+            // Check that the velocity is not Nan as this will cause issues
             celestialBody.vel = new doubleVector3(double.IsNaN(celestialBody.vel.x) ? 0 : celestialBody.vel.x, double.IsNaN(celestialBody.vel.y) ? 0 : celestialBody.vel.y, double.IsNaN(celestialBody.vel.z) ? 0 : celestialBody.vel.z);
 
+            // The Yoshida method in a forth order integrator
             for (int i = 0; i < 4; i++)
             {
                 // update pos
@@ -799,6 +701,7 @@ public class SolarSystemManager : MonoBehaviour
 
         foreach (CelestialBody celestialBody in celestialBodiesList)
         {
+            // Check that the velocity is not Nan as this will cause issues
             celestialBody.vel = new doubleVector3(double.IsNaN(celestialBody.vel.x) ? 0 : celestialBody.vel.x, double.IsNaN(celestialBody.vel.y) ? 0 : celestialBody.vel.y, double.IsNaN(celestialBody.vel.z) ? 0 : celestialBody.vel.z);
 
             for (int i = 0; i < 8; i++)

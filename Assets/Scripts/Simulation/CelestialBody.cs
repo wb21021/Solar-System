@@ -53,9 +53,7 @@ public class CelestialBody : MonoBehaviour
     public doubleVector3 pos;            // Position vector
     public doubleVector3 posDouble; // Position vector (using double precision)
     public doubleVector3 vel;            // Velocity vector
-    public doubleVector3 velDouble;      // Velocity vector (using double precision)
     public doubleVector3 acc;            // Acceleration vector
-    public doubleVector3 accDouble;      // Acceleration vector (using double precision) 
 
     public List<float> wavelengths = new List<float>();
 
@@ -141,11 +139,13 @@ public class CelestialBody : MonoBehaviour
         // convert to meters
         float a = semiMajorAxis * 1.496e11f; // times by 1.496e11 to convert from AU to meters
         float e = eccentricity;
+
         // Convert all the angles to radians
         float i = Mathf.Deg2Rad * inclination;
         float Omega = Mathf.Deg2Rad * longditudeOfAscendingNode;
         float w = Mathf.Deg2Rad * argOfPerihelion;
         float nu = Mathf.Deg2Rad * trueAnomaly;
+
         float mu = G * (mass + massOfCentralBody); // Gravitational parameter
 
         float distance = a * (1 - e * e) / (1 + e * Mathf.Cos(nu));
@@ -155,7 +155,6 @@ public class CelestialBody : MonoBehaviour
         pos.x = distance * ( Mathf.Cos(Omega) * Mathf.Cos(w + nu) - Mathf.Sin(Omega) * Mathf.Sin(w + nu) * Mathf.Cos(i) );
         pos.z = distance * ( Mathf.Sin(Omega) * Mathf.Cos(w + nu) + Mathf.Cos(Omega) * Mathf.Sin(w + nu) * Mathf.Cos(i) );
         pos.y = distance * ( Mathf.Sin(i) * Mathf.Sin(w + nu) );
-        //Debug.Log(pos + "THIS IS INITIALPOS");
 
         // velocity vector in cartesian coordinates
         vel.x = speed * ( Mathf.Cos(Omega) * Mathf.Sin(w+nu) + Mathf.Sin(Omega) * Mathf.Cos(w+nu) * Mathf.Cos(i) );
@@ -169,7 +168,7 @@ public class CelestialBody : MonoBehaviour
         //find solarsystemmanager.cs and attach it.
         solarSystemManager = GameObject.Find("Solar System Manager");
         
-        //Find the UIElements in the scene and attach it.
+        //Find the UI Elements in the scene and attach it.
         List<GameObject> UIElements = GameObject.Find("CloseOpenVRMenu").GetComponent<CloseVrMenu>().GetUI();
         closevrmenuScript = GameObject.Find("CloseOpenVRMenu").GetComponent<CloseVrMenu>();
         OptionsMenu = UIElements[1];
@@ -188,7 +187,6 @@ public class CelestialBody : MonoBehaviour
         {
             if (body.isMoon == this.id && this.id != 0) 
             {
-                // Debug.Log(body.bodyName + "IS A MOON TO: " + this.bodyName);
                 this.moonsList.Add(body);
             }
         }
@@ -203,7 +201,6 @@ public class CelestialBody : MonoBehaviour
         //If the panel is current on and theres a planet being shown
         if (UXPanel.activeSelf == true && VisualBody != null)
         {
-            // Debug.Log("FIXED: Running");
 
             //Set the scale of the visual body and rotate it based on its orbital period
             float final_scale = 0.1f/(float)scaleSize;
@@ -332,8 +329,6 @@ public class CelestialBody : MonoBehaviour
         InfoBar.transform.Find("ButtonBack").GetComponent<UnityEngine.UI.Image>().color = descColor;
         InfoBar.transform.Find("ButtonForward").GetComponent<UnityEngine.UI.Image>().color = descColor;
 
-
-        
         
 
         Transform PanelTransform = GameObject.Find("UXPanel").GetComponent<Transform>();
