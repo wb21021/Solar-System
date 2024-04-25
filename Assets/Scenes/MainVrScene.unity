@@ -794,9 +794,11 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: Yoshida
+    - m_Text: Yoshida (4th)
       m_Image: {fileID: 0}
     - m_Text: Verlet
+      m_Image: {fileID: 0}
+    - m_Text: Leap frog
       m_Image: {fileID: 0}
     - m_Text: Runge Kutta
       m_Image: {fileID: 0}
@@ -926,7 +928,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Yoshida
+  m_text: Yoshida (4th)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4902,7 +4904,7 @@ RectTransform:
   m_Father: {fileID: 1300614549}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.81333387}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -7257,7 +7259,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 583579086}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.81333387
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -16227,8 +16229,8 @@ RectTransform:
   - {fileID: 1193702327}
   - {fileID: 1278796571}
   - {fileID: 699479988}
-  - {fileID: 653230652}
   - {fileID: 756304054}
+  - {fileID: 653230652}
   - {fileID: 68102565}
   - {fileID: 597980989}
   m_Father: {fileID: 599689817}
