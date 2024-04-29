@@ -1,6 +1,14 @@
 # Group 1 - Simulating a solar system in virtual reality
 **By Iris Adams, Bryn Drury, Matyas Orsovszki, Oscar Zimmerman**
 
+## Contents
+
+- [**Packages**](#packages-1)
+-  [**Build Instructions**](#build-instructions-1)
+-  [**Installation**](#installation-1)
+-  [**User Guide**](#user-guide)
+   - [Controls](#controls) 
+-  [**Credits**](#credits-1)
 ## Packages
 
 - Burst - 1.8.12
@@ -28,11 +36,45 @@
 - XR Legacy Input Helpers - 2.1.10
 - XR Plugin Management - 4.4.1 
 
+## Build Instructions
+
+1. Download the source code using from the 'Release' tab on the right.
+
+![The Unity Hub showing the correct version.](hub.png)
+
+2. Open the Unity project using version [2022.3.18f1](https://unity.com/releases/editor/whats-new/2022.3.18).
+
+![The Build settings, which can also be opened using Ctrl+Shift+B](filebuildsettings.png)
+
+3. Go to **File -> Build Settings** and select **Android**. You may need to install additional modules.
+
+![The build settings dialog.](build.png)
+
+4. Select **Switch Platform**, then **Build**. Depending on your device specifications, building may take anywhere between 70 seconds and 5 minutes.
 ## Installation
 
 Select the latest release on the right hand side, and download the SolarSystem210424-2.apk file.
 
 To install it onto a Meta Quest 2 headset, follow the instructions shown [here](https://drive.google.com/file/d/1er58GegKIocjQBE9LqCWEuqK98iUBPrB/view?usp=drive_link).
+
+## User Guide
+
+### Controls
+
+- **Move** - **Left Thumbstick**
+
+  - Note: Direction of motion is determined by the orientation of the left controller.
+
+- **Rotate** - **Right Thumbstick**
+
+- **Open/Close Settings** - **In-Game menu button**, located on the left thumbstick
+   - Note: The settings menu cannot be opened until the simulation has begun.
+
+- **Open/Close Information Menu** - **Y button**, located on the left thumbstick
+   - Note: Cannot be opened until a body has been selected.
+
+- **Select/Interact** - **Both triggers**
+
 ## Credits
 
 - [Earth and Planet Skyboxes](https://assetstore.unity.com/packages/2d/textures-materials/sky/earth-planets-skyboxes-53752) - 1.1
