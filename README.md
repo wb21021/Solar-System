@@ -75,6 +75,10 @@ To install it onto a Meta Quest 2 headset, follow the instructions shown [here](
 
 - **Select/Interact** - **Both triggers**
 
+## Editing the csv
+
+To edit the csv, you can either open the raw csv file and add a new row with all of the required parameters for the simulation (look at the top row to see the column names), or edit it in excel and google sheets, where the same applies. If a parameter isn't applicable, enter NaN, as an empty cell may be read incorrectly and break the simulation.
+
 ## Credits
 
 - [Earth and Planet Skyboxes](https://assetstore.unity.com/packages/2d/textures-materials/sky/earth-planets-skyboxes-53752) - 1.1
